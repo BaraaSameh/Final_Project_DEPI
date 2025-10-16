@@ -1,0 +1,309 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|c:\\users\\albra\\source\\depi_final_project\\depifinalproject\\depifinalproject\\models\\shipping.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\models\\shipping.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|c:\\users\\albra\\source\\depi_final_project\\depifinalproject\\depifinalproject\\migrations\\20251014151457_init.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\migrations\\20251014151457_init.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|c:\\users\\albra\\source\\depi_final_project\\depifinalproject\\depifinalproject\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|c:\\users\\albra\\source\\depi_final_project\\depifinalproject\\depifinalproject\\models\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\models\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|c:\\users\\albra\\source\\depi_final_project\\depifinalproject\\depifinalproject\\models\\review.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\models\\review.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|c:\\users\\albra\\source\\depi_final_project\\depifinalproject\\depifinalproject\\models\\payment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\models\\payment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|c:\\users\\albra\\source\\depi_final_project\\depifinalproject\\depifinalproject\\models\\return.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\models\\return.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|c:\\users\\albra\\source\\depi_final_project\\depifinalproject\\depifinalproject\\models\\ordershipping.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\models\\ordershipping.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|c:\\users\\albra\\source\\depi_final_project\\depifinalproject\\depifinalproject\\models\\orderitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\models\\orderitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|c:\\users\\albra\\source\\depi_final_project\\depifinalproject\\depifinalproject\\models\\cart.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\models\\cart.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|c:\\users\\albra\\source\\depi_final_project\\depifinalproject\\depifinalproject\\models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|c:\\users\\albra\\source\\depi_final_project\\depifinalproject\\depifinalproject\\models\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\models\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|c:\\users\\albra\\source\\depi_final_project\\depifinalproject\\depifinalproject\\models\\address.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\models\\address.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|c:\\users\\albra\\source\\depi_final_project\\depifinalproject\\depifinalproject\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|c:\\users\\albra\\source\\depi_final_project\\depifinalproject\\depifinalproject\\depifinalproject.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\depifinalproject.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|c:\\users\\albra\\source\\depi_final_project\\depifinalproject\\depifinalproject\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|c:\\users\\albra\\source\\depi_final_project\\depifinalproject\\depifinalproject\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|c:\\users\\albra\\source\\depi_final_project\\depifinalproject\\depifinalproject\\migrations\\20251014163700_init2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\migrations\\20251014163700_init2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "20251014163700_init2.cs",
+              "DocumentMoniker": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Migrations\\20251014163700_init2.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Migrations\\20251014163700_init2.cs",
+              "ToolTip": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Migrations\\20251014163700_init2.cs",
+              "RelativeToolTip": "DepiFinalProject\\Migrations\\20251014163700_init2.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-14T16:37:00.454Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "20251014151457_Init.cs",
+              "DocumentMoniker": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Migrations\\20251014151457_Init.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Migrations\\20251014151457_Init.cs",
+              "ToolTip": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Migrations\\20251014151457_Init.cs",
+              "RelativeToolTip": "DepiFinalProject\\Migrations\\20251014151457_Init.cs",
+              "ViewState": "AgIAAEgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-14T15:14:57.473Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "DepiFinalProject.http",
+              "DocumentMoniker": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\DepiFinalProject.http",
+              "RelativeDocumentMoniker": "DepiFinalProject\\DepiFinalProject.http",
+              "ToolTip": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\DepiFinalProject.http",
+              "RelativeToolTip": "DepiFinalProject\\DepiFinalProject.http",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2025-10-14T15:13:31.766Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\appsettings.json",
+              "RelativeDocumentMoniker": "DepiFinalProject\\appsettings.json",
+              "ToolTip": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\appsettings.json",
+              "RelativeToolTip": "DepiFinalProject\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-10-14T14:50:19.841Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Program.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Program.cs",
+              "ToolTip": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Program.cs",
+              "RelativeToolTip": "DepiFinalProject\\Program.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAAAA0AAABYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-14T14:49:46.248Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Data\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Data\\AppDbContext.cs",
+              "ToolTip": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Data\\AppDbContext.cs",
+              "RelativeToolTip": "DepiFinalProject\\Data\\AppDbContext.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAACwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-14T14:48:48.896Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "OrderShipping.cs",
+              "DocumentMoniker": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\OrderShipping.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Models\\OrderShipping.cs",
+              "ToolTip": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\OrderShipping.cs",
+              "RelativeToolTip": "DepiFinalProject\\Models\\OrderShipping.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-14T14:47:54.55Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Shipping.cs",
+              "DocumentMoniker": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\Shipping.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Models\\Shipping.cs",
+              "ToolTip": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\Shipping.cs",
+              "RelativeToolTip": "DepiFinalProject\\Models\\Shipping.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-14T14:47:25.736Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Return.cs",
+              "DocumentMoniker": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\Return.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Models\\Return.cs",
+              "ToolTip": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\Return.cs",
+              "RelativeToolTip": "DepiFinalProject\\Models\\Return.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAA4AAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-14T14:47:05.425Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Review.cs",
+              "DocumentMoniker": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\Review.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Models\\Review.cs",
+              "ToolTip": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\Review.cs",
+              "RelativeToolTip": "DepiFinalProject\\Models\\Review.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-14T14:46:48.085Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Payment.cs",
+              "DocumentMoniker": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\Payment.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Models\\Payment.cs",
+              "ToolTip": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\Payment.cs",
+              "RelativeToolTip": "DepiFinalProject\\Models\\Payment.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-14T14:46:19.524Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "OrderItem.cs",
+              "DocumentMoniker": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\OrderItem.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Models\\OrderItem.cs",
+              "ToolTip": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\OrderItem.cs",
+              "RelativeToolTip": "DepiFinalProject\\Models\\OrderItem.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABYAAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-14T14:45:55.839Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Order.cs",
+              "DocumentMoniker": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\Order.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Models\\Order.cs",
+              "ToolTip": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\Order.cs",
+              "RelativeToolTip": "DepiFinalProject\\Models\\Order.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-14T14:45:21.593Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Cart.cs",
+              "DocumentMoniker": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\Cart.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Models\\Cart.cs",
+              "ToolTip": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\Cart.cs",
+              "RelativeToolTip": "DepiFinalProject\\Models\\Cart.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-14T14:44:57.96Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Product.cs",
+              "DocumentMoniker": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\Product.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Models\\Product.cs",
+              "ToolTip": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\Product.cs",
+              "RelativeToolTip": "DepiFinalProject\\Models\\Product.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABEAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-14T14:44:37.066Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Category.cs",
+              "DocumentMoniker": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\Category.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Models\\Category.cs",
+              "ToolTip": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\Category.cs",
+              "RelativeToolTip": "DepiFinalProject\\Models\\Category.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-14T14:44:18.382Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Address.cs",
+              "DocumentMoniker": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\Address.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Models\\Address.cs",
+              "ToolTip": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\Address.cs",
+              "RelativeToolTip": "DepiFinalProject\\Models\\Address.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABEAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-14T14:43:51.505Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\User.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Models\\User.cs",
+              "ToolTip": "C:\\Users\\albra\\source\\DEPI_Final_Project\\DepiFinalProject\\DepiFinalProject\\Models\\User.cs",
+              "RelativeToolTip": "DepiFinalProject\\Models\\User.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABQAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-14T14:41:54.654Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
