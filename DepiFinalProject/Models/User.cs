@@ -18,7 +18,7 @@ namespace DepiFinalProject.Models
         public string UserFirstName { get; set; }
         public string UserLastName { get; set; }
         public string UserPhone { get; set; }
-        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string UserRole { get; set; }  // مثل "Admin" أو "Customer"
 
         // Navigation Properties
@@ -26,5 +26,6 @@ namespace DepiFinalProject.Models
         public virtual ICollection<Cart> Carts { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
+        public virtual ICollection<Wishlist> Wishlists { get; set; }= new List<Wishlist>();
     }
 }

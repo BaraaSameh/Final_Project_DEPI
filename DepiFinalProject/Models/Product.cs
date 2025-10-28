@@ -15,12 +15,14 @@ namespace DepiFinalProject.Models
         public decimal Price { get; set; }
         public int Stock { get; set; }
         public string ImageURL { get; set; }
-        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation Properties
         public virtual Category Category { get; set; }
         public virtual ICollection<Cart> Carts { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
+        public virtual ICollection<Wishlist> Wishlists { get; set; } = new List<Wishlist>();
+        public virtual ICollection<FlashSaleProduct> FlashSaleProducts { get; set; } = new List<FlashSaleProduct>();
     }
 }

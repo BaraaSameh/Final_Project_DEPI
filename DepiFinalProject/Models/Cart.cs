@@ -14,7 +14,7 @@ namespace DepiFinalProject.Models
         [ForeignKey("Product")]
         public int ProductID { get; set; }
         public int Quantity { get; set; }
-        public DateTime? AddAt { get; set; } = DateTime.UtcNow;
+        public DateTime AddAt { get; set; } = DateTime.UtcNow;
 
         // Navigation Properties
         public virtual User User { get; set; }

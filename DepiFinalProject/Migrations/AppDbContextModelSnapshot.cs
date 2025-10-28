@@ -60,7 +60,7 @@ namespace DepiFinalProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartID"));
 
-                    b.Property<DateTime?>("AddAt")
+                    b.Property<DateTime>("AddAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("ProductID")
@@ -102,6 +102,80 @@ namespace DepiFinalProject.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("DepiFinalProject.Models.FlashSale", b =>
+                {
+                    b.Property<int>("FlashSaleID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FlashSaleID"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<int?>("MaxUsers")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("FlashSaleID");
+
+                    b.HasIndex("EndDate");
+
+                    b.HasIndex("IsActive");
+
+                    b.HasIndex("StartDate");
+
+                    b.ToTable("FlashSales");
+                });
+
+            modelBuilder.Entity("DepiFinalProject.Models.FlashSaleProduct", b =>
+                {
+                    b.Property<int>("FlashSaleProductID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FlashSaleProductID"));
+
+                    b.Property<decimal>("DiscountedPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("FlashSaleID")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("OriginalPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProductID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StockLimit")
+                        .HasColumnType("int");
+
+                    b.HasKey("FlashSaleProductID");
+
+                    b.HasIndex("ProductID");
+
+                    b.HasIndex("FlashSaleID", "ProductID")
+                        .IsUnique();
+
+                    b.ToTable("FlashSaleProducts");
+                });
+
             modelBuilder.Entity("DepiFinalProject.Models.Order", b =>
                 {
                     b.Property<int>("OrderID")
@@ -110,7 +184,7 @@ namespace DepiFinalProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderID"));
 
-                    b.Property<DateTime?>("OrderDate")
+                    b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OrderNo")
@@ -195,7 +269,7 @@ namespace DepiFinalProject.Migrations
                     b.Property<int>("OrderID")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("PaidAt")
+                    b.Property<DateTime>("PaidAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PaymentMethod")
@@ -224,7 +298,7 @@ namespace DepiFinalProject.Migrations
                     b.Property<int>("CategoryID")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -267,7 +341,7 @@ namespace DepiFinalProject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("RequestedAt")
+                    b.Property<DateTime>("RequestedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
@@ -293,7 +367,7 @@ namespace DepiFinalProject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("ProductID")
@@ -326,7 +400,7 @@ namespace DepiFinalProject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("EstimatedDelivery")
+                    b.Property<DateTime>("EstimatedDelivery")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ShippingStatus")
@@ -350,7 +424,7 @@ namespace DepiFinalProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserID"));
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserEmail")
@@ -382,6 +456,33 @@ namespace DepiFinalProject.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("DepiFinalProject.Models.Wishlist", b =>
+                {
+                    b.Property<int>("WishlistID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WishlistID"));
+
+                    b.Property<DateTime?>("AddedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProductID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("WishlistID");
+
+                    b.HasIndex("ProductID");
+
+                    b.HasIndex("UserID", "ProductID")
+                        .IsUnique();
+
+                    b.ToTable("Wishlists");
+                });
+
             modelBuilder.Entity("DepiFinalProject.Models.Address", b =>
                 {
                     b.HasOne("DepiFinalProject.Models.User", "User")
@@ -410,6 +511,25 @@ namespace DepiFinalProject.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DepiFinalProject.Models.FlashSaleProduct", b =>
+                {
+                    b.HasOne("DepiFinalProject.Models.FlashSale", "FlashSale")
+                        .WithMany("FlashSaleProducts")
+                        .HasForeignKey("FlashSaleID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DepiFinalProject.Models.Product", "Product")
+                        .WithMany("FlashSaleProducts")
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("FlashSale");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("DepiFinalProject.Models.Order", b =>
@@ -513,9 +633,33 @@ namespace DepiFinalProject.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("DepiFinalProject.Models.Wishlist", b =>
+                {
+                    b.HasOne("DepiFinalProject.Models.Product", "Product")
+                        .WithMany("Wishlists")
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DepiFinalProject.Models.User", "User")
+                        .WithMany("Wishlists")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DepiFinalProject.Models.Category", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("DepiFinalProject.Models.FlashSale", b =>
+                {
+                    b.Navigation("FlashSaleProducts");
                 });
 
             modelBuilder.Entity("DepiFinalProject.Models.Order", b =>
@@ -536,9 +680,13 @@ namespace DepiFinalProject.Migrations
                 {
                     b.Navigation("Carts");
 
+                    b.Navigation("FlashSaleProducts");
+
                     b.Navigation("OrderItems");
 
                     b.Navigation("Reviews");
+
+                    b.Navigation("Wishlists");
                 });
 
             modelBuilder.Entity("DepiFinalProject.Models.Shipping", b =>
@@ -555,6 +703,8 @@ namespace DepiFinalProject.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("Reviews");
+
+                    b.Navigation("Wishlists");
                 });
 #pragma warning restore 612, 618
         }

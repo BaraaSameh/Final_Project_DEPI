@@ -13,7 +13,7 @@ namespace DepiFinalProject.Models
         public string OrderNo { get; set; }  // رقم الطلب الفريد
         public decimal TotalAmount { get; set; }
         public string OrderStatus { get; set; }  // مثل "Pending", "Shipped"
-        public DateTime? OrderDate { get; set; } = DateTime.UtcNow;
+        public DateTime OrderDate { get; set; } = DateTime.UtcNow;
 
         // Navigation Properties
         public virtual User User { get; set; }

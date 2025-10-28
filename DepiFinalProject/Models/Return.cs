@@ -12,7 +12,7 @@ namespace DepiFinalProject.Models
         public int OrderItemID { get; set; }
         public string Reason { get; set; }
         public string Status { get; set; }  // مثل "Approved", "Rejected"
-        public DateTime? RequestedAt { get; set; } = DateTime.UtcNow;
+        public DateTime RequestedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation Property
         public virtual OrderItem OrderItem { get; set; }

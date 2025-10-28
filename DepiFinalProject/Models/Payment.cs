@@ -12,7 +12,7 @@ namespace DepiFinalProject.Models
         public int OrderID { get; set; }
         public string PaymentMethod { get; set; }  // مثل "CreditCard", "PayPal"
         public string PaymentStatus { get; set; }  // مثل "Paid", "Failed"
-        public DateTime? PaidAt { get; set; } = DateTime.UtcNow;
+        public DateTime PaidAt { get; set; } = DateTime.UtcNow;
 
         // Navigation Property
         public virtual Order Order { get; set; }
