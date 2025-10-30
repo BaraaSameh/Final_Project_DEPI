@@ -24,7 +24,8 @@ namespace DepiFinalProject.Data
         public DbSet<FlashSale> FlashSales { get; set; }
         public DbSet<FlashSaleProduct> FlashSaleProducts { get; set; }
 
-       
+        // add RefreshTokens DbSet "Seif"
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -95,6 +96,13 @@ namespace DepiFinalProject.Data
                       .IsUnique();
             });
 
+            // refresh token configuration flount api "Seif"
+            modelBuilder.Entity<RefreshToken>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Token).IsRequired().HasMaxLength(500);
+                entity.HasIndex(e => e.Token).IsUnique();
+            });
 
 
             // علاقات أخرى إذا احتجت تخصيص

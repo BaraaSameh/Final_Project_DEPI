@@ -1,0 +1,106 @@
+[
+  {
+    "ContainingType": "DepiFinalProject.Controllers.AuthenticationController",
+    "Method": "Login",
+    "RelativePath": "api/Authentication/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "DepiFinalProject.DTOs.AuthenticationDTO\u002BLoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "DepiFinalProject.DTOs.ApiResponse\u00601[[DepiFinalProject.DTOs.AuthenticationDTO\u002BAuthenticationResponse, DepiFinalProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "DepiFinalProject.Controllers.AuthenticationController",
+    "Method": "RefreshToken",
+    "RelativePath": "api/Authentication/refresh-token",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "DepiFinalProject.DTOs.AuthenticationDTO\u002BRefreshTokenRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "DepiFinalProject.DTOs.ApiResponse\u00601[[DepiFinalProject.DTOs.AuthenticationDTO\u002BAuthenticationResponse, DepiFinalProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "DepiFinalProject.Controllers.AuthenticationController",
+    "Method": "Register",
+    "RelativePath": "api/Authentication/register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "DepiFinalProject.DTOs.AuthenticationDTO\u002BRegisterRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "DepiFinalProject.DTOs.ApiResponse\u00601[[DepiFinalProject.DTOs.AuthenticationDTO\u002BAuthenticationResponse, DepiFinalProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "DepiFinalProject.Controllers.AuthenticationController",
+    "Method": "RevokeToken",
+    "RelativePath": "api/Authentication/revoke-token",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "DepiFinalProject.DTOs.AuthenticationDTO\u002BRefreshTokenRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "DepiFinalProject.DTOs.ApiResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  }
+]
