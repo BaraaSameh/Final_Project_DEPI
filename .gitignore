@@ -1,0 +1,90 @@
+# Ignore Visual Studio temporary files, build results, and user-specific files
+
+## Visual Studio cache/options directory
+.vs/
+
+## User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Build results
+bin/
+obj/
+out/
+[Bb]uild/
+[Ll]og/
+TestResults/
+*.log
+*.tlog
+
+## NuGet
+*.nupkg
+*.snupkg
+packages/
+*.nuspec
+*.psmdcp
+project.lock.json
+
+## Visual Studio Code
+.vscode/
+.history/
+
+## Rider / JetBrains IDEs
+.idea/
+
+## Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+## Other system files
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+## Backup & temporary files
+*.tmp
+*.bak
+*.swp
+*.cache
+*.orig
+
+## Publish directories
+publish/
+dist/
+artifacts/
+
+## ASP.NET specific
+wwwroot/lib/
+appsettings.Development.json
+
+## Compiled source #
+*.dll
+*.exe
+*.pdb
+*.mdb
+
+## Others you might not need
+*.dbmdl
+*.jfm
+*.opendb
+*.VC.db
+*.VC.VC.opendb
+
+## Resharper
+_ReSharper*/
+*.DotSettings.user
+
+## Test files
+*.coverage
+*.coveragexml
+TestResults/
+
+## Node modules (if front-end present)
+node_modules/
+
+## Python virtual env (if used in hybrid projects)
+venv/
+.env/
+
+# End of .gitignore
