@@ -23,7 +23,7 @@ namespace DepiFinalProject
                     builder.Configuration.GetConnectionString("DefaultConnection")
                 )
             );
-
+            
             builder.Services.AddControllers();
 
             // Register Repositories
@@ -34,6 +34,10 @@ namespace DepiFinalProject
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IPasswordService, PasswordService>();
+
+            //Product Service
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            builder.Services.AddScoped<IProductService, ProductService>();
 
             // Add Authentication
             builder.Services.AddAuthentication(options =>
