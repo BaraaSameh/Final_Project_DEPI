@@ -1,7 +1,9 @@
 ﻿using DepiFinalProject.DTOs;
 using DepiFinalProject.Interfaces;
 using DepiFinalProject.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static DepiFinalProject.DTOs.OrderDto;
 using static DepiFinalProject.DTOs.ProductDTO;
 
 namespace DepiFinalProject.Services
@@ -13,8 +15,12 @@ namespace DepiFinalProject.Services
         {
             _productRepository = productRepository;
         }
-        public async Task<ResponseDTO?> CreateAsync(CreateDTO dto)
+        public async Task<ProductResponseDTO?> CreateAsync([FromBody] CreateProductDTO dto)
         {
+            var categoryExists = await _productRepository.CategoryExistsAsync(dto.CategoryId);
+            if (!categoryExists)
+                throw new Exception($"Invalid Category ID: {dto.CategoryId}. The category does not exist.");
+
             var product = new Product
             {
                 CategoryID = dto.CategoryId,
@@ -34,30 +40,31 @@ namespace DepiFinalProject.Services
             return await _productRepository.DeleteAsync(productId);
         }
 
-        public async Task<IEnumerable<ResponseDTO>> GetAllAsync()
+        public async Task<IEnumerable<ProductResponseDTO>> GetAllAsync()
         {
             var products = await _productRepository.GetAllAsync();
             return products.Select(MapToResponseDto);
         }
 
-        public async Task<IEnumerable<ResponseDTO>> GetByCategoryAsync(int categoryId)
+        public async Task<IEnumerable<ProductResponseDTO>> GetByCategoryAsync(int categoryId)
         {
             var products = await _productRepository.GetByCategoryAsync(categoryId);
             return products.Select(MapToResponseDto);
         }
 
-        public async Task<DetailsDTO?> GetById(int productId)
-        {
-            var product = await _productRepository.GetByIdAsync(productId);
-            if (product == null) return null;
-            return MapToDetailDto(product);
-        }
-
-        public async Task<ResponseDTO?> UpdateAsync(int productId, UpdateDTO dto)
+        public async Task<ProductDetailsDTO?> GetById(int productId)
         {
             var product = await _productRepository.GetByIdAsync(productId);
             if (product == null)
-                return null;
+                throw new KeyNotFoundException($"Product with ID {productId} not found.");
+            return MapToDetailDto(product);
+        }
+
+        public async Task<ProductResponseDTO?> UpdateAsync(int productId, [FromBody] UpdateProductDTO dto)
+        {
+            var product = await _productRepository.GetByIdAsync(productId);
+            if (product == null)
+                throw new KeyNotFoundException($"Cannot update. Product with ID {productId} not found.");
             if (dto.CategoryId.HasValue && dto.CategoryId.Value > 0)
             {
                 product.CategoryID = dto.CategoryId.Value;
@@ -78,12 +85,14 @@ namespace DepiFinalProject.Services
                 product.ImageURL = dto.ImageUrl;
 
             var updatedProduct = await _productRepository.UpdateAsync(product);
-            return updatedProduct == null ? null : MapToResponseDto(updatedProduct);
+            if (updatedProduct == null)
+                throw new Exception("Product update failed. Please try again.");
+            return MapToResponseDto(updatedProduct);
 
         }
-        private ResponseDTO MapToResponseDto(Product product)
+        private ProductResponseDTO MapToResponseDto(Product product)
         {
-            return new ResponseDTO
+            return new ProductResponseDTO
             {
                 ProductID = product.ProductID,
                 CategoryID = product.CategoryID,
@@ -96,11 +105,11 @@ namespace DepiFinalProject.Services
                 CreatedAt = product.CreatedAt
             };
         }
-        private DetailsDTO MapToDetailDto(Product product)
+        private ProductDetailsDTO MapToDetailDto(Product product)
         {
             var reviews = product.Reviews?.ToList() ?? new List<Review>();
             var averageRating = reviews.Any() ? reviews.Average(r => r.Rating) : 0;
-            return new DetailsDTO
+            return new ProductDetailsDTO
             {
                 ProductID = product.ProductID,
                 CategoryID = product.CategoryID,
@@ -115,5 +124,6 @@ namespace DepiFinalProject.Services
                 TotalReviews = reviews.Count
             };
         }
+
     }
 }

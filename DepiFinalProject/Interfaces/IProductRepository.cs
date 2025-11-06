@@ -10,8 +10,6 @@ namespace DepiFinalProject.Interfaces
         Task<Product> CreateNewAsync(Product product);
         Task<Product?> UpdateAsync(Product product);
         Task<bool> DeleteAsync(int productId);
-
-
-
+        Task<bool> CategoryExistsAsync(int categoryId);
     }
 }

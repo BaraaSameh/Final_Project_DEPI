@@ -20,63 +20,108 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpGet] //api/products
-        public async Task<ActionResult<IEnumerable<ResponseDTO>>> GetAll()
+        public async Task<ActionResult<IEnumerable<ProductResponseDTO>>> GetAll()
         {
-            var products = await _productService.GetAllAsync();
-            return Ok(products);
+            try
+            {
+                var products = await _productService.GetAllAsync();
+                return Ok(products);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while fetching products.", details = ex.Message });
+            }
         }
 
         [HttpGet("{id:int}")] //api/products/{id}
-        public async Task<ActionResult<DetailsDTO>> GetById(int id)
+        public async Task<ActionResult<ProductDetailsDTO>> GetById(int id)
         {
-            var product = await _productService.GetById(id);
-            if (product == null)
-                return NotFound(new { message = "Product not found" });
-            return Ok(product);
+
+            try
+            {
+                var product = await _productService.GetById(id);
+                return Ok(product);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred.", details = ex.Message });
+            }
         }
 
         [HttpGet("category/{categoryId}")] //api/products/category/{categoryId}
-        public async Task<ActionResult<IEnumerable<ResponseDTO>>> GetByCategory(int categoryId)
+        public async Task<ActionResult<IEnumerable<ProductResponseDTO>>> GetByCategory(int categoryId)
         {
-            var products = await _productService.GetByCategoryAsync(categoryId);
-            return Ok(products);
+            try
+            {
+                var products = await _productService.GetByCategoryAsync(categoryId);
+                if (products == null || !products.Any())
+                    return NotFound(new { message = $"No products found for category ID {categoryId}." });
+                return Ok(products);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while fetching products by category.", details = ex.Message });
+            }
+
         }
 
         [HttpPost] //api/products
         //[Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ResponseDTO>> Create(CreateDTO dto)
+        public async Task<ActionResult<ProductResponseDTO>> Create(CreateProductDTO dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            var product = await _productService.CreateAsync(dto);
-            if (product == null)
-                return BadRequest(new { message = "Failed to create product" });
-            return CreatedAtAction(
-                nameof(GetById),
-                new { id = product.ProductID },
-                product);
+            try
+            {
+                var product = await _productService.CreateAsync(dto);
+                return CreatedAtAction(
+                    nameof(GetById),
+                    new { id = product.ProductID },
+                    product);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "Failed to create product.", details = ex.Message });
+            }
         }
 
         [HttpPut("{id:int}")] //api/products/{id}
         //[Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ResponseDTO>> UpdateProduct(int id, UpdateDTO dto)
+        public async Task<ActionResult<ProductResponseDTO>> UpdateProduct(int id, UpdateProductDTO dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            var product = await _productService.UpdateAsync(id, dto);
-            if (product == null)
-                return NotFound(new { message = "Product not found" });
-            return Ok(product);
+            try
+            {
+
+                var product = await _productService.UpdateAsync(id, dto);
+                return Ok(product);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "Failed to update product.", details = ex.Message });
+            }
         }
 
         [HttpDelete("{id:int}")] //api/products/{id}
         //[Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteProduct(int id)
         {
-            var result = await _productService.DeleteAsync(id);
-            if (!result)
-                return NotFound(new { message = "Product not found" });
-            return NoContent();
+            try
+            {
+                var result = await _productService.DeleteAsync(id);
+                if (!result)
+                    return NotFound(new { message = "Product not found" });
+                return Ok(new { message = "Product deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error deleting product.", details = ex.Message });
+            }
         }
 
     }

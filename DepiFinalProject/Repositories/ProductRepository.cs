@@ -54,5 +54,9 @@ namespace DepiFinalProject.Repositories
             await _context.SaveChangesAsync();
             return product;
         }
+        public async Task<bool> CategoryExistsAsync(int categoryId)
+        {
+            return await _context.Categories.AnyAsync(c => c.CategoryID == categoryId);
+        }
     }
 }

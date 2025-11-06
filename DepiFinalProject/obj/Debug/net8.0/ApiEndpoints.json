@@ -104,6 +104,208 @@
     ]
   },
   {
+    "ContainingType": "DepiFinalProject.Controllers.OrderController",
+    "Method": "GetAllOrders",
+    "RelativePath": "api/Order",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[DepiFinalProject.DTOs.OrderDto\u002BOrderResponseDTO, DepiFinalProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "DepiFinalProject.Controllers.OrderController",
+    "Method": "CreateOrder",
+    "RelativePath": "api/Order",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "DepiFinalProject.DTOs.OrderDto\u002BCreateOrderDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "DepiFinalProject.DTOs.OrderDto\u002BOrderResponseDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "DepiFinalProject.Controllers.OrderController",
+    "Method": "GetOrderById",
+    "RelativePath": "api/Order/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "DepiFinalProject.DTOs.OrderDto\u002BOrderDetailsDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "DepiFinalProject.Controllers.OrderController",
+    "Method": "UpdateOrderStatus",
+    "RelativePath": "api/Order/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "DepiFinalProject.DTOs.OrderDto\u002BUpdateOrderStatusDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "DepiFinalProject.DTOs.OrderDto\u002BOrderResponseDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "DepiFinalProject.Controllers.OrderController",
+    "Method": "CancelOrder",
+    "RelativePath": "api/Order/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "DepiFinalProject.Controllers.OrderController",
+    "Method": "GetUserOrders",
+    "RelativePath": "api/Order/user/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[DepiFinalProject.DTOs.OrderDto\u002BOrderResponseDTO, DepiFinalProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "DepiFinalProject.Controllers.OrderItemController",
+    "Method": "GetOrderItems",
+    "RelativePath": "api/OrderItem",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[DepiFinalProject.DTOs.OrderDto\u002BOrderItemResponseDTO, DepiFinalProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "DepiFinalProject.Controllers.OrderItemController",
+    "Method": "AddOrderItem",
+    "RelativePath": "api/OrderItem",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "dto",
+        "Type": "DepiFinalProject.DTOs.OrderDto\u002BAddOrderItemDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "DepiFinalProject.DTOs.OrderDto\u002BOrderItemResponseDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "DepiFinalProject.Controllers.ProductController",
     "Method": "GetAll",
     "RelativePath": "api/Product",
@@ -113,7 +315,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[DepiFinalProject.DTOs.ProductDTO\u002BResponseDTO, DepiFinalProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[DepiFinalProject.DTOs.ProductDTO\u002BProductResponseDTO, DepiFinalProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -133,13 +335,13 @@
     "Parameters": [
       {
         "Name": "dto",
-        "Type": "DepiFinalProject.DTOs.ProductDTO\u002BCreateDTO",
+        "Type": "DepiFinalProject.DTOs.ProductDTO\u002BCreateProductDTO",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "DepiFinalProject.DTOs.ProductDTO\u002BResponseDTO",
+        "Type": "DepiFinalProject.DTOs.ProductDTO\u002BProductResponseDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -165,7 +367,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "DepiFinalProject.DTOs.ProductDTO\u002BDetailsDTO",
+        "Type": "DepiFinalProject.DTOs.ProductDTO\u002BProductDetailsDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -190,13 +392,13 @@
       },
       {
         "Name": "dto",
-        "Type": "DepiFinalProject.DTOs.ProductDTO\u002BUpdateDTO",
+        "Type": "DepiFinalProject.DTOs.ProductDTO\u002BUpdateProductDTO",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "DepiFinalProject.DTOs.ProductDTO\u002BResponseDTO",
+        "Type": "DepiFinalProject.DTOs.ProductDTO\u002BProductResponseDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -238,7 +440,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[DepiFinalProject.DTOs.ProductDTO\u002BResponseDTO, DepiFinalProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[DepiFinalProject.DTOs.ProductDTO\u002BProductResponseDTO, DepiFinalProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",

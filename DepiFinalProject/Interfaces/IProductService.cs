@@ -4,11 +4,11 @@ namespace DepiFinalProject.Interfaces
 {
     public interface IProductService
     {
-        Task<IEnumerable<ResponseDTO>> GetAllAsync();
-        Task<DetailsDTO?> GetById(int productId);
-        Task<IEnumerable<ResponseDTO>> GetByCategoryAsync(int categoryId);
-        Task<ResponseDTO?> CreateAsync(CreateDTO dto);
-        Task<ResponseDTO?> UpdateAsync(int productId, UpdateDTO dto);
+        Task<IEnumerable<ProductResponseDTO>> GetAllAsync();
+        Task<ProductDetailsDTO?> GetById(int productId);
+        Task<IEnumerable<ProductResponseDTO>> GetByCategoryAsync(int categoryId);
+        Task<ProductResponseDTO?> CreateAsync(CreateProductDTO dto);
+        Task<ProductResponseDTO?> UpdateAsync(int productId, UpdateProductDTO dto);
         Task<bool> DeleteAsync(int productId);
 
 

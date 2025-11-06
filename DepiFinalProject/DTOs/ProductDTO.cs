@@ -4,7 +4,7 @@ namespace DepiFinalProject.DTOs
 {
     public class ProductDTO
     {
-        public class CreateDTO
+        public class CreateProductDTO
         {
             [Required]
             public int CategoryId { get; set; }
@@ -25,7 +25,7 @@ namespace DepiFinalProject.DTOs
             public string? ImageUrl { get; set; }
         }
 
-        public class UpdateDTO
+        public class UpdateProductDTO
         {
             public int? CategoryId { get; set; }
             [MaxLength(200)]
@@ -40,7 +40,7 @@ namespace DepiFinalProject.DTOs
             public int? Stock { get; set; }
             public string? ImageUrl { get; set; }
         }
-        public class ResponseDTO //create , update ,Get
+        public class ProductResponseDTO //create , update ,Get
         {
             public int ProductID { get; set; }
             public int CategoryID { get; set; }
@@ -53,7 +53,7 @@ namespace DepiFinalProject.DTOs
             public DateTime CreatedAt { get; set; }
             public bool IsInStock => Stock > 0;
         }
-        public class DetailsDTO : ResponseDTO
+        public class ProductDetailsDTO : ProductResponseDTO
         {
             public double AverageRating { get; set; }
             public int TotalReviews { get; set; }

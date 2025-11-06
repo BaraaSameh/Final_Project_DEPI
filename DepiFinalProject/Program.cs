@@ -23,7 +23,7 @@ namespace DepiFinalProject
                     builder.Configuration.GetConnectionString("DefaultConnection")
                 )
             );
-            
+
             builder.Services.AddControllers();
 
             // Register Repositories
@@ -38,6 +38,10 @@ namespace DepiFinalProject
             //Product Service
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IProductService, ProductService>();
+
+            //Order Service
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
 
             // Add Authentication
             builder.Services.AddAuthentication(options =>
