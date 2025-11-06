@@ -30,9 +30,17 @@ namespace DepiFinalProject
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
-            //CategoryService, Repository
+            //Category Repository
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+            //Category Service
             builder.Services.AddScoped<ICategoryService, CategoryService>();
+
+            // Register Repository
+            builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+
+            // Register Service
+            builder.Services.AddScoped<IAddressService, AddressService>();
 
             // Register Services
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
