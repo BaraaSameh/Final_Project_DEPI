@@ -1,0 +1,14 @@
+﻿using DepiFinalProject.DTOs;
+using System.Threading.Tasks;
+
+namespace DepiFinalProject.Interfaces
+{
+    public interface ICategoryService
+    {
+        Task<IEnumerable<CategoryDTO>> GetAllCategoriesAsync();
+        Task<CategoryDTO?> GetCategoryByIdAsync(int id);
+        Task<CategoryDTO> CreateCategoryAsync(CategoryInputDTO inputDto);
+        Task<bool> UpdateCategoryAsync(int id, CategoryInputDTO inputDto);
+        Task<bool> DeleteCategoryAsync(int id);
+    }
+}

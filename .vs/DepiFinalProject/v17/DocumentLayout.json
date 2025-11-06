@@ -1,73 +1,108 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "F:\\DEPI\\technical\\Project\\E-commerce\\",
+  "WorkspaceRootPath": "D:\\DEPI\\Final_Project_DEPI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|f:\\depi\\technical\\project\\e-commerce\\depifinalproject\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\models\\wishlist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\models\\wishlist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|f:\\depi\\technical\\project\\e-commerce\\depifinalproject\\services\\authenticationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\services\\authenticationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|f:\\depi\\technical\\project\\e-commerce\\depifinalproject\\controllers\\authenticationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\controllers\\authenticationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\controllers\\authenticationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|f:\\depi\\technical\\project\\e-commerce\\depifinalproject\\services\\tokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\controllers\\categoriescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\controllers\\categoriescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\interfaces\\icategoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\interfaces\\icategoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\interfaces\\icategoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\interfaces\\icategoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\repositories\\categoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\repositories\\categoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\services\\categoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\services\\categoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Migrations\\20251104092458_add-icon-url.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:DepiFinalProject\\Migrations\\20251104092458_add-icon-url.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\models\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\models\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\DELL-MCC\\source\\repos\\Final_Project_DEPI\\DepiFinalProject\\Models\\Category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\services\\authenticationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\services\\authenticationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\services\\tokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\services\\tokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|f:\\depi\\technical\\project\\e-commerce\\depifinalproject\\services\\passwordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\services\\passwordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\services\\passwordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|f:\\depi\\technical\\project\\e-commerce\\depifinalproject\\repositories\\refreshtokenrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\repositories\\refreshtokenrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\repositories\\refreshtokenrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|f:\\depi\\technical\\project\\e-commerce\\depifinalproject\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|f:\\depi\\technical\\project\\e-commerce\\depifinalproject\\interfaces\\iauthenticationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\interfaces\\iauthenticationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\interfaces\\iauthenticationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|f:\\depi\\technical\\project\\e-commerce\\depifinalproject\\interfaces\\itokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\interfaces\\itokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\interfaces\\itokenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|f:\\depi\\technical\\project\\e-commerce\\depifinalproject\\interfaces\\ipasswordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\interfaces\\ipasswordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\interfaces\\ipasswordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|f:\\depi\\technical\\project\\e-commerce\\depifinalproject\\interfaces\\irefreshtokenrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\interfaces\\irefreshtokenrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\interfaces\\irefreshtokenrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|f:\\depi\\technical\\project\\e-commerce\\depifinalproject\\interfaces\\iuserrepository .cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\interfaces\\iuserrepository .cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\interfaces\\iuserrepository .cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|f:\\depi\\technical\\project\\e-commerce\\depifinalproject\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|f:\\depi\\technical\\project\\e-commerce\\depifinalproject\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|f:\\depi\\technical\\project\\e-commerce\\depifinalproject\\dtos\\authenticationdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\dtos\\authenticationdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\dtos\\authenticationdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|f:\\depi\\technical\\project\\e-commerce\\depifinalproject\\models\\refreshtoken.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\models\\refreshtoken.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\models\\refreshtoken.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|f:\\depi\\technical\\project\\e-commerce\\depifinalproject\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|d:\\depi\\final_project_depi\\depifinalproject\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C7DBD613-4C10-4FE1-91CA-B3ED0393B472}|DepiFinalProject\\DepiFinalProject.csproj|solutionrelative:depifinalproject\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -78,15 +113,15 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 16,
+          "SelectedChildIndex": 17,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 25,
               "Title": "User.cs",
-              "DocumentMoniker": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Models\\User.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Models\\User.cs",
               "RelativeDocumentMoniker": "DepiFinalProject\\Models\\User.cs",
-              "ToolTip": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Models\\User.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Models\\User.cs",
               "RelativeToolTip": "DepiFinalProject\\Models\\User.cs",
               "ViewState": "AgIAAA8AAABQzczMzCw6wBUAAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -95,11 +130,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 24,
               "Title": "RefreshToken.cs",
-              "DocumentMoniker": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Models\\RefreshToken.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Models\\RefreshToken.cs",
               "RelativeDocumentMoniker": "DepiFinalProject\\Models\\RefreshToken.cs",
-              "ToolTip": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Models\\RefreshToken.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Models\\RefreshToken.cs",
               "RelativeToolTip": "DepiFinalProject\\Models\\RefreshToken.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -108,11 +143,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 23,
               "Title": "AuthenticationDTO.cs",
-              "DocumentMoniker": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\DTOs\\AuthenticationDTO.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\DTOs\\AuthenticationDTO.cs",
               "RelativeDocumentMoniker": "DepiFinalProject\\DTOs\\AuthenticationDTO.cs",
-              "ToolTip": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\DTOs\\AuthenticationDTO.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\DTOs\\AuthenticationDTO.cs",
               "RelativeToolTip": "DepiFinalProject\\DTOs\\AuthenticationDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAADMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -121,11 +156,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 22,
               "Title": "appsettings.json",
-              "DocumentMoniker": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\appsettings.json",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\appsettings.json",
               "RelativeDocumentMoniker": "DepiFinalProject\\appsettings.json",
-              "ToolTip": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\appsettings.json",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\appsettings.json",
               "RelativeToolTip": "DepiFinalProject\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
@@ -134,11 +169,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 21,
               "Title": "AppDbContext.cs",
-              "DocumentMoniker": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Data\\AppDbContext.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Data\\AppDbContext.cs",
               "RelativeDocumentMoniker": "DepiFinalProject\\Data\\AppDbContext.cs",
-              "ToolTip": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Data\\AppDbContext.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Data\\AppDbContext.cs",
               "RelativeToolTip": "DepiFinalProject\\Data\\AppDbContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAFYAAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -147,11 +182,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 20,
               "Title": "IUserRepository .cs",
-              "DocumentMoniker": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Interfaces\\IUserRepository .cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Interfaces\\IUserRepository .cs",
               "RelativeDocumentMoniker": "DepiFinalProject\\Interfaces\\IUserRepository .cs",
-              "ToolTip": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Interfaces\\IUserRepository .cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Interfaces\\IUserRepository .cs",
               "RelativeToolTip": "DepiFinalProject\\Interfaces\\IUserRepository .cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -160,11 +195,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 19,
               "Title": "IRefreshTokenRepository.cs",
-              "DocumentMoniker": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Interfaces\\IRefreshTokenRepository.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Interfaces\\IRefreshTokenRepository.cs",
               "RelativeDocumentMoniker": "DepiFinalProject\\Interfaces\\IRefreshTokenRepository.cs",
-              "ToolTip": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Interfaces\\IRefreshTokenRepository.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Interfaces\\IRefreshTokenRepository.cs",
               "RelativeToolTip": "DepiFinalProject\\Interfaces\\IRefreshTokenRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -173,11 +208,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 18,
               "Title": "IPasswordService.cs",
-              "DocumentMoniker": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Interfaces\\IPasswordService.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Interfaces\\IPasswordService.cs",
               "RelativeDocumentMoniker": "DepiFinalProject\\Interfaces\\IPasswordService.cs",
-              "ToolTip": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Interfaces\\IPasswordService.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Interfaces\\IPasswordService.cs",
               "RelativeToolTip": "DepiFinalProject\\Interfaces\\IPasswordService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -186,11 +221,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 17,
               "Title": "ITokenService.cs",
-              "DocumentMoniker": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Interfaces\\ITokenService.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Interfaces\\ITokenService.cs",
               "RelativeDocumentMoniker": "DepiFinalProject\\Interfaces\\ITokenService.cs",
-              "ToolTip": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Interfaces\\ITokenService.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Interfaces\\ITokenService.cs",
               "RelativeToolTip": "DepiFinalProject\\Interfaces\\ITokenService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -199,11 +234,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 16,
               "Title": "IAuthenticationService.cs",
-              "DocumentMoniker": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Interfaces\\IAuthenticationService.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Interfaces\\IAuthenticationService.cs",
               "RelativeDocumentMoniker": "DepiFinalProject\\Interfaces\\IAuthenticationService.cs",
-              "ToolTip": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Interfaces\\IAuthenticationService.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Interfaces\\IAuthenticationService.cs",
               "RelativeToolTip": "DepiFinalProject\\Interfaces\\IAuthenticationService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAqwAkAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -212,11 +247,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 15,
               "Title": "UserRepository.cs",
-              "DocumentMoniker": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Repositories\\UserRepository.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Repositories\\UserRepository.cs",
               "RelativeDocumentMoniker": "DepiFinalProject\\Repositories\\UserRepository.cs",
-              "ToolTip": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Repositories\\UserRepository.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Repositories\\UserRepository.cs",
               "RelativeToolTip": "DepiFinalProject\\Repositories\\UserRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -225,11 +260,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 14,
               "Title": "RefreshTokenRepository.cs",
-              "DocumentMoniker": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Repositories\\RefreshTokenRepository.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Repositories\\RefreshTokenRepository.cs",
               "RelativeDocumentMoniker": "DepiFinalProject\\Repositories\\RefreshTokenRepository.cs",
-              "ToolTip": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Repositories\\RefreshTokenRepository.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Repositories\\RefreshTokenRepository.cs",
               "RelativeToolTip": "DepiFinalProject\\Repositories\\RefreshTokenRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -238,11 +273,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 13,
               "Title": "PasswordService.cs",
-              "DocumentMoniker": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Services\\PasswordService.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Services\\PasswordService.cs",
               "RelativeDocumentMoniker": "DepiFinalProject\\Services\\PasswordService.cs",
-              "ToolTip": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Services\\PasswordService.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Services\\PasswordService.cs",
               "RelativeToolTip": "DepiFinalProject\\Services\\PasswordService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -251,11 +286,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 12,
               "Title": "TokenService.cs",
-              "DocumentMoniker": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Services\\TokenService.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Services\\TokenService.cs",
               "RelativeDocumentMoniker": "DepiFinalProject\\Services\\TokenService.cs",
-              "ToolTip": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Services\\TokenService.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Services\\TokenService.cs",
               "RelativeToolTip": "DepiFinalProject\\Services\\TokenService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -264,25 +299,24 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 11,
               "Title": "AuthenticationService.cs",
-              "DocumentMoniker": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Services\\AuthenticationService.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Services\\AuthenticationService.cs",
               "RelativeDocumentMoniker": "DepiFinalProject\\Services\\AuthenticationService.cs",
-              "ToolTip": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Services\\AuthenticationService.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Services\\AuthenticationService.cs",
               "RelativeToolTip": "DepiFinalProject\\Services\\AuthenticationService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-28T22:47:04.973Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "AuthenticationController.cs",
-              "DocumentMoniker": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Controllers\\AuthenticationController.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Controllers\\AuthenticationController.cs",
               "RelativeDocumentMoniker": "DepiFinalProject\\Controllers\\AuthenticationController.cs",
-              "ToolTip": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Controllers\\AuthenticationController.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Controllers\\AuthenticationController.cs",
               "RelativeToolTip": "DepiFinalProject\\Controllers\\AuthenticationController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -292,25 +326,136 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 8,
               "Title": "Program.cs",
-              "DocumentMoniker": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Program.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Program.cs",
               "RelativeDocumentMoniker": "DepiFinalProject\\Program.cs",
-              "ToolTip": "F:\\DEPI\\technical\\Project\\E-commerce\\DepiFinalProject\\Program.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Program.cs",
               "RelativeToolTip": "DepiFinalProject\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAFsAAAAAAAAAAAD4v2QAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-28T22:52:42.324Z",
               "IsPinned": true,
               "EditorCaption": ""
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Wishlist.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Models\\Wishlist.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Models\\Wishlist.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Models\\Wishlist.cs",
+              "RelativeToolTip": "DepiFinalProject\\Models\\Wishlist.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAQwBIAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-04T10:12:21.755Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CategoriesController.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Controllers\\CategoriesController.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Controllers\\CategoriesController.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Controllers\\CategoriesController.cs",
+              "RelativeToolTip": "DepiFinalProject\\Controllers\\CategoriesController.cs",
+              "ViewState": "AgIAAEUAAAAAAAAAAAAowFEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-04T09:33:12.558Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{fbcae063-e2c0-4ab1-a516-996ea3dafb72}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ICategoryRepository.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Interfaces\\ICategoryRepository.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Interfaces\\ICategoryRepository.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Interfaces\\ICategoryRepository.cs",
+              "RelativeToolTip": "DepiFinalProject\\Interfaces\\ICategoryRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-04T09:31:56.911Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ICategoryService.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Interfaces\\ICategoryService.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Interfaces\\ICategoryService.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Interfaces\\ICategoryService.cs",
+              "RelativeToolTip": "DepiFinalProject\\Interfaces\\ICategoryService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-04T09:31:50.937Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CategoryRepository.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Repositories\\CategoryRepository.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Repositories\\CategoryRepository.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Repositories\\CategoryRepository.cs",
+              "RelativeToolTip": "DepiFinalProject\\Repositories\\CategoryRepository.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAYwB8AAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-04T09:27:10.875Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "CategoryService.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Services\\CategoryService.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Services\\CategoryService.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Services\\CategoryService.cs",
+              "RelativeToolTip": "DepiFinalProject\\Services\\CategoryService.cs",
+              "ViewState": "AgIAAFQAAAAAAAAAAAAowGcAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-04T09:26:57.79Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "20251104092458_add-icon-url.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Migrations\\20251104092458_add-icon-url.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Migrations\\20251104092458_add-icon-url.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Migrations\\20251104092458_add-icon-url.cs",
+              "RelativeToolTip": "DepiFinalProject\\Migrations\\20251104092458_add-icon-url.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-04T09:24:58.369Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Category.cs",
+              "DocumentMoniker": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Models\\Category.cs",
+              "RelativeDocumentMoniker": "DepiFinalProject\\Models\\Category.cs",
+              "ToolTip": "D:\\DEPI\\Final_Project_DEPI\\DepiFinalProject\\Models\\Category.cs",
+              "RelativeToolTip": "DepiFinalProject\\Models\\Category.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAoAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-04T09:19:07.949Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Category.cs",
+              "DocumentMoniker": "C:\\Users\\DELL-MCC\\source\\repos\\Final_Project_DEPI\\DepiFinalProject\\Models\\Category.cs",
+              "ToolTip": "C:\\Users\\DELL-MCC\\source\\repos\\Final_Project_DEPI\\DepiFinalProject\\Models\\Category.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-04T09:18:36.409Z",
+              "EditorCaption": ""
             }
           ]
         }
