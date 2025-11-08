@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using WishlistService = DepiFinalProject.Repositories.WishlistService;
 
 namespace DepiFinalProject
 {
@@ -55,6 +56,12 @@ namespace DepiFinalProject
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IOrderService, OrderService>();
 
+            builder.Services.AddSingleton<ICartRepository, CartRepository>();
+            builder.Services.AddSingleton<IWishlistService, WishlistService>();
+            builder.Services.AddSingleton<CartService>();
+            builder.Services.AddSingleton<WishlistService>();
+
+
             // Add Authentication
             builder.Services.AddAuthentication(options =>
             {
@@ -98,11 +105,11 @@ namespace DepiFinalProject
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
+          //  if (app.Environment.IsDevelopment())
+            //{
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            }
+            //}
 
             app.UseCors("AllowAll");
 
