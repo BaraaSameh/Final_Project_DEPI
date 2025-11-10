@@ -1,4 +1,5 @@
 ﻿using DepiFinalProject.DTOs;
+using DepiFinalProject.Models;
 using static DepiFinalProject.DTOs.OrderDto;
 
 namespace DepiFinalProject.Interfaces
@@ -14,5 +15,6 @@ namespace DepiFinalProject.Interfaces
         // New methods for OrderItems
         Task<IEnumerable<OrderItemResponseDTO>> GetOrderItemsAsync(int orderId);
         Task<OrderItemResponseDTO?> AddOrderItemAsync(int orderId, AddOrderItemDTO dto);
+        Task<Order> GetByIdAsync(int orderId);
     }
 }

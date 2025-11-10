@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static DepiFinalProject.DTOs.OrderDto;
 
 namespace DepiFinalProject.Models
 {
@@ -9,12 +10,30 @@ namespace DepiFinalProject.Models
         public int PaymentID { get; set; }
 
         [ForeignKey("Order")]
-        public int OrderID { get; set; }
-        public string PaymentMethod { get; set; }  // مثل "CreditCard", "PayPal"
-        public string PaymentStatus { get; set; }  // مثل "Paid", "Failed"
+        public int? OrderID { get; set; }
+
+        [ForeignKey("User")]
+        public int UserId { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string PayPalOrderId { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string PaymentMethod { get; set; } = "PayPal";
+
+        [Required]
+        [StringLength(50)]
+        public string Status { get; set; } = "Pending";  // Pending, Paid, Failed...
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Amount { get; set; }
+
         public DateTime PaidAt { get; set; } = DateTime.UtcNow;
 
-        // Navigation Property
-        public virtual Order Order { get; set; }
+        // Navigation Properties
+        public virtual Order? Order { get; set; }
+        public virtual User? User { get; set; }
     }
 }

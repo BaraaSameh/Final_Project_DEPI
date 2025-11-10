@@ -1,4 +1,5 @@
 
+using System.Text;
 using DepiFinalProject.Data;
 using DepiFinalProject.Interfaces;
 using DepiFinalProject.Repositories;
@@ -6,7 +7,7 @@ using DepiFinalProject.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using PayPalAdvancedIntegration.Services;
 using WishlistService = DepiFinalProject.Repositories.WishlistService;
 
 namespace DepiFinalProject
@@ -60,7 +61,40 @@ namespace DepiFinalProject
             builder.Services.AddSingleton<IWishlistService, WishlistService>();
             builder.Services.AddSingleton<CartService>();
             builder.Services.AddSingleton<WishlistService>();
+            // PayPal Service
+            builder.Services.AddScoped<IPaymentService, PayPalService>();
+            builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1.1", new() { Title = "DepiFinalProject API", Version = "v1.1" });
 
+                // Enable JWT auth in Swagger
+                options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                    Description = "Enter your JWT token. Example: **eyJhbGciOi...**"
+                });
+
+                options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+            });
 
             // Add Authentication
             builder.Services.AddAuthentication(options =>

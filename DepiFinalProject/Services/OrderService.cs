@@ -179,6 +179,7 @@ namespace DepiFinalProject.Services
             return MapToOrderItemResponseDto(createdOrderItem);
         }
 
+       
 
 
         private OrderResponseDTO MapToResponseDto(Order order)
@@ -234,6 +235,10 @@ namespace DepiFinalProject.Services
                 Price = orderItem.Price,
                 TotalPrice = orderItem.Quantity * orderItem.Price
             };
+        }
+        public Task<Order> GetByIdAsync(int orderId)
+        {
+            return _orderRepository.GetByIdAsync(orderId);
         }
     }
 }
