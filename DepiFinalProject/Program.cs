@@ -67,7 +67,7 @@ namespace DepiFinalProject
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1.1", new() { Title = "DepiFinalProject API", Version = "v1.1" });
+                options.SwaggerDoc("v1", new() { Title = "DepiFinalProject API", Version = "v1.1" });
 
                 // Enable JWT auth in Swagger
                 options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
