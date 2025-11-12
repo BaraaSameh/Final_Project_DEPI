@@ -1,6 +1,7 @@
 
 using System.Text;
 using DepiFinalProject.Data;
+using DepiFinalProject.Infrastructure.Repositories;
 using DepiFinalProject.Interfaces;
 using DepiFinalProject.Repositories;
 using DepiFinalProject.Services;
@@ -65,6 +66,10 @@ namespace DepiFinalProject
             builder.Services.AddScoped<IPaymentService, PayPalService>();
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
             builder.Services.AddHttpContextAccessor();
+            // Review Service
+            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+            builder.Services.AddScoped<IReviewService, ReviewService>();
+            // Add Swagger with JWT support
             builder.Services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new() { Title = "DepiFinalProject API", Version = "v1.1" });

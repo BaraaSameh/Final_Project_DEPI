@@ -124,5 +124,11 @@ namespace DepiFinalProject.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<bool> HasuserorderedproductAsync(int userId, int productId)
+        {
+            return await _context.OrderItems
+                .Include(oi => oi.Order)
+                .AnyAsync(oi => oi.Order.UserID == userId && oi.ProductID == productId);
+        }
     }
 }
