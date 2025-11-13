@@ -25,6 +25,7 @@ namespace DepiFinalProject
                 options => options.UseSqlServer(
                     builder.Configuration.GetConnectionString("DefaultConnection")
                 )
+
             );
 
             builder.Services.AddControllers();
@@ -69,6 +70,10 @@ namespace DepiFinalProject
             // Review Service
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<IReviewService, ReviewService>();
+            // Return Service
+            builder.Services.AddScoped<IReturnRepository, ReturnRepository>();
+            builder.Services.AddScoped<IReturnService, ReturnService>();
+
             // Add Swagger with JWT support
             builder.Services.AddSwaggerGen(options =>
             {
