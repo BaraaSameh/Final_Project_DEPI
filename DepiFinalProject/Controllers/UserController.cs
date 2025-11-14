@@ -9,6 +9,7 @@ namespace DepiFinalProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -19,7 +20,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<ICollection<User>>> GetAllUsers()
         {
             try
@@ -34,7 +35,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpGet("{id}")]
-        //[Authorize]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<UserResponseDTO>> GetUserById(int id)
         {
             try
@@ -53,7 +54,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpGet("email/{email}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<User>> GetUserByEmail(string email)
         {
             try
@@ -72,7 +73,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpPost]
-        //[AllowAnonymous]
+        [AllowAnonymous]
         public async Task<ActionResult<User>> CreateUser([FromBody] User user)
         {
             try
@@ -97,7 +98,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpPut("{id}")]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult<User>> UpdateUser(int id, [FromBody] User user)
         {
             try
@@ -126,7 +127,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult> DeleteUser(int id)
         {
             try
@@ -145,7 +146,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpPost("change-password")]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordRequestDTO request)
         {
             try
@@ -173,7 +174,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpGet("check-email/{email}")]
-        //[AllowAnonymous]
+        [AllowAnonymous]
         public async Task<ActionResult<bool>> CheckEmailExists(string email)
         {
             try

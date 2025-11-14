@@ -1,5 +1,6 @@
 ﻿using DepiFinalProject.Interfaces;
 using DepiFinalProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using static DepiFinalProject.DTOs.AddressDTO;
@@ -8,6 +9,7 @@ namespace DepiFinalProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AddressesController : ControllerBase
     {
         private readonly IAddressService _addressService;
@@ -19,6 +21,7 @@ namespace DepiFinalProject.Controllers
 
         // GET: api/addresses/{userId}
         [HttpGet("{userId}")]
+        [Authorize(Roles = "admin,client,seller")]
         public async Task<ActionResult<IEnumerable<AddressDto>>> GetUserAddresses(int userId)
         {
             try
@@ -58,6 +61,8 @@ namespace DepiFinalProject.Controllers
 
         // POST: api/addresses
         [HttpPost]
+        [Authorize(Roles = "admin,client")]
+
         public async Task<ActionResult<AddressDto>> AddAddress([FromBody] AddressCreateUpdateDto addressDto)
         {
             try
@@ -107,6 +112,8 @@ namespace DepiFinalProject.Controllers
 
         // PUT: api/addresses/{id}
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin,client")]
+
         public async Task<ActionResult<AddressDto>> UpdateAddress(int id, [FromBody] AddressCreateUpdateDto addressDto)
         {
             try
@@ -154,6 +161,8 @@ namespace DepiFinalProject.Controllers
 
         // DELETE: api/addresses/{id}
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin,client")]
+
         public async Task<ActionResult> DeleteAddress(int id)
         {
             try

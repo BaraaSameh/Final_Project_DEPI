@@ -1,4 +1,5 @@
 ﻿using DepiFinalProject.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using static DepiFinalProject.DTOs.OrderDto;
@@ -7,6 +8,7 @@ namespace DepiFinalProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class OrderItemController : ControllerBase
     {
         private readonly IOrderService _orderService;
@@ -15,6 +17,8 @@ namespace DepiFinalProject.Controllers
         {
             _orderService = orderService;
         }
+        [Authorize(Roles = "admin,client,seller")]
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderItemResponseDTO>>> GetOrderItems(int orderId)
         {
@@ -38,6 +42,8 @@ namespace DepiFinalProject.Controllers
         }
 
         // POST: api/orders/{orderId}/items
+        [Authorize(Roles = "admin,client")]
+
         [HttpPost]
         public async Task<ActionResult<OrderItemResponseDTO>> AddOrderItem(int orderId, [FromBody] AddOrderItemDTO dto)
         {

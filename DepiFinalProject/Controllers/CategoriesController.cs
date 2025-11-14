@@ -2,6 +2,7 @@
 using DepiFinalProject.DTOs;
 using DepiFinalProject.Interfaces;
 using DepiFinalProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ namespace DepiFinalProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
@@ -21,6 +23,8 @@ namespace DepiFinalProject.Controllers
 
         // GET: api/categories
         [HttpGet]
+        [Authorize(Roles = "admin,client,seller")]
+
         public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategories()
         {
             var categories = await _categoryService.GetAllCategoriesAsync();
@@ -29,6 +33,8 @@ namespace DepiFinalProject.Controllers
 
         // GET: api/categories/id
         [HttpGet("{id}")]
+        [Authorize(Roles = "admin,client,seller")]
+
         public async Task<ActionResult<CategoryDTO>> GetCategory(int id)
         {
             var category = await _categoryService.GetCategoryByIdAsync(id);
@@ -43,6 +49,8 @@ namespace DepiFinalProject.Controllers
 
         // POST: api/categories
         [HttpPost]
+        [Authorize(Roles = "admin,seller")]
+
         public async Task<ActionResult<CategoryDTO>> CreateCategory(CategoryInputDTO inputDto)
         {
             if (!ModelState.IsValid)
@@ -57,6 +65,8 @@ namespace DepiFinalProject.Controllers
 
         // PUT: api/categories/id
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin,seller")]
+
         public async Task<IActionResult> UpdateCategory(int id, CategoryInputDTO inputDto)
         {
             if (!ModelState.IsValid)
@@ -76,6 +86,8 @@ namespace DepiFinalProject.Controllers
 
         // DELETE: api/categories/id
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin,seller")]
+
         public async Task<IActionResult> DeleteCategory(int id)
         {
             var result = await _categoryService.DeleteCategoryAsync(id);

@@ -8,6 +8,7 @@ namespace DepiFinalProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class WishlistController : ControllerBase
     {
         private readonly WishlistService _service;
@@ -18,9 +19,12 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin,client,seller")]
+
         public ActionResult<List<WishlistItemDto>> GetWishlist() => Ok(_service.GetAll());
 
         [HttpPost]
+        [Authorize(Roles = "admin,client,seller")]
         public IActionResult AddToWishlist(WishlistItemDto item)
         {
             _service.Add(item);
@@ -28,6 +32,8 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpDelete("{productId}")]
+        [Authorize(Roles = "admin,client,seller")]
+
         public IActionResult RemoveFromWishlist(int productId)
         {
             _service.Remove(productId);

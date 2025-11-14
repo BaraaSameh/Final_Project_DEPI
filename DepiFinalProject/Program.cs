@@ -1,4 +1,4 @@
-
+using System.Security.Claims;
 using System.Text;
 using DepiFinalProject.Data;
 using DepiFinalProject.Infrastructure.Repositories;
@@ -72,35 +72,49 @@ namespace DepiFinalProject
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<IReviewService, ReviewService>();
             // Add Swagger with JWT support
-            builder.Services.AddSwaggerGen(options =>
-            {
-                options.SwaggerDoc("v1", new() { Title = "DepiFinalProject API", Version = "v1.1" });
 
-                // Enable JWT auth in Swagger
-                options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-                {
-                    Name = "Authorization",
-                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
-                    Scheme = "bearer",
-                    BearerFormat = "JWT",
-                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-                    Description = "Enter your JWT token. Example: **eyJhbGciOi...**"
-                });
-
-                options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
-    {
-        {
-            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            // Define the securityScheme before using it in AddSecurityDefinition and AddSecurityRequirement
+            var securityScheme = new Microsoft.OpenApi.Models.OpenApiSecurityScheme
             {
+                Name = "Authorization",
+                Description = "Enter your JWT token. Example: **eyJhbGciOi...**",
+                In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT",
                 Reference = new Microsoft.OpenApi.Models.OpenApiReference
                 {
                     Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
                     Id = "Bearer"
                 }
-            },
-            new string[] {}
-        }
-    });
+            };
+
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new() { Title = "DepiFinalProject API", Version = "v1.1" });
+
+                // Enable JWT auth in Swagger
+                options.AddSecurityDefinition("Bearer", securityScheme);
+
+                options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+                {
+                    { securityScheme, Array.Empty<string>() }
+                });
+
+                //options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+                //{
+                //    {
+                //        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                //    {
+                //    Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                //    {
+                //        Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                //        Id = "Bearer"
+                //    }
+                //},
+                //new string[] {}
+                //}
+                //});
             });
 
             // Add Authentication
@@ -117,6 +131,7 @@ namespace DepiFinalProject
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
+                    RoleClaimType = ClaimTypes.Role, //new
                     ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
                     ValidAudience = builder.Configuration["JwtSettings:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(

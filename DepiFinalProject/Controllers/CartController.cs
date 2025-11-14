@@ -8,6 +8,7 @@ namespace DepiFinalProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CartController : ControllerBase
     {
         private readonly CartService _service;
@@ -18,8 +19,10 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin,client,seller")]
         public ActionResult<List<CartItemDto>> GetCart() => Ok(_service.GetAll());
 
+        [Authorize(Roles = "admin,client")]
         [HttpPost]
         public IActionResult AddToCart(CartItemDto item)
         {
@@ -28,6 +31,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpPut("{productId}")]
+        [Authorize(Roles = "admin,client")]
         public IActionResult UpdateQuantity(int productId, [FromBody] int quantity)
         {
             _service.UpdateQuantity(productId, quantity);
@@ -35,6 +39,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpDelete("{productId}")]
+        [Authorize(Roles = "admin,client")]
         public IActionResult RemoveFromCart(int productId)
         {
             _service.Remove(productId);

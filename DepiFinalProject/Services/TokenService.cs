@@ -29,6 +29,7 @@ namespace DepiFinalProject.Services
                 new Claim(JwtRegisteredClaimNames.Email, user.UserEmail),
                 new Claim(JwtRegisteredClaimNames.GivenName, user.UserFirstName ?? ""),
                 new Claim(JwtRegisteredClaimNames.FamilyName, user.UserLastName ?? ""),
+                new Claim(ClaimTypes.Role, user.UserRole ?? "client"), //new
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim("userId", user.UserID.ToString())
             };
