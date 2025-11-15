@@ -1,20 +1,55 @@
 ﻿using DepiFinalProject.DTOs;
+using DepiFinalProject.Interfaces;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DepiFinalProject.Services
 {
-    public class WishlistService
+    public class WishlistService : IWishlistService
     {
-        private readonly WishlistService _repo;
+        private readonly IWishlistRepository _wishlistRepository;
+        private readonly IProductRepository _productRepository;
 
-        public WishlistService(WishlistService repo)
+        public WishlistService(IWishlistRepository wishlistRepository, IProductRepository productRepository)
         {
-            _repo = repo;
+            _wishlistRepository = wishlistRepository;
+            _productRepository = productRepository;
         }
 
-        public List<WishlistItemDto> GetAll() => _repo.GetAll();
+        public async Task<List<WishlistItemDto>> GetAllAsync(int userId)
+        {
+            return await _wishlistRepository.GetAllAsync(userId);
+        }
 
-        public void Add(WishlistItemDto item) => _repo.Add(item);
+        public async Task<WishlistItemDto?> GetByProductIdAsync(int userId, int productId)
+        {
+            return await _wishlistRepository.GetByProductIdAsync(userId, productId);
+        }
 
-        public void Remove(int productId) => _repo.Remove(productId);
+        public async Task AddAsync(int userId, int productId)
+        {
+            var product = await _productRepository.GetByIdAsync(productId);
+            if (product == null)
+                throw new KeyNotFoundException($"Product with ID {productId} not found.");
+
+            var item = new WishlistItemDto
+            {
+                ProductId = product.ProductID,
+                ProductName = product.ProductName,
+                Price = product.Price
+            };
+
+            await _wishlistRepository.AddAsync(userId, item);
+        }
+
+        public async Task RemoveAsync(int userId, int productId)
+        {
+            await _wishlistRepository.RemoveAsync(userId, productId);
+        }
+
+        public async Task ClearAsync(int userId)
+        {
+            await _wishlistRepository.ClearAsync(userId);
+        }
     }
 }

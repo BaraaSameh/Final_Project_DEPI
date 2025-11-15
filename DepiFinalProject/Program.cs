@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PayPalAdvancedIntegration.Services;
-using WishlistService = DepiFinalProject.Repositories.WishlistService;
 
 namespace DepiFinalProject
 {
@@ -60,10 +59,10 @@ namespace DepiFinalProject
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IOrderService, OrderService>();
 
-            builder.Services.AddSingleton<ICartRepository, CartRepository>();
-            builder.Services.AddSingleton<IWishlistService, WishlistService>();
-            builder.Services.AddSingleton<CartService>();
-            builder.Services.AddSingleton<WishlistService>();
+            builder.Services.AddScoped<ICartRepository, CartRepository>();
+            builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IWishlistService, WishlistService>();
+            builder.Services.AddScoped<IWishlistRepository, WishlistRepository>();
             // PayPal Service
             builder.Services.AddScoped<IPaymentService, PayPalService>();
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
