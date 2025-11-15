@@ -9,6 +9,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PayPalAdvancedIntegration.Services;
+<<<<<<< HEAD
+=======
+using WishlistService = DepiFinalProject.Repositories.WishlistService;
+>>>>>>> 2efc83d (initial user commit)
 
 namespace DepiFinalProject
 {
@@ -24,7 +28,10 @@ namespace DepiFinalProject
                 options => options.UseSqlServer(
                     builder.Configuration.GetConnectionString("DefaultConnection")
                 )
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2efc83d (initial user commit)
             );
 
             builder.Services.AddControllers();
@@ -32,6 +39,11 @@ namespace DepiFinalProject
             // Register Repositories
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+<<<<<<< HEAD
+=======
+            //User service
+            builder.Services.AddScoped<IUserService, UserService>();
+>>>>>>> 2efc83d (initial user commit)
 
             //Category Repository
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -58,11 +70,18 @@ namespace DepiFinalProject
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IOrderService, OrderService>();
 
+<<<<<<< HEAD
             builder.Services.AddScoped<ICartRepository, CartRepository>();
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IWishlistService, WishlistService>();
             builder.Services.AddScoped<IWishlistRepository, WishlistRepository>();
 
+=======
+            builder.Services.AddSingleton<ICartRepository, CartRepository>();
+            builder.Services.AddSingleton<IWishlistService, WishlistService>();
+            builder.Services.AddSingleton<CartService>();
+            builder.Services.AddSingleton<WishlistService>();
+>>>>>>> 2efc83d (initial user commit)
             // PayPal Service
             builder.Services.AddScoped<IPaymentService, PayPalService>();
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
@@ -70,10 +89,13 @@ namespace DepiFinalProject
             // Review Service
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<IReviewService, ReviewService>();
+<<<<<<< HEAD
             // Return Service
             builder.Services.AddScoped<IReturnRepository, ReturnRepository>();
             builder.Services.AddScoped<IReturnService, ReturnService>();
 
+=======
+>>>>>>> 2efc83d (initial user commit)
             // Add Swagger with JWT support
             builder.Services.AddSwaggerGen(options =>
             {

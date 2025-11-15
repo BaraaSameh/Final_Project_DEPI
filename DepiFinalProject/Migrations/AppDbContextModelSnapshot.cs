@@ -390,9 +390,12 @@ namespace DepiFinalProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReturnID"));
 
+<<<<<<< HEAD
                     b.Property<bool>("IsCancelled")
                         .HasColumnType("bit");
 
+=======
+>>>>>>> 2efc83d (initial user commit)
                     b.Property<int>("OrderItemID")
                         .HasColumnType("int");
 

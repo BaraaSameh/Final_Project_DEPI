@@ -1,4 +1,5 @@
 ﻿using DepiFinalProject.DTOs;
+<<<<<<< HEAD
 using DepiFinalProject.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -111,6 +112,41 @@ namespace DepiFinalProject.Controllers
             {
                 return StatusCode(500, new { Message = "An error occurred while clearing wishlist.", Error = ex.Message });
             }
+=======
+using DepiFinalProject.Repositories;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace DepiFinalProject.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class WishlistController : ControllerBase
+    {
+        private readonly WishlistService _service;
+
+        public WishlistController(WishlistService service)
+        {
+            _service = service;
+        }
+
+        [HttpGet]
+        public ActionResult<List<WishlistItemDto>> GetWishlist() => Ok(_service.GetAll());
+
+        [HttpPost]
+        public IActionResult AddToWishlist(WishlistItemDto item)
+        {
+            _service.Add(item);
+            return Ok();
+        }
+
+        [HttpDelete("{productId}")]
+        public IActionResult RemoveFromWishlist(int productId)
+        {
+            _service.Remove(productId);
+            return NoContent();
+>>>>>>> 2efc83d (initial user commit)
         }
     }
 }

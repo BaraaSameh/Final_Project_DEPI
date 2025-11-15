@@ -4,6 +4,11 @@ namespace DepiFinalProject.Interfaces
 {
     public interface IUserRepository
     {
+<<<<<<< HEAD
+=======
+        Task<ICollection<User>> GetAllAsync();//new
+        Task<bool> ChangePasswordAsync(User updateduser);//new
+>>>>>>> 2efc83d (initial user commit)
         Task<User> GetByIdAsync(int userId);
         Task<User> GetByEmailAsync(string email);
         Task<bool> EmailExistsAsync(string email);

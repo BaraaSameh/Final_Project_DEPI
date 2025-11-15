@@ -138,7 +138,10 @@ namespace DepiFinalProject.Controllers
 
              Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
         }
+<<<<<<< HEAD
 
         
+=======
+>>>>>>> 2efc83d (initial user commit)
     }
 }

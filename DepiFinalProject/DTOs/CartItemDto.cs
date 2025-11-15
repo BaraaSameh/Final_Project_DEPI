@@ -1,5 +1,6 @@
 ﻿namespace DepiFinalProject.DTOs
 {
+<<<<<<< HEAD
     public class AddToCartRequestDto
     {
         public int ProductId { get; set; }
@@ -30,4 +31,12 @@
             Items = new List<CartItemDto>();
         }
     }
+=======
+    public class CartItemDto
+    {
+
+        public int ProductId { get; set; }
+        public int Quantity { get; set; }
+    }
+>>>>>>> 2efc83d (initial user commit)
 }

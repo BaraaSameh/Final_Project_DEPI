@@ -3,6 +3,10 @@ using DepiFinalProject.Interfaces;
 using DepiFinalProject.Migrations;
 using DepiFinalProject.Models;
 using DepiFinalProject.Services;
+<<<<<<< HEAD
+=======
+using Microsoft.AspNetCore.Identity;
+>>>>>>> 2efc83d (initial user commit)
 using Microsoft.EntityFrameworkCore;
 
 namespace DepiFinalProject.Repositories
@@ -41,16 +45,24 @@ namespace DepiFinalProject.Repositories
         public async Task<User> GetByEmailAsync(string email)
         {
             
+<<<<<<< HEAD
             return await _context.Users
                 .Include(u => u.RefreshTokens)
                 .FirstOrDefaultAsync(u => u.UserEmail == email);
+=======
+            return await _context.Users.FirstOrDefaultAsync(u => u.UserEmail == email);
+>>>>>>> 2efc83d (initial user commit)
         }
 
         public async Task<User> GetByIdAsync(int userId)
         {
+<<<<<<< HEAD
             return await _context.Users
                 .Include(u => u.RefreshTokens)
                 .FirstOrDefaultAsync(u => u.UserID== userId);
+=======
+            return await _context.Users.FirstOrDefaultAsync(u => u.UserID== userId);
+>>>>>>> 2efc83d (initial user commit)
         }
 
         public async Task<User> UpdateAsync(User user)
@@ -59,5 +71,20 @@ namespace DepiFinalProject.Repositories
             await _context.SaveChangesAsync();
             return user;
         }
+<<<<<<< HEAD
+=======
+
+        public async Task<bool> ChangePasswordAsync(User updatedUser)
+        {
+            _context.Users.Update(updatedUser);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        public async Task<ICollection<User>> GetAllAsync()
+        {
+            var users = await _context.Users.ToListAsync();
+            return users;
+        }
+>>>>>>> 2efc83d (initial user commit)
     }
 }

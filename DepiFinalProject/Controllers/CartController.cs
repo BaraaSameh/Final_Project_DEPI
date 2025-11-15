@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -5,10 +6,17 @@ using DepiFinalProject.DTOs;
 using DepiFinalProject.Interfaces;
 using DepiFinalProject.Models;
 using Microsoft.AspNetCore.Authorization;
+=======
+﻿using DepiFinalProject.DTOs;
+using DepiFinalProject.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+>>>>>>> 2efc83d (initial user commit)
 using Microsoft.AspNetCore.Mvc;
 
 namespace DepiFinalProject.Controllers
 {
+<<<<<<< HEAD
     [ApiController]
     [Route("api/[controller]")]
     [Authorize] 
@@ -123,6 +131,41 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(500, new { Message = "An error occurred while removing the item from the cart.", Details = ex.Message });
             }
           
+=======
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CartController : ControllerBase
+    {
+        private readonly CartService _service;
+
+        public CartController(CartService service)
+        {
+            _service = service;
+        }
+
+        [HttpGet]
+        public ActionResult<List<CartItemDto>> GetCart() => Ok(_service.GetAll());
+
+        [HttpPost]
+        public IActionResult AddToCart(CartItemDto item)
+        {
+            _service.Add(item);
+            return Ok();
+        }
+
+        [HttpPut("{productId}")]
+        public IActionResult UpdateQuantity(int productId, [FromBody] int quantity)
+        {
+            _service.UpdateQuantity(productId, quantity);
+            return NoContent();
+        }
+
+        [HttpDelete("{productId}")]
+        public IActionResult RemoveFromCart(int productId)
+        {
+            _service.Remove(productId);
+            return NoContent();
+>>>>>>> 2efc83d (initial user commit)
         }
     }
 }

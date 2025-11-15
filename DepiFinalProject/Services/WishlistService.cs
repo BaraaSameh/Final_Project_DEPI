@@ -1,4 +1,5 @@
 ﻿using DepiFinalProject.DTOs;
+<<<<<<< HEAD
 using DepiFinalProject.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -51,5 +52,24 @@ namespace DepiFinalProject.Services
         {
             await _wishlistRepository.ClearAsync(userId);
         }
+=======
+
+namespace DepiFinalProject.Services
+{
+    public class WishlistService
+    {
+        private readonly WishlistService _repo;
+
+        public WishlistService(WishlistService repo)
+        {
+            _repo = repo;
+        }
+
+        public List<WishlistItemDto> GetAll() => _repo.GetAll();
+
+        public void Add(WishlistItemDto item) => _repo.Add(item);
+
+        public void Remove(int productId) => _repo.Remove(productId);
+>>>>>>> 2efc83d (initial user commit)
     }
 }

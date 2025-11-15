@@ -19,7 +19,11 @@ namespace DepiFinalProject.Models
         public string UserLastName { get; set; }
         public string UserPhone { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+<<<<<<< HEAD
         public string UserRole { get; set; } = "Customer"; // مثل "Admin" أو "Customer"
+=======
+        public string UserRole { get; set; } = ""; // مثل "Admin" أو "Customer"
+>>>>>>> 2efc83d (initial user commit)
 
         // Navigation Properties
         public virtual ICollection<Address> Addresses { get; set; }
