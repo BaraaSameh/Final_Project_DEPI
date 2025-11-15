@@ -33,6 +33,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin,client,seller")]
         public async Task<IActionResult> AddReview([FromBody] ReviewCreateDto dto)
         {
             try {
@@ -47,6 +48,8 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin,client,seller")]
+
         public async Task<IActionResult> UpdateReview(int id, [FromBody] ReviewUpdateDto dto)
         {
             try {
@@ -62,6 +65,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin,client,seller")]
         public async Task<IActionResult> DeleteReview(int id)
         {
             try {

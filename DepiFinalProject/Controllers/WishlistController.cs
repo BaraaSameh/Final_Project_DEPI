@@ -1,116 +1,43 @@
 ﻿using DepiFinalProject.DTOs;
-using DepiFinalProject.Interfaces;
+using DepiFinalProject.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace DepiFinalProject.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     [Authorize]
     public class WishlistController : ControllerBase
     {
-        private readonly IWishlistService _wishlistService;
+        private readonly WishlistService _service;
 
-        public WishlistController(IWishlistService wishlistService)
+        public WishlistController(WishlistService service)
         {
-            _wishlistService = wishlistService;
-        }
-
-        private int GetUserId()
-        {
-            return int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            _service = service;
         }
 
         [HttpGet]
-        public async Task<ActionResult<WishlistResponseDto>> GetWishlist()
+        [Authorize(Roles = "admin,client,seller")]
+
+        public ActionResult<List<WishlistItemDto>> GetWishlist() => Ok(_service.GetAll());
+
+        [HttpPost]
+        [Authorize(Roles = "admin,client,seller")]
+        public IActionResult AddToWishlist(WishlistItemDto item)
         {
-            try
-            {
-                var userId = GetUserId();
-                var items = await _wishlistService.GetAllAsync(userId);
-
-                var response = new WishlistResponseDto
-                {
-                    UserId = userId,
-                    Items = items
-                };
-
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Message = "An error occurred while retrieving wishlist.", Error = ex.Message });
-            }
-        }
-
-        [HttpGet("{productId}")]
-        public async Task<ActionResult<WishlistItemDto>> GetWishlistItem(int productId)
-        {
-            try
-            {
-                var userId = GetUserId();
-                var item = await _wishlistService.GetByProductIdAsync(userId, productId);
-
-                if (item == null)
-                    return NotFound(new { Message = $"Product {productId} not found in wishlist." });
-
-                return Ok(item);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Message = "An error occurred while retrieving item.", Error = ex.Message });
-            }
-        }
-
-        [HttpPost("{productId}")]
-        public async Task<IActionResult> AddToWishlist(int productId)
-        {
-            try
-            {
-                var userId = GetUserId();
-                await _wishlistService.AddAsync(userId, productId);
-                return Ok(new { Message = $"Product {productId} added to wishlist." });
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { Message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Message = "An error occurred while adding product.", Error = ex.Message });
-            }
+            _service.Add(item);
+            return Ok();
         }
 
         [HttpDelete("{productId}")]
-        public async Task<IActionResult> RemoveFromWishlist(int productId)
-        {
-            try
-            {
-                var userId = GetUserId();
-                await _wishlistService.RemoveAsync(userId, productId);
-                return Ok(new { Message = $"Product {productId} removed from wishlist." });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Message = "An error occurred while removing product.", Error = ex.Message });
-            }
-        }
+        [Authorize(Roles = "admin,client,seller")]
 
-        [HttpDelete]
-        public async Task<IActionResult> ClearWishlist()
+        public IActionResult RemoveFromWishlist(int productId)
         {
-            try
-            {
-                var userId = GetUserId();
-                await _wishlistService.ClearAsync(userId);
-                return Ok(new { Message = "Wishlist cleared successfully." });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Message = "An error occurred while clearing wishlist.", Error = ex.Message });
-            }
+            _service.Remove(productId);
+            return NoContent();
         }
     }
 }

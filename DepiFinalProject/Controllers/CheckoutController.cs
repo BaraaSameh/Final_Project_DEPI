@@ -24,6 +24,8 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin,client")]
+
         public async Task<IActionResult> CreatePayment([FromBody] CreatePaymentRequestDto dto)
         {
             try {
@@ -124,6 +126,8 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "admin")]
+
         public async Task<IActionResult> GetPaymentById(string id)
         {
             try
@@ -173,6 +177,8 @@ namespace DepiFinalProject.Controllers
            
 
         [HttpGet("user/{userId}")]
+        [Authorize(Roles = "admin")]
+
         public async Task<IActionResult> GetUserPayments(int userId)
         {
             try {

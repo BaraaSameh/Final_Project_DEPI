@@ -10,6 +10,7 @@ namespace DepiFinalProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthenticationService _authService;
@@ -19,6 +20,7 @@ namespace DepiFinalProject.Controllers
             _authService = authService;
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<ActionResult<ApiResponse<AuthenticationResponse>>> Register([FromBody] RegisterRequest request)
         {
@@ -42,6 +44,7 @@ namespace DepiFinalProject.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<ApiResponse<AuthenticationResponse>>> Login([FromBody] LoginRequest request)
         {
@@ -138,7 +141,5 @@ namespace DepiFinalProject.Controllers
 
              Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
         }
-
-        
     }
 }

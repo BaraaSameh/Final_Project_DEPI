@@ -1,4 +1,4 @@
-
+using System.Security.Claims;
 using System.Text;
 using DepiFinalProject.Data;
 using DepiFinalProject.Infrastructure.Repositories;
@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PayPalAdvancedIntegration.Services;
+using WishlistService = DepiFinalProject.Repositories.WishlistService;
 
 namespace DepiFinalProject
 {
@@ -24,7 +25,6 @@ namespace DepiFinalProject
                 options => options.UseSqlServer(
                     builder.Configuration.GetConnectionString("DefaultConnection")
                 )
-
             );
 
             builder.Services.AddControllers();
@@ -32,6 +32,8 @@ namespace DepiFinalProject
             // Register Repositories
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            //User service
+            builder.Services.AddScoped<IUserService, UserService>();
 
             //Category Repository
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -58,11 +60,10 @@ namespace DepiFinalProject
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IOrderService, OrderService>();
 
-            builder.Services.AddScoped<ICartRepository, CartRepository>();
-            builder.Services.AddScoped<ICartService, CartService>();
-            builder.Services.AddScoped<IWishlistService, WishlistService>();
-            builder.Services.AddScoped<IWishlistRepository, WishlistRepository>();
-
+            builder.Services.AddSingleton<ICartRepository, CartRepository>();
+            builder.Services.AddSingleton<IWishlistService, WishlistService>();
+            builder.Services.AddSingleton<CartService>();
+            builder.Services.AddSingleton<WishlistService>();
             // PayPal Service
             builder.Services.AddScoped<IPaymentService, PayPalService>();
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
@@ -70,40 +71,50 @@ namespace DepiFinalProject
             // Review Service
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<IReviewService, ReviewService>();
-            // Return Service
-            builder.Services.AddScoped<IReturnRepository, ReturnRepository>();
-            builder.Services.AddScoped<IReturnService, ReturnService>();
-
             // Add Swagger with JWT support
-            builder.Services.AddSwaggerGen(options =>
-            {
-                options.SwaggerDoc("v1", new() { Title = "DepiFinalProject API", Version = "v1.1" });
 
-                // Enable JWT auth in Swagger
-                options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-                {
-                    Name = "Authorization",
-                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
-                    Scheme = "bearer",
-                    BearerFormat = "JWT",
-                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-                    Description = "Enter your JWT token. Example: **eyJhbGciOi...**"
-                });
-
-                options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
-    {
-        {
-            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            // Define the securityScheme before using it in AddSecurityDefinition and AddSecurityRequirement
+            var securityScheme = new Microsoft.OpenApi.Models.OpenApiSecurityScheme
             {
+                Name = "Authorization",
+                Description = "Enter your JWT token. Example: **eyJhbGciOi...**",
+                In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT",
                 Reference = new Microsoft.OpenApi.Models.OpenApiReference
                 {
                     Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
                     Id = "Bearer"
                 }
-            },
-            new string[] {}
-        }
-    });
+            };
+
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new() { Title = "DepiFinalProject API", Version = "v1.1" });
+
+                // Enable JWT auth in Swagger
+                options.AddSecurityDefinition("Bearer", securityScheme);
+
+                options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+                {
+                    { securityScheme, Array.Empty<string>() }
+                });
+
+                //options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+                //{
+                //    {
+                //        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                //    {
+                //    Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                //    {
+                //        Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                //        Id = "Bearer"
+                //    }
+                //},
+                //new string[] {}
+                //}
+                //});
             });
 
             // Add Authentication
@@ -120,6 +131,7 @@ namespace DepiFinalProject
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
+                    RoleClaimType = ClaimTypes.Role, //new
                     ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
                     ValidAudience = builder.Configuration["JwtSettings:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(

@@ -11,6 +11,7 @@ namespace DepiFinalProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductController : ControllerBase
     {
         protected readonly IProductService _productService;
@@ -20,6 +21,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpGet] //api/products
+        [Authorize(Roles = "admin,client,seller")]
         public async Task<ActionResult<IEnumerable<ProductResponseDTO>>> GetAll()
         {
             try
@@ -34,6 +36,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpGet("{id:int}")] //api/products/{id}
+        [Authorize(Roles = "admin,client,seller")]
         public async Task<ActionResult<ProductDetailsDTO>> GetById(int id)
         {
 
@@ -52,6 +55,7 @@ namespace DepiFinalProject.Controllers
             }
         }
 
+        [Authorize(Roles = "admin,client,seller")]
         [HttpGet("category/{categoryId}")] //api/products/category/{categoryId}
         public async Task<ActionResult<IEnumerable<ProductResponseDTO>>> GetByCategory(int categoryId)
         {
@@ -70,7 +74,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpPost] //api/products
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin,seller")]
         public async Task<ActionResult<ProductResponseDTO>> Create(CreateProductDTO dto)
         {
             try
@@ -88,7 +92,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpPut("{id:int}")] //api/products/{id}
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin,seller")]
         public async Task<ActionResult<ProductResponseDTO>> UpdateProduct(int id, UpdateProductDTO dto)
         {
             try
@@ -108,7 +112,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpDelete("{id:int}")] //api/products/{id}
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin,seller")]
         public async Task<ActionResult> DeleteProduct(int id)
         {
             try

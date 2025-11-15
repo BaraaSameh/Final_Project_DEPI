@@ -1,5 +1,6 @@
 ﻿using DepiFinalProject.DTOs;
 using DepiFinalProject.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static DepiFinalProject.DTOs.OrderDto;
 
@@ -7,7 +8,7 @@ namespace DepiFinalProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
+    [Authorize]
     public class OrderController : ControllerBase
     {
 
@@ -16,6 +17,7 @@ namespace DepiFinalProject.Controllers
         {
             _orderService = orderService;
         }
+        [Authorize(Roles = "admin,client,seller")]
 
         [HttpGet] // GET: api/orders - Get all orders
         public async Task<ActionResult<IEnumerable<OrderResponseDTO>>> GetAllOrders()
@@ -33,6 +35,7 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(500, new { message = "An error occurred while fetching orders.", details = ex.Message });
             }
         }
+        [Authorize(Roles = "admin,client,seller")]
 
         [HttpGet("{id:int}")] // GET: api/orders/{id} - Get order by ID
         public async Task<ActionResult<OrderDetailsDTO>> GetOrderById(int id)
@@ -51,6 +54,7 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(500, new { message = "An error occurred.", details = ex.Message });
             }
         }
+        [Authorize(Roles = "admin,client")]
 
         [HttpGet("user/{userId:int}")] // GET: api/orders/user/{userId} - Get user orders
         public async Task<ActionResult<IEnumerable<OrderResponseDTO>>> GetUserOrders(int userId)
@@ -69,6 +73,7 @@ namespace DepiFinalProject.Controllers
             }
         }
 
+        [Authorize(Roles = "admin,client")]
         [HttpPost] // POST: api/orders - Create new order
         public async Task<ActionResult<OrderResponseDTO>> CreateOrder([FromBody] CreateOrderDTO dto)
         {
@@ -95,6 +100,7 @@ namespace DepiFinalProject.Controllers
             }
         }
 
+        [Authorize(Roles = "admin,seller")]
         [HttpPut("{id:int}")] // PUT: api/orders/{id} - Update order status
         public async Task<ActionResult<OrderResponseDTO>> UpdateOrderStatus(int id, [FromBody] UpdateOrderStatusDTO dto)
         {
@@ -116,6 +122,7 @@ namespace DepiFinalProject.Controllers
             }
         }
 
+        [Authorize(Roles = "admin,client,seller")]
         [HttpDelete("{id:int}")] // DELETE: api/orders/{id} - Cancel order
         public async Task<ActionResult> CancelOrder(int id)
         {
