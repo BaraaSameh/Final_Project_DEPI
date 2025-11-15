@@ -27,6 +27,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin,client")]
         public async Task<ActionResult<CartResponseDto>> GetCart()
         {
            
@@ -46,6 +47,8 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpGet("{productId}")]
+        [Authorize(Roles = "admin,client")]
+
         public async Task<ActionResult<CartItemDto>> GetCartItem(int productId)
         {
            
@@ -61,6 +64,8 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpPost("{productid}")]
+        [Authorize(Roles = "admin,client")]
+
         public async Task<IActionResult> AddToCart(int productid, int quantity)
         {
             try {
@@ -84,6 +89,8 @@ namespace DepiFinalProject.Controllers
          }
 
         [HttpPut("{productId}")]
+        [Authorize(Roles = "admin,client")]
+
         public async Task<IActionResult> UpdateQuantity(int productId, [FromBody] UpdateQuantityDto dto)
         {
             try {
@@ -97,6 +104,8 @@ namespace DepiFinalProject.Controllers
             }
                   }
         [HttpDelete]
+        [Authorize(Roles = "admin,client")]
+
         public async Task<IActionResult> ClearCart()
         {
             try {
@@ -112,6 +121,8 @@ namespace DepiFinalProject.Controllers
 
 
         [HttpDelete("{productId}")]
+        [Authorize(Roles = "admin,client")]
+
         public async Task<IActionResult> RemoveItem(int productId)
         {
             try {

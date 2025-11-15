@@ -24,6 +24,8 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin,client")]
+
         public async Task<ActionResult<WishlistResponseDto>> GetWishlist()
         {
             try
@@ -46,6 +48,8 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpGet("{productId}")]
+        [Authorize(Roles = "admin,client")]
+
         public async Task<ActionResult<WishlistItemDto>> GetWishlistItem(int productId)
         {
             try
@@ -65,6 +69,8 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpPost("{productId}")]
+        [Authorize(Roles = "admin,client")]
+
         public async Task<IActionResult> AddToWishlist(int productId)
         {
             try
@@ -84,6 +90,8 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpDelete("{productId}")]
+        [Authorize(Roles = "admin,client")]
+
         public async Task<IActionResult> RemoveFromWishlist(int productId)
         {
             try
@@ -99,6 +107,8 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "admin,client")]
+
         public async Task<IActionResult> ClearWishlist()
         {
             try

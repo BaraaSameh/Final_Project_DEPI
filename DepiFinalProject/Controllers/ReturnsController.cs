@@ -19,7 +19,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin,Customer")]
+        [Authorize(Roles = "admin,client")]
         public async Task<IActionResult> GetAllReturns()
         {
             try
@@ -42,7 +42,7 @@ namespace DepiFinalProject.Controllers
             }
         }
         [HttpGet("{returnId}")]
-       [Authorize(Roles = "Admin,Customer")]
+       [Authorize(Roles = "admin,client")]
         public async Task<IActionResult> GetReturnById(int returnId)
         {
             try
@@ -66,7 +66,7 @@ namespace DepiFinalProject.Controllers
             }
         }
         [HttpPost]
-     [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "admin,client")]
         public async Task<IActionResult> RequestReturn([FromBody] ReturnDto.CreateReturnDto dto)
         {
             if (!ModelState.IsValid)
@@ -100,7 +100,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpPut("{returnId}")]
-       [Authorize(Roles = "Admin")]
+       [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateReturnStatus(int returnId, [FromBody] ReturnDto.UpdateReturnStatusDto dto)
         {
             if (!ModelState.IsValid)
@@ -120,7 +120,7 @@ namespace DepiFinalProject.Controllers
             }
         }
         [HttpDelete("{returnId}")]
-     [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         async public Task<IActionResult> DeleteReturn(int returnId)
         {
             try
@@ -136,7 +136,7 @@ namespace DepiFinalProject.Controllers
             }
         }
         [HttpPut("{returnId}/cancel")]
-            [Authorize(Roles = "Admin,Customer")]
+        [Authorize(Roles = "admin,client")]
         public async Task<IActionResult> CancelReturn(int returnId)
         {
             try
