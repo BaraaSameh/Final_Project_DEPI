@@ -9,7 +9,7 @@ namespace DepiFinalProject.Models
         public string CompanyName { get; set; }
         public string TrackingNumber { get; set; }
         public string ShippingStatus { get; set; }  // مثل "InTransit", "Delivered"
-        public DateTime EstimatedDelivery { get; set; }
+        public DateTime EstimatedDelivery { get; set; } 
 
         // Navigation Property (Many-to-Many عبر OrderShipping)
         public virtual ICollection<OrderShipping> OrderShippings { get; set; }

@@ -34,6 +34,13 @@ namespace DepiFinalProject
             //User service
             builder.Services.AddScoped<IUserService, UserService>();
 
+            //Shiping repository
+            builder.Services.AddScoped<IShippingRepository, ShippingRepository>();
+            builder.Services.AddScoped<IOrderShippingRepository, OrderShippingRepository>();
+
+            //Shipping Service
+            builder.Services.AddScoped<IShippingService, ShippingService>();
+
             //Category Repository
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
