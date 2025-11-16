@@ -1,8 +1,8 @@
 ﻿using DepiFinalProject.Interfaces;
 using DepiFinalProject.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using static DepiFinalProject.DTOs.AddressDTO;
 
 namespace DepiFinalProject.Controllers
@@ -19,24 +19,25 @@ namespace DepiFinalProject.Controllers
             _addressService = addressService;
         }
 
-        // GET: api/addresses/{userId}
+        private int GetUserId() => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+        /// <summary>
+        /// Get all addresses for a user
+        /// </summary>
         [HttpGet("{userId}")]
         [Authorize(Roles = "admin,client,seller")]
+        [ProducesResponseType(typeof(IEnumerable<AddressDto>), 200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public async Task<ActionResult<IEnumerable<AddressDto>>> GetUserAddresses(int userId)
         {
             try
             {
-                
-
                 var addresses = await _addressService.GetUserAddressesAsync(userId);
 
-               
                 if (addresses == null || !addresses.Any())
-                {
-                    return Ok(new List<AddressDto>());
-                }
+                    return Ok(new List<AddressDto>()); // Always return list
 
-                
                 var addressDtos = addresses.Select(a => new AddressDto
                 {
                     AddressID = a.AddressID,
@@ -50,19 +51,32 @@ namespace DepiFinalProject.Controllers
             }
             catch (KeyNotFoundException ex)
             {
-                
-                return NotFound(new { message = ex.Message });
+                return NotFound(new
+                {
+                    Message = ex.Message,
+                    InnerException = ex.InnerException?.Message
+                });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving addresses", error = ex.Message });
+                return StatusCode(500, new
+                {
+                    Message = "An error occurred while retrieving addresses",
+                    Error = ex.Message,
+                    InnerException = ex.InnerException?.Message
+                });
             }
         }
 
-        // POST: api/addresses
+        /// <summary>
+        /// Add a new address
+        /// </summary>
         [HttpPost]
         [Authorize(Roles = "admin,client")]
-
+        [ProducesResponseType(typeof(AddressDto), 201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public async Task<ActionResult<AddressDto>> AddAddress([FromBody] AddressCreateUpdateDto addressDto)
         {
             try
@@ -70,9 +84,12 @@ namespace DepiFinalProject.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
+                var currentUserId = GetUserId();
+                if (User.IsInRole("client") && currentUserId != addressDto.UserID)
+                    return Forbid("You are not authorized to add addresses for this user.");
+
                 var address = new Address
                 {
-                    // 💡 يجب التأكد من أن AddressCreateUpdateDto يحتوي على UserID
                     UserID = addressDto.UserID,
                     FullAddress = addressDto.FullAddress,
                     City = addressDto.City,
@@ -90,30 +107,36 @@ namespace DepiFinalProject.Controllers
                     Country = createdAddress.Country
                 };
 
-                
                 return CreatedAtAction(nameof(GetUserAddresses), new { userId = resultDto.UserID }, resultDto);
             }
             catch (KeyNotFoundException ex)
             {
-                
-                return NotFound(new { message = ex.Message });
+                return NotFound(new { Message = ex.Message, InnerException = ex.InnerException?.Message });
             }
             catch (ArgumentException ex)
             {
-                
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new { Message = ex.Message, InnerException = ex.InnerException?.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while creating the address", error = ex.Message });
+                return StatusCode(500, new
+                {
+                    Message = "An error occurred while creating the address",
+                    Error = ex.Message,
+                    InnerException = ex.InnerException?.Message
+                });
             }
-
         }
 
-        // PUT: api/addresses/{id}
+        /// <summary>
+        /// Update an existing address
+        /// </summary>
         [HttpPut("{id}")]
         [Authorize(Roles = "admin,client")]
-
+        [ProducesResponseType(typeof(AddressDto), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public async Task<ActionResult<AddressDto>> UpdateAddress(int id, [FromBody] AddressCreateUpdateDto addressDto)
         {
             try
@@ -121,9 +144,12 @@ namespace DepiFinalProject.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
+                var currentUserId = GetUserId();
+                if (User.IsInRole("client") && currentUserId != addressDto.UserID)
+                    return Forbid("You are not authorized to update this address.");
+
                 var address = new Address
                 {
-                    
                     UserID = addressDto.UserID,
                     FullAddress = addressDto.FullAddress,
                     City = addressDto.City,
@@ -145,45 +171,61 @@ namespace DepiFinalProject.Controllers
             }
             catch (KeyNotFoundException ex)
             {
-         
-                return NotFound(new { message = ex.Message });
+                return NotFound(new { Message = ex.Message, InnerException = ex.InnerException?.Message });
             }
             catch (ArgumentException ex)
             {
-                
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new { Message = ex.Message, InnerException = ex.InnerException?.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while updating the address", error = ex.Message });
+                return StatusCode(500, new
+                {
+                    Message = "An error occurred while updating the address",
+                    Error = ex.Message,
+                    InnerException = ex.InnerException?.Message
+                });
             }
         }
 
-        // DELETE: api/addresses/{id}
+        /// <summary>
+        /// Delete an address
+        /// </summary>
         [HttpDelete("{id}")]
         [Authorize(Roles = "admin,client")]
-
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(403)]
+        [ProducesResponseType(500)]
         public async Task<ActionResult> DeleteAddress(int id)
         {
             try
             {
-             
-                var result = await _addressService.DeleteAddressAsync(id);
+                var currentUserId = GetUserId();
+                var address = await _addressService.GetAddressByIdAsync(id);
 
+                if (address == null)
+                    return NotFound(new { Message = $"Address with ID {id} not found." });
+
+                if (User.IsInRole("client") && currentUserId != address.UserID)
+                    return Forbid("You are not authorized to delete this address.");
+
+                await _addressService.DeleteAddressAsync(id);
                 return NoContent();
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { message = ex.Message });
+                return NotFound(new { Message = ex.Message, InnerException = ex.InnerException?.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while deleting the address", error = ex.Message });
+                return StatusCode(500, new
+                {
+                    Message = "An error occurred while deleting the address",
+                    Error = ex.Message,
+                    InnerException = ex.InnerException?.Message
+                });
             }
-
         }
     }
 }
-
-
-    
