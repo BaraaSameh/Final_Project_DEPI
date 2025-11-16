@@ -1,13 +1,17 @@
-﻿namespace DepiFinalProject.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DepiFinalProject.DTOs
 {
     public class AddToCartRequestDto
     {
+        [Required(ErrorMessage = "ProductId is required")]
         public int ProductId { get; set; }
+        [Required(ErrorMessage = "product Quantity is required")]
         public int Quantity { get; set; }
     }
     public class UpdateQuantityDto
     {
-        /// <example>3</example>
+        [Required(ErrorMessage = "product Quantity is required")]
         public int Quantity { get; set; }
     }
 

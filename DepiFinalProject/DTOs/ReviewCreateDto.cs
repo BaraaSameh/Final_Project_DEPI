@@ -3,7 +3,10 @@ namespace DepiFinalProject.DTOs.Reviews
 {
     public class ReviewCreateDto
     {
+        [Required(ErrorMessage ="the product id is required")]
         public int ProductID { get; set; }
+        [Required]
+        [Range(1,5,ErrorMessage ="the rating should be between 1 and 5")]
         public int Rating { get; set; }  // 1–5
         public string Comment { get; set; }
     }

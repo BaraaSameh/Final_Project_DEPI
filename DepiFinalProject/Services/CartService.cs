@@ -51,7 +51,7 @@ namespace DepiFinalProject.Services
         public async Task UpdateQuantityAsync(int userId, int productId, int quantity)
         {
             if (quantity < 0)
-                quantity = 0; 
+                quantity = 1; 
 
             await _cartRepository.UpdateQuantity(userId, productId, quantity);
         }

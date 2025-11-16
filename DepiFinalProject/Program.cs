@@ -70,6 +70,9 @@ namespace DepiFinalProject
             // Review Service
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<IReviewService, ReviewService>();
+            //Return Service
+            builder.Services.AddScoped<IReturnRepository, ReturnRepository>();
+            builder.Services.AddScoped<IReturnService, ReturnService>();
             // Add Swagger with JWT support
 
             // Define the securityScheme before using it in AddSecurityDefinition and AddSecurityRequirement

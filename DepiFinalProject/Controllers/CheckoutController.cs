@@ -83,7 +83,7 @@ namespace DepiFinalProject.Controllers
 
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllPayments()
         {
@@ -137,7 +137,7 @@ namespace DepiFinalProject.Controllers
                     return NotFound(new { message = "Payment not found" });
 
                 var userId = int.Parse(User.FindFirst("userId")!.Value);
-                var isAdmin = User.IsInRole("Admin");
+                var isAdmin = User.IsInRole("admin");
                 if (payment.UserId != userId && !isAdmin)
                     return Forbid();
 
@@ -183,7 +183,7 @@ namespace DepiFinalProject.Controllers
         {
             try {
                 var currentUserId = int.Parse(User.FindFirst("userId")!.Value);
-                var isAdmin = User.IsInRole("Admin");
+                var isAdmin = User.IsInRole("admin");
 
                 if (currentUserId != userId && !isAdmin)
                     return Forbid();
@@ -225,7 +225,7 @@ namespace DepiFinalProject.Controllers
             
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePaymentStatus(string id, [FromBody] UpdatePaymentDto dto)
         {
