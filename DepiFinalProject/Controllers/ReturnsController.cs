@@ -24,6 +24,10 @@ public class ReturnsController : ControllerBase
 
     [HttpGet]
     [Authorize(Roles = "admin")]
+    [ProducesResponseType(typeof(IEnumerable<ReturnDto.ReturnResponseDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAllReturns()
     {
         var returns = await _returnService.GetAllReturnsAsync();
@@ -42,6 +46,10 @@ public class ReturnsController : ControllerBase
 
     [HttpGet("{returnId}")]
     [Authorize(Roles = "admin,client")]
+    [ProducesResponseType(typeof(ReturnDto.ReturnResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetReturnById(int returnId)
     {
         var r = await _returnService.GetReturnByIdAsync(returnId);
@@ -63,6 +71,11 @@ public class ReturnsController : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = "client")]
+    [ProducesResponseType(typeof(ReturnDto.ReturnResponseDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> RequestReturn([FromBody] ReturnDto.CreateReturnDto dto)
     {
         if (!ModelState.IsValid)
@@ -89,6 +102,11 @@ public class ReturnsController : ControllerBase
 
     [HttpPut("{returnId}")]
     [Authorize(Roles = "admin")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateReturnStatus(int returnId, [FromBody] ReturnDto.UpdateReturnStatusDto dto)
     {
         if (!ModelState.IsValid)
@@ -103,6 +121,10 @@ public class ReturnsController : ControllerBase
 
     [HttpDelete("{returnId}")]
     [Authorize(Roles = "admin")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteReturn(int returnId)
     {
         var success = await _returnService.DeleteReturnAsync(returnId);
@@ -114,6 +136,12 @@ public class ReturnsController : ControllerBase
 
     [HttpPut("{returnId}/cancel")]
     [Authorize(Roles = "admin,client")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CancelReturn(int returnId)
     {
         var r = await _returnService.GetReturnByIdAsync(returnId);
@@ -141,6 +169,9 @@ public class ReturnsController : ControllerBase
         return Ok(new { Message = "Return cancelled successfully." });
     }
     [HttpGet("User")]
+    [ProducesResponseType(typeof(IEnumerable<ReturnDto.ReturnResponseDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetMyReturnRequests()
     {
         var userId = GetUserIdFromToken();
