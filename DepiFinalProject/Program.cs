@@ -74,6 +74,13 @@ namespace DepiFinalProject
             builder.Services.AddScoped<IPaymentService, PayPalService>();
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
             builder.Services.AddHttpContextAccessor();
+
+            // FlashSale Repository
+            builder.Services.AddScoped<IFlashSaleRepository, FlashSaleRepository>();
+
+            // FlashSale Service
+            builder.Services.AddScoped<IFlashSaleService, FlashSaleService>();
+
             // Review Service
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<IReviewService, ReviewService>();
