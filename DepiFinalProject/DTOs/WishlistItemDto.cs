@@ -1,9 +1,14 @@
-﻿namespace DepiFinalProject.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DepiFinalProject.DTOs
 {
     public class WishlistItemDto
     {
+        [Required(ErrorMessage ="the product id is required")]
         public int ProductId { get; set; }
-        public string ProductName { get; set; } = string.Empty;
+        [Required(ErrorMessage = "the product name is required")]
+        public string ProductName { get; set; }
+        [Required(ErrorMessage = "the product price is required")]
         public decimal Price { get; set; }
     }
 

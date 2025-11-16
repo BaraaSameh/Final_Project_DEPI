@@ -55,12 +55,10 @@ namespace PayPalAdvancedIntegration.Services
             if (user == null)
                 throw new Exception($"User with ID {userId} not found");
 
-            // Fetch order from DB (you need to implement GetByIdAsync in order repository/service)
             var order = await _orderService.GetByIdAsync(orderid);
             if (order == null)
                 throw new Exception($"Order with ID {orderid} not found");
 
-            // Create PayPal order
             var createOrderInput = new CreateOrderInput
             {
                 Body = new OrderRequest

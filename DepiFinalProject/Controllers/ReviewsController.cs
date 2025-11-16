@@ -54,7 +54,7 @@ namespace DepiFinalProject.Controllers
         {
             try {
                 var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                var isAdmin = User.IsInRole("Admin");
+                var isAdmin = User.IsInRole("admin");
                 var updated = await _reviewService.UpdateReviewAsync(id, userId, dto, isAdmin);
                 return Ok(updated);
             }
@@ -70,7 +70,7 @@ namespace DepiFinalProject.Controllers
         {
             try {
                 var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                var isAdmin = User.IsInRole("Admin");
+                var isAdmin = User.IsInRole("admin");
                 var result = await _reviewService.DeleteReviewAsync(id, userId, isAdmin);
                 if (!result) return NotFound();
                 return Ok("Deleted successfully");

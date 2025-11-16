@@ -1,4 +1,7 @@
-﻿namespace DepiFinalProject.DTOs
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+
+namespace DepiFinalProject.DTOs
 {
     public class AuthenticationDTO
     {
@@ -6,26 +9,38 @@
 
         public class RegisterRequest
         {
+            [Required(ErrorMessage ="User email is required")]
+            [EmailAddress]
             public string UserEmail { get; set; }
+            [Required(ErrorMessage ="user passowrd is required")]
+            [PasswordPropertyText]
             public string UserPassword { get; set; }
             public string UserFirstName { get; set; }
             public string UserLastName { get; set; }
+            [Phone]
+            [MaxLength(11, ErrorMessage = "Description should be 11 number")]
+            [MinLength(11, ErrorMessage = "Description should be 11 number")]
             public string UserPhone { get; set; }
         }
 
         public class LoginRequest
         {
+            [Required(ErrorMessage = "User Email is required")]
+            [EmailAddress]
             public string UserEmail { get; set; }
+            [Required(ErrorMessage ="User Password is required")]
             public string UserPassword { get; set; }
         }
 
         public class RefreshTokenRequest
         {
+            [Required(ErrorMessage = "token is required")]
             public string RefreshToken { get; set; }
         }
 
         public class RevokeTokenRequest
         {
+            [Required(ErrorMessage ="token is required")]
             public string RefreshToken { get; set; }
         }
 

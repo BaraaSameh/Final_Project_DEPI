@@ -2,6 +2,7 @@
 using DepiFinalProject.Interfaces;
 using DepiFinalProject.Models;
 using Microsoft.EntityFrameworkCore;
+using static DepiFinalProject.DTOs.ReturnDto;
 
 namespace DepiFinalProject.Repositories
 {
@@ -20,7 +21,12 @@ namespace DepiFinalProject.Repositories
                 .Include(r => r.OrderItem)
                 .ToListAsync();
         }
-
+        public async Task<IEnumerable<Return?>> GetByUserIdAsync(int userId)
+        {
+            return await _context.Returns
+                .Where(r => r.UserId == userId)
+                .ToListAsync();
+        }
         public async Task<Return?> GetByIdAsync(int id)
         {
             return await _context.Returns
@@ -69,7 +75,7 @@ namespace DepiFinalProject.Repositories
             
 
             returnRequest.IsCancelled = true;
-            returnRequest.Status = "Cancelled";
+            returnRequest.Status = "cancelled";
             _context.Returns.Update(returnRequest);
             await _context.SaveChangesAsync();
             return true;
