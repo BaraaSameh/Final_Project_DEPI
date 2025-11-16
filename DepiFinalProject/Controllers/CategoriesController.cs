@@ -24,8 +24,9 @@ namespace DepiFinalProject.Controllers
         /// Get all categories.
         /// </summary>
         /// <returns>List of categories.</returns>
+        ///
+        [AllowAnonymous]
         [HttpGet]
-        [Authorize(Roles = "admin,client,seller")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategories()
@@ -46,8 +47,10 @@ namespace DepiFinalProject.Controllers
         /// </summary>
         /// <param name="id">Category ID</param>
         /// <returns>Category data</returns>
+        /// 
+        [AllowAnonymous]
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,client,seller")]
+       // [Authorize(Roles = "admin,client,seller")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

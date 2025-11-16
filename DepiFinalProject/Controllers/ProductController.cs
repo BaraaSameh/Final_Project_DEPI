@@ -29,8 +29,9 @@ namespace DepiFinalProject.Controllers
         /// <response code="400">If an error occurs while fetching products</response>
         /// <response code="401">If the user is not authenticated</response>
         /// <response code="403">If the user doesn't have the required role</response>
+        [AllowAnonymous]
         [HttpGet]
-        [Authorize(Roles = "admin,client,seller")]
+       // [Authorize(Roles = "admin,client,seller")]
         [ProducesResponseType(typeof(IEnumerable<ProductResponseDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -71,8 +72,9 @@ namespace DepiFinalProject.Controllers
         /// <response code="401">If the user is not authenticated</response>
         /// <response code="403">If the user doesn't have the required role</response>
         /// <response code="404">If the product with the specified ID is not found</response>
+        [AllowAnonymous]
         [HttpGet("{id:int}")]
-        [Authorize(Roles = "admin,client,seller")]
+       // [Authorize(Roles = "admin,client,seller")]
         [ProducesResponseType(typeof(SuccessResponse<ProductDetailsDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -143,9 +145,10 @@ namespace DepiFinalProject.Controllers
         /// <response code="400">If an error occurs while fetching products</response>
         /// <response code="401">If the user is not authenticated</response>
         /// <response code="403">If the user doesn't have the required role</response>
-        /// <response code="404">If no products are found in the specified category</response>
+        /// <response code="404">If no products are found in the specified category</respons
+        [AllowAnonymous]
         [HttpGet("category/{categoryId:int}")]
-        [Authorize(Roles = "admin,client,seller")]
+      //  [Authorize(Roles = "admin,client,seller")]
         [ProducesResponseType(typeof(SuccessResponse<IEnumerable<ProductResponseDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
