@@ -1,25 +1,36 @@
 ﻿using DepiFinalProject.DTOs;
 using DepiFinalProject.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using static DepiFinalProject.DTOs.OrderDto;
 
 namespace DepiFinalProject.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/orders")]
     [ApiController]
     [Authorize]
     public class OrderController : ControllerBase
     {
+        private readonly IOrderService _orderService;
 
-        protected readonly IOrderService _orderService;
         public OrderController(IOrderService orderService)
         {
             _orderService = orderService;
         }
-        [Authorize(Roles = "admin,client,seller")]
 
-        [HttpGet] // GET: api/orders - Get all orders
+        /// <summary>
+        /// Get all orders (admin, client, seller)
+        /// </summary>
+        /// <returns>List of orders</returns>
+        [HttpGet]
+        [Authorize(Roles = "admin,client,seller")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<OrderResponseDTO>>> GetAllOrders()
         {
             try
@@ -32,12 +43,18 @@ namespace DepiFinalProject.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while fetching orders.", details = ex.Message });
+                return StatusCode(500,$"An error occurred while fetching orders.:{ex.Message} \n {ex.InnerException}");
             }
         }
-        [Authorize(Roles = "admin,client,seller")]
 
-        [HttpGet("{id:int}")] // GET: api/orders/{id} - Get order by ID
+        /// <summary>
+        /// Get a single order by its ID
+        /// </summary>
+        [HttpGet("{id:int}")]
+        [Authorize(Roles = "admin,client,seller")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<OrderDetailsDTO>> GetOrderById(int id)
         {
             try
@@ -51,12 +68,18 @@ namespace DepiFinalProject.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred.", details = ex.Message });
+                return StatusCode(500, $"An internal error occurred.:{ex.Message} \n {ex.InnerException}");
             }
         }
-        [Authorize(Roles = "admin,client")]
 
-        [HttpGet("user/{userId:int}")] // GET: api/orders/user/{userId} - Get user orders
+        /// <summary>
+        /// Get all orders belonging to a specific user
+        /// </summary>
+        [HttpGet("user/{userId:int}")]
+        [Authorize(Roles = "admin,client")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<OrderResponseDTO>>> GetUserOrders(int userId)
         {
             try
@@ -69,12 +92,18 @@ namespace DepiFinalProject.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while fetching user orders.", details = ex.Message });
+                return StatusCode(500, $"Failed to fetch user orders.:{ex.Message} \n {ex.InnerException}");
             }
         }
 
+        /// <summary>
+        /// Create a new order
+        /// </summary>
+        [HttpPost]
         [Authorize(Roles = "admin,client")]
-        [HttpPost] // POST: api/orders - Create new order
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<OrderResponseDTO>> CreateOrder([FromBody] CreateOrderDTO dto)
         {
             if (!ModelState.IsValid)
@@ -87,21 +116,27 @@ namespace DepiFinalProject.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                // For invalid product ID or stock issue
                 return BadRequest(new { message = ex.Message });
             }
-            catch (ArgumentException ex)  // Catches validation exceptions
+            catch (ArgumentException ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Failed to create order.", details = ex.Message });
+                return StatusCode(500, $"Failed to create the order.:{ex.Message} \n {ex.InnerException}");
             }
         }
 
+        /// <summary>
+        /// Update an order’s status
+        /// </summary>
+        [HttpPut("{id:int}")]
         [Authorize(Roles = "admin,seller")]
-        [HttpPut("{id:int}")] // PUT: api/orders/{id} - Update order status
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<OrderResponseDTO>> UpdateOrderStatus(int id, [FromBody] UpdateOrderStatusDTO dto)
         {
             if (!ModelState.IsValid)
@@ -118,20 +153,28 @@ namespace DepiFinalProject.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Failed to update order status.", details = ex.Message });
+                return StatusCode(500, $"Failed to update order status.:{ex.Message} \n {ex.InnerException}");
             }
         }
 
+        /// <summary>
+        /// Cancel an order
+        /// </summary>
+        [HttpDelete("{id:int}")]
         [Authorize(Roles = "admin,client,seller")]
-        [HttpDelete("{id:int}")] // DELETE: api/orders/{id} - Cancel order
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> CancelOrder(int id)
         {
             try
             {
-                var result = await _orderService.CancelAsync(id);
-                if (!result)
-                    return BadRequest(new { message = "Order not found or cannot be cancelled." });
-                return Ok(new { message = "Order cancelled successfully" });
+                var success = await _orderService.CancelAsync(id);
+                if (!success)
+                    return BadRequest(new { message = "Order cannot be cancelled or does not exist." });
+
+                return Ok(new { message = "Order cancelled successfully." });
             }
             catch (KeyNotFoundException ex)
             {
@@ -139,9 +182,8 @@ namespace DepiFinalProject.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Failed to cancel order.", details = ex.Message });
+                return StatusCode(500, $"Failed to cancel the order:{ex.Message} \n {ex.InnerException}");
             }
         }
-
     }
 }

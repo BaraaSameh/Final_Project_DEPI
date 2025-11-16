@@ -3,15 +3,15 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using DepiFinalProject.DTOs;
 using DepiFinalProject.Interfaces;
-using DepiFinalProject.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DepiFinalProject.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] 
+    [Authorize]
     public class CartController : ControllerBase
     {
         private readonly ICartService _cartService;
@@ -21,16 +21,22 @@ namespace DepiFinalProject.Controllers
             _cartService = cartService;
         }
 
-        private int GetUserId()
-        {
-            return int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        }
+        /// <summary>
+        /// Get the current user's ID from claims.
+        /// </summary>
+        private int GetUserId() => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
+        /// <summary>
+        /// Get the current user's cart with all items.
+        /// </summary>
         [HttpGet]
         [Authorize(Roles = "admin,client")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<CartResponseDto>> GetCart()
         {
-           
+            try
+            {
                 var userId = GetUserId();
                 var items = await _cartService.GetAllAsync(userId);
 
@@ -43,97 +49,144 @@ namespace DepiFinalProject.Controllers
                 };
 
                 return Ok(response);
-            
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while retrieving the cart.:{ex.Message} \n {ex.InnerException}");
+            }
         }
 
+        /// <summary>
+        /// Get a specific item in the current user's cart.
+        /// </summary>
         [HttpGet("{productId}")]
         [Authorize(Roles = "admin,client")]
-
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<CartItemDto>> GetCartItem(int productId)
         {
-           
+            try
+            {
                 var userId = GetUserId();
                 var item = await _cartService.GetByProductIdAsync(userId, productId);
 
                 if (item == null)
-                    return NotFound();
+                    return NotFound(new { Message = $"Product {productId} not found in cart." });
 
                 return Ok(item);
-           
-            
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while retrieving the cart item.:{ex.Message} \n {ex.InnerException}");
+            }
         }
 
-        [HttpPost("{productid}")]
+        /// <summary>
+        /// Add a product to the current user's cart.
+        /// </summary>
+        [HttpPost("{productId}")]
         [Authorize(Roles = "admin,client")]
-
-        public async Task<IActionResult> AddToCart(int productid, int quantity)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AddToCart(int productId, int quantity = 1)
         {
-            try {
+            try
+            {
+                var userId = GetUserId();
                 var item = new AddToCartRequestDto
                 {
-                    ProductId = productid,
+                    ProductId = productId,
                     Quantity = quantity > 0 ? quantity : 1
                 };
-                var userId = GetUserId();
+
                 await _cartService.AddAsync(userId, item);
-                var cartitem = await _cartService.GetByProductIdAsync(userId, item.ProductId);
+                var cartItem = await _cartService.GetByProductIdAsync(userId, productId);
 
-                if (cartitem == null)
-                    return NotFound();
-                return Ok(new { Message = $"item added to your cart successfully. and your quantity of the the product {item.ProductId} is {cartitem.Quantity} with total price {cartitem.Price * cartitem.Quantity}" });
+                if (cartItem == null)
+                    return NotFound(new { Message = $"Product {productId} could not be added." });
 
+                return Ok(new
+                {
+                    Message = "Item added successfully.",
+                    ProductId = productId,
+                    Quantity = cartItem.Quantity,
+                    TotalPrice = cartItem.Quantity * cartItem.Price
+                });
             }
-            catch (Exception ex) {
-                return StatusCode(500, new { Message = "An error occurred while adding the item to the cart.", Details = ex.Message });
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while adding the item to the cart.:{ex.Message} \n {ex.InnerException}");
             }
-         }
+        }
 
+        /// <summary>
+        /// Update the quantity of a specific product in the cart.
+        /// </summary>
         [HttpPut("{productId}")]
         [Authorize(Roles = "admin,client")]
-
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateQuantity(int productId, [FromBody] UpdateQuantityDto dto)
         {
-            try {
+            try
+            {
                 var userId = GetUserId();
                 await _cartService.UpdateQuantityAsync(userId, productId, dto.Quantity);
-                return Ok(new { Message = $"Quantity updated to {dto.Quantity} for product {productId}" });
 
+                return Ok(new
+                {
+                    Message = $"Quantity updated to {dto.Quantity} for product {productId}"
+                });
             }
-            catch (Exception ex) {
-                return StatusCode(500, new { Message = "An error occurred while updating the item quantity.", Details = ex.Message });
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while updating the item quantity.:{ex.Message} \n {ex.InnerException}");
             }
-                  }
+        }
+
+        /// <summary>
+        /// Remove all items from the current user's cart.
+        /// </summary>
         [HttpDelete]
         [Authorize(Roles = "admin,client")]
-
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ClearCart()
         {
-            try {
+            try
+            {
                 var userId = GetUserId();
                 await _cartService.ClearAsync(userId);
                 return Ok(new { Message = "All products removed from your cart." });
             }
-            catch(Exception ex) { 
-                return StatusCode(500, new { Message = "An error occurred while clearing the cart.", Details = ex.Message });
+            catch (System.Exception ex)
+            {
+                return StatusCode(500,  $"An error occurred while clearing the cart.:{ex.Message} \n {ex.InnerException}");
             }
-        
         }
 
-
+        /// <summary>
+        /// Remove a specific item from the current user's cart.
+        /// </summary>
         [HttpDelete("{productId}")]
         [Authorize(Roles = "admin,client")]
-
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RemoveItem(int productId)
         {
-            try {
+            try
+            {
                 var userId = GetUserId();
                 await _cartService.RemoveAsync(userId, productId);
-                return Ok();
+
+                return Ok(new { Message = $"Product {productId} removed from your cart." });
             }
-            catch(Exception ex) {
-                return StatusCode(500, new { Message = "An error occurred while removing the item from the cart.", Details = ex.Message });
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while removing the item from the cart.:{ex.Message} \n {ex.InnerException}");
             }
-          
         }
     }
 }

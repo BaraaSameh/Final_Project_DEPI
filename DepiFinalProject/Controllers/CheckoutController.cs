@@ -2,19 +2,21 @@
 using DepiFinalProject.Interfaces;
 using DepiFinalProject.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DepiFinalProject.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("api/[controller]")]
+    [Authorize]
     public class PaymentsController : ControllerBase
     {
         private readonly IPaymentRepository _paymentRepository;
         private readonly IPaymentService _paymentService;
 
-        // NOTE: consider injecting IConfiguration to build URL from config instead of hardcoding.
         private const string PayPalSandboxApproveBase = "https://www.sandbox.paypal.com/checkoutnow?token=";
 
         public PaymentsController(IPaymentRepository paymentRepository, IPaymentService paymentService)
@@ -23,52 +25,31 @@ namespace DepiFinalProject.Controllers
             _paymentService = paymentService;
         }
 
+        /// <summary>
+        /// Create a new PayPal payment (admin, client)
+        /// </summary>
+        /// <param name="dto">Amount + OrderId</param>
+        /// <returns>Payment details + PayPal approval URL</returns>
         [HttpPost]
         [Authorize(Roles = "admin,client")]
-
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreatePayment([FromBody] CreatePaymentRequestDto dto)
         {
-            try {
-                if (dto == null || dto.Amount <= 0)
-                    return BadRequest(new { message = "Invalid payment amount" });
+            if (dto == null || dto.Amount <= 0)
+                return BadRequest(new { message = "Invalid payment amount" });
 
-                // Create the PayPal order (service returns PayPal order id and approval url)
-                var (paymentid, approveUrl) = await _paymentService.CreateOrderAsync(dto.Amount, dto.OrderID);
+            try
+            {
+                var (paymentId, approveUrl) = await _paymentService.CreateOrderAsync(dto.Amount, dto.OrderID);
 
-                var payment = (await _paymentRepository.GetAllAsync())
-                                 .FirstOrDefault(p => p.PayPalOrderId == paymentid);
+                var payment = await _paymentRepository.GetByIdAsync(paymentId);
 
                 if (payment == null)
                     return BadRequest(new { message = "Payment could not be created" });
 
-                var response = new PaymentResponseDto
-                {
-                    PaymentID = payment.PaymentID,
-                    OrderID = payment.OrderID ?? 0,
-                    Amount = payment.Amount,
-                    Status = payment.Status,
-                    PaymentMethod = payment.PaymentMethod,
-                    PaidAt = payment.PaidAt,
-                    Order = payment.Order != null
-                        ? new OrderSummaryDto
-                        {
-                            OrderNumber = payment.Order.OrderNo,
-                            TotalAmount = payment.Order.TotalAmount
-                        }
-                        : null,
-                    User = payment.User != null
-                        ? new UserSummaryDto
-                        {
-                            UserId = payment.User.UserID,
-                            Email = payment.User.UserEmail
-                        }
-                        : null,
-                    PaymentDetails = new PaymentDetailsDto
-                    {
-                        PayPalOrderId = payment.PayPalOrderId,
-                        PayPalLink = approveUrl ?? string.Empty
-                    }
-                };
+                var response = MapPaymentToDto(payment, approveUrl);
 
                 return Ok(new
                 {
@@ -77,57 +58,42 @@ namespace DepiFinalProject.Controllers
                     message = "PayPal order created successfully"
                 });
             }
-            catch(Exception ex) {
-                return StatusCode(500, new { message = "An error occurred while retrieving payments", error = ex.Message });
+            catch (Exception ex)
+            {
+                return StatusCode(500,  $"Error deleting product.:{ex.Message} \n {ex.InnerException}");
             }
-
         }
 
-        [Authorize(Roles = "admin")]
+        /// <summary>
+        /// Get all payments (admin only)
+        /// </summary>
         [HttpGet]
+        [Authorize(Roles = "admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllPayments()
         {
-            try {
+            try
+            {
                 var payments = await _paymentRepository.GetAllAsync();
-
-                var paymentDtos = payments.Select(p => new PaymentResponseDto
-                {
-                    PaymentID = p.PaymentID,
-                    OrderID = p.OrderID ?? 0,
-                    Amount = p.Amount,
-                    Status = p.Status,
-                    PaymentMethod = p.PaymentMethod,
-                    PaidAt = p.PaidAt,
-                    Order = p.Order == null ? null : new OrderSummaryDto
-                    {
-                        OrderNumber = p.Order.OrderNo,
-                        TotalAmount = p.Order.TotalAmount
-                    },
-                    User = p.User == null ? null : new UserSummaryDto
-                    {
-                        UserId = p.User.UserID,
-                        Email = p.User.UserEmail
-                    },
-                    PaymentDetails = new PaymentDetailsDto
-                    {
-                        PayPalOrderId = p.PayPalOrderId,
-                        PayPalLink = string.IsNullOrEmpty(p.PayPalOrderId) ? string.Empty : PayPalSandboxApproveBase + p.PayPalOrderId
-                    }
-                }).ToList();
-
+                var paymentDtos = payments.Select(p => MapPaymentToDto(p)).ToList(); // explicit lambda
                 return Ok(paymentDtos);
             }
-           
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving payments", error = ex.Message });
+                return StatusCode(500, $"Error deleting product.:{ex.Message} \n {ex.InnerException}");
             }
-            
         }
 
+        /// <summary>
+        /// Get payment by ID (admin or the payment owner)
+        /// </summary>
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin")]
-
+        [Authorize(Roles = "admin,client")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetPaymentById(string id)
         {
             try
@@ -138,50 +104,30 @@ namespace DepiFinalProject.Controllers
 
                 var userId = int.Parse(User.FindFirst("userId")!.Value);
                 var isAdmin = User.IsInRole("admin");
+
                 if (payment.UserId != userId && !isAdmin)
                     return Forbid();
 
-                var dto = new PaymentResponseDto
-                {
-                    PaymentID = payment.PaymentID,
-                    OrderID = payment.OrderID ?? 0,
-                    Amount = payment.Amount,
-                    Status = payment.Status,
-                    PaymentMethod = payment.PaymentMethod,
-                    PaidAt = payment.PaidAt,
-                    Order = payment.Order == null ? null : new OrderSummaryDto
-                    {
-                        OrderNumber = payment.Order.OrderNo,
-                        TotalAmount = payment.Order.TotalAmount
-
-                    },
-                    User = payment.User == null ? null : new UserSummaryDto
-                    {
-                        UserId = payment.UserId,
-                        Email = payment.User.UserEmail
-                    },
-                    PaymentDetails = new PaymentDetailsDto
-                    {
-                        PayPalOrderId = payment.PayPalOrderId,
-                        PayPalLink = string.IsNullOrEmpty(payment.PayPalOrderId) ? string.Empty : PayPalSandboxApproveBase + payment.PayPalOrderId
-                    }
-                };
-
-                return Ok(dto);
+                return Ok(MapPaymentToDto(payment));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving the payment", error = ex.Message });
+                return StatusCode(500, $"Error deleting product.:{ex.Message} \n {ex.InnerException}");
             }
         }
-           
 
+        /// <summary>
+        /// Get all payments for a specific user (admin or the user themselves)
+        /// </summary>
         [HttpGet("user/{userId}")]
-        [Authorize(Roles = "admin")]
-
+        [Authorize(Roles = "admin,client")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetUserPayments(int userId)
         {
-            try {
+            try
+            {
                 var currentUserId = int.Parse(User.FindFirst("userId")!.Value);
                 var isAdmin = User.IsInRole("admin");
 
@@ -189,92 +135,87 @@ namespace DepiFinalProject.Controllers
                     return Forbid();
 
                 var payments = await _paymentRepository.GetByUserIdAsync(userId);
-
-                var paymentDtos = payments.Select(p => new PaymentResponseDto
-                {
-                    PaymentID = p.PaymentID,
-                    OrderID = p.OrderID ?? 0,
-                    Amount = p.Amount,
-                    Status = p.Status,
-                    PaymentMethod = p.PaymentMethod,
-                    PaidAt = p.PaidAt,
-                    Order = p.Order == null ? null : new OrderSummaryDto
-                    {
-                        OrderNumber = p.Order.OrderNo,
-                        TotalAmount = p.Order.TotalAmount
-                    },
-                    User = p.User == null ? null : new UserSummaryDto
-                    {
-                        UserId = p.User.UserID,
-                        Email = p.User.UserEmail
-                    },
-                    PaymentDetails = new PaymentDetailsDto
-                    {
-                        PayPalOrderId = p.PayPalOrderId,
-                        PayPalLink = string.IsNullOrEmpty(p.PayPalOrderId) ? string.Empty : PayPalSandboxApproveBase + p.PayPalOrderId
-                    }
-                }).ToList();
-
+                var paymentDtos = payments.Select(p => MapPaymentToDto(p)).ToList(); // explicit lambda
                 return Ok(paymentDtos);
             }
-            
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving user payments", error = ex.Message });
+                return StatusCode(500, $"Error deleting product.:{ex.Message} \n {ex.InnerException}");
             }
-            
         }
 
-        [Authorize(Roles = "admin")]
+        /// <summary>
+        /// Update payment status (admin only)
+        /// </summary>
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdatePaymentStatus(string id, [FromBody] UpdatePaymentDto dto)
         {
-            try {
+            try
+            {
                 var payment = await _paymentRepository.GetByIdAsync(id);
                 if (payment == null)
                     return NotFound(new { message = "Payment not found" });
 
-                payment.Status = dto.Status ?? payment.Status;
-                payment.PaymentMethod = dto.PaymentMethod ?? payment.PaymentMethod;
+                if (!string.IsNullOrEmpty(dto.Status))
+                    payment.Status = dto.Status;
+
+                if (!string.IsNullOrEmpty(dto.PaymentMethod))
+                    payment.PaymentMethod = dto.PaymentMethod;
 
                 await _paymentRepository.UpdateAsync(payment);
 
-                // reload with navigation properties (repository already includes Order & User)
-                var updated = await _paymentRepository.GetByIdAsync(id);
-
-                var response = new PaymentResponseDto
+                return Ok(new
                 {
-                    PaymentID = updated.PaymentID,
-                    OrderID = updated.OrderID ?? 0,
-                    Amount = updated.Amount,
-                    Status = updated.Status,
-                    PaymentMethod = updated.PaymentMethod,
-                    PaidAt = updated.PaidAt,
-                    Order = updated.Order == null ? null : new OrderSummaryDto
-                    {
-                        OrderNumber = updated.Order.OrderNo,
-                        TotalAmount = updated.Order.TotalAmount
-                    },
-                    User = updated.User == null ? null : new UserSummaryDto
-                    {
-                        UserId = updated.User.UserID,
-                        Email = updated.User.UserEmail
-                    },
-                    PaymentDetails = new PaymentDetailsDto
-                    {
-                        PayPalOrderId = updated.PayPalOrderId,
-                        PayPalLink = string.IsNullOrEmpty(updated.PayPalOrderId) ? string.Empty : PayPalSandboxApproveBase + updated.PayPalOrderId
-                    }
-                };
-
-                return Ok(new { message = "Payment updated successfully", payment = response });
-            } catch (Exception ex)
-            {
-                return StatusCode(500, ApiResponse<IActionResult>.ErrorResponse(
-                    "An error occurred during payment update", new List<string> { ex.Message }));
+                    message = "Payment updated successfully",
+                    payment = MapPaymentToDto(payment)
+                });
             }
-            
-           
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error deleting product.:{ex.Message} \n {ex.InnerException}");
+            }
+        }
+
+        /// <summary>
+        /// Maps Payment entity to PaymentResponseDto
+        /// </summary>
+        /// <param name="payment">Payment entity</param>
+        /// <param name="approveUrl">Optional PayPal approval URL</param>
+        /// <returns>PaymentResponseDto</returns>
+        private PaymentResponseDto MapPaymentToDto(Payment payment, string approveUrl = null)
+        {
+            return new PaymentResponseDto
+            {
+                PaymentID = payment.PaymentID,
+                OrderID = payment.OrderID ?? 0,
+                Amount = payment.Amount,
+                Status = payment.Status,
+                PaymentMethod = payment.PaymentMethod,
+                PaidAt = payment.PaidAt,
+
+                Order = payment.Order == null ? null : new OrderSummaryDto
+                {
+                    OrderNumber = payment.Order.OrderNo,
+                    TotalAmount = payment.Order.TotalAmount
+                },
+
+                User = payment.User == null ? null : new UserSummaryDto
+                {
+                    UserId = payment.User.UserID,
+                    Email = payment.User.UserEmail
+                },
+
+                PaymentDetails = new PaymentDetailsDto
+                {
+                    PayPalOrderId = payment.PayPalOrderId,
+                    PayPalLink = approveUrl ??
+                        (string.IsNullOrEmpty(payment.PayPalOrderId) ? "" : PayPalSandboxApproveBase + payment.PayPalOrderId)
+                }
+            };
         }
     }
 }

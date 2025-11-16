@@ -1,6 +1,5 @@
 ﻿using DepiFinalProject.DTOs;
 using DepiFinalProject.Interfaces;
-using DepiFinalProject.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +21,9 @@ namespace DepiFinalProject.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ApiResponse<AuthenticationResponse>>> Register([FromBody] RegisterRequest request)
         {
             try
@@ -35,17 +37,21 @@ namespace DepiFinalProject.Controllers
             catch (InvalidOperationException ex)
             {
                 return BadRequest(ApiResponse<AuthenticationResponse>.ErrorResponse(
-                    ex.Message, new List<string> { ex.Message }));
+                    ex.Message, new List<string> { ex.Message, ex.InnerException?.Message }));
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ApiResponse<AuthenticationResponse>.ErrorResponse(
-                    "An error occurred during registration", new List<string> { ex.Message }));
+                    "An error occurred during registration",
+                    new List<string> { ex.Message, ex.InnerException?.Message }));
             }
         }
 
         [AllowAnonymous]
         [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ApiResponse<AuthenticationResponse>>> Login([FromBody] LoginRequest request)
         {
             try
@@ -59,22 +65,26 @@ namespace DepiFinalProject.Controllers
             catch (UnauthorizedAccessException ex)
             {
                 return Unauthorized(ApiResponse<AuthenticationResponse>.ErrorResponse(
-                    ex.Message, new List<string> { ex.Message }));
+                    ex.Message, new List<string> { ex.Message, ex.InnerException?.Message }));
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ApiResponse<AuthenticationResponse>.ErrorResponse(
-                    "An error occurred during login", new List<string> { ex.Message }));
+                    "An error occurred during login",
+                    new List<string> { ex.Message, ex.InnerException?.Message }));
             }
         }
 
         [HttpPost("refresh-token")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ApiResponse<AuthenticationResponse>>> RefreshToken([FromBody] RefreshTokenRequest request)
         {
             try
             {
                 var token = request.RefreshToken ?? Request.Cookies["refreshToken"];
-
                 if (string.IsNullOrEmpty(token))
                 {
                     return BadRequest(ApiResponse<AuthenticationResponse>.ErrorResponse(
@@ -90,22 +100,26 @@ namespace DepiFinalProject.Controllers
             catch (UnauthorizedAccessException ex)
             {
                 return Unauthorized(ApiResponse<AuthenticationResponse>.ErrorResponse(
-                    ex.Message, new List<string> { ex.Message }));
+                    ex.Message, new List<string> { ex.Message, ex.InnerException?.Message }));
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ApiResponse<AuthenticationResponse>.ErrorResponse(
-                    "An error occurred during token refresh", new List<string> { ex.Message }));
+                    "An error occurred during token refresh",
+                    new List<string> { ex.Message, ex.InnerException?.Message }));
             }
         }
 
         [HttpPost("revoke-token")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ApiResponse<bool>>> RevokeToken([FromBody] RefreshTokenRequest request)
         {
             try
             {
                 var token = request.RefreshToken ?? Request.Cookies["refreshToken"];
-
                 if (string.IsNullOrEmpty(token))
                 {
                     return BadRequest(ApiResponse<bool>.ErrorResponse(
@@ -113,7 +127,6 @@ namespace DepiFinalProject.Controllers
                 }
 
                 var result = await _authService.RevokeTokenAsync(token);
-
                 if (!result)
                 {
                     return NotFound(ApiResponse<bool>.ErrorResponse(
@@ -125,7 +138,8 @@ namespace DepiFinalProject.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, ApiResponse<bool>.ErrorResponse(
-                    "An error occurred during token revocation", new List<string> { ex.Message }));
+                    "An error occurred during token revocation",
+                    new List<string> { ex.Message, ex.InnerException?.Message }));
             }
         }
 
@@ -134,12 +148,12 @@ namespace DepiFinalProject.Controllers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Expires = DateTimeOffset.UtcNow.AddDays(14),
                 Secure = true,
-                SameSite = SameSiteMode.Strict
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddDays(14)
             };
 
-             Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+            Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
         }
     }
 }

@@ -6,7 +6,7 @@ using static DepiFinalProject.DTOs.OrderDto;
 
 namespace DepiFinalProject.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/orders/{orderId}/items")]
     [ApiController]
     [Authorize]
     public class OrderItemController : ControllerBase
@@ -17,55 +17,47 @@ namespace DepiFinalProject.Controllers
         {
             _orderService = orderService;
         }
-        [Authorize(Roles = "admin,client,seller")]
 
         [HttpGet]
+        [Authorize(Roles = "admin,client,seller")]
         public async Task<ActionResult<IEnumerable<OrderItemResponseDTO>>> GetOrderItems(int orderId)
         {
+            if (orderId <= 0)
+                return BadRequest(new { message = "Invalid order ID." });
+
             try
             {
-                var orderItems = await _orderService.GetOrderItemsAsync(orderId);
-                return Ok(orderItems);
+                var items = await _orderService.GetOrderItemsAsync(orderId);
+                return Ok(items);
             }
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new { message = ex.Message });
             }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while fetching order items.", details = ex.Message });
+                return BadRequest($"Failed to fetch order items.:{ex.Message} \n {ex.InnerException}");
             }
         }
 
-        // POST: api/orders/{orderId}/items
-        [Authorize(Roles = "admin,client")]
-
         [HttpPost]
-        public async Task<ActionResult<OrderItemResponseDTO>> AddOrderItem(int orderId, [FromBody] AddOrderItemDTO dto)
+        [Authorize(Roles = "admin,client")]
+        public async Task<ActionResult<OrderItemResponseDTO>> AddOrderItem(int orderId, AddOrderItemDTO dto)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return ValidationProblem(ModelState);
 
             try
             {
-                var orderItem = await _orderService.AddOrderItemAsync(orderId, dto);
-                return CreatedAtAction(
-                    nameof(GetOrderItems),
+                var item = await _orderService.AddOrderItemAsync(orderId, dto);
+
+                return CreatedAtAction(nameof(GetOrderItems),
                     new { orderId = orderId },
-                    orderItem
-                );
+                    item);
             }
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new { message = ex.Message });
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(new { message = ex.Message });
             }
             catch (ArgumentException ex)
             {
@@ -73,7 +65,7 @@ namespace DepiFinalProject.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Failed to add item to order.", details = ex.Message });
+                return BadRequest($"Failed to add item to order.:{ex.Message} \n {ex.InnerException}");
             }
         }
     }

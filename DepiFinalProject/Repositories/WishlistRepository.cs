@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DepiFinalProject.Repositories
 {
-    public class WishlistRepository: IWishlistRepository
+    public class WishlistRepository : IWishlistRepository
     {
         private readonly AppDbContext _context;
 
@@ -20,7 +20,7 @@ namespace DepiFinalProject.Repositories
 
         public async Task<List<WishlistItemDto>> GetAllAsync(int userId)
         {
-            return await _context.Wishlists
+            var wishlist = await _context.Wishlists
                 .Where(w => w.UserID == userId)
                 .Include(w => w.Product)
                 .Select(w => new WishlistItemDto
@@ -30,6 +30,8 @@ namespace DepiFinalProject.Repositories
                     Price = w.Product.Price
                 })
                 .ToListAsync();
+
+            return wishlist ?? new List<WishlistItemDto>();
         }
 
         public async Task<WishlistItemDto?> GetByProductIdAsync(int userId, int productId)
@@ -46,42 +48,55 @@ namespace DepiFinalProject.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task AddAsync(int userId, WishlistItemDto item)
+        public async Task<bool> AddAsync(int userId, WishlistItemDto item)
         {
             bool exists = await _context.Wishlists
                 .AnyAsync(w => w.UserID == userId && w.ProductID == item.ProductId);
 
-            if (!exists)
+            if (exists)
             {
-                var wishlist = new Wishlist
-                {
-                    UserID = userId,
-                    ProductID = item.ProductId,
-                    AddedAt = DateTime.UtcNow
-                };
-
-                _context.Wishlists.Add(wishlist);
-                await _context.SaveChangesAsync();
+                return false;
             }
+
+            var wishlist = new Wishlist
+            {
+                UserID = userId,
+                ProductID = item.ProductId,
+                AddedAt = DateTime.UtcNow
+            };
+
+            _context.Wishlists.Add(wishlist);
+            await _context.SaveChangesAsync();
+            return true; 
         }
 
-        public async Task RemoveAsync(int userId, int productId)
+        public async Task<bool> RemoveAsync(int userId, int productId)
         {
             var existing = await _context.Wishlists
                 .FirstOrDefaultAsync(w => w.UserID == userId && w.ProductID == productId);
 
-            if (existing != null)
+            if (existing == null)
             {
-                _context.Wishlists.Remove(existing);
-                await _context.SaveChangesAsync();
+                return false;
             }
+
+            _context.Wishlists.Remove(existing);
+            await _context.SaveChangesAsync();
+            return true; 
         }
 
-        public async Task ClearAsync(int userId)
+        public async Task<bool> ClearAsync(int userId)
         {
-            var items = _context.Wishlists.Where(w => w.UserID == userId);
+            var items = await _context.Wishlists.Where(w => w.UserID == userId).ToListAsync();
+
+            if (items.Count == 0)
+            {
+                return false;
+            }
+
             _context.Wishlists.RemoveRange(items);
             await _context.SaveChangesAsync();
+            return true; 
         }
     }
 }

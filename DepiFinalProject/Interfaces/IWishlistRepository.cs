@@ -8,8 +8,8 @@ namespace DepiFinalProject.Interfaces
     {
         Task<List<WishlistItemDto>> GetAllAsync(int userId);
         Task<WishlistItemDto?> GetByProductIdAsync(int userId, int productId);
-        Task AddAsync(int userId, WishlistItemDto item);
-        Task RemoveAsync(int userId, int productId);
-        Task ClearAsync(int userId);
+        Task<bool> AddAsync(int userId, WishlistItemDto item);
+        Task<bool> RemoveAsync(int userId, int productId);
+        Task<bool>  ClearAsync(int userId);
     }
 }

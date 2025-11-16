@@ -8,77 +8,110 @@ namespace DepiFinalProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize] 
+    [Authorize]
+    [Produces("application/json")]
     public class ReviewsController : ControllerBase
     {
         private readonly IReviewService _reviewService;
+        private readonly ILogger<ReviewsController> _logger;
 
-        public ReviewsController(IReviewService reviewService)
+        public ReviewsController(IReviewService reviewService, ILogger<ReviewsController> logger)
         {
             _reviewService = reviewService;
+            _logger = logger;
         }
 
+        /// <summary>
+        /// Get all reviews for a specific product.
+        /// </summary>
+        /// <param name="productId">Product ID</param>
+        /// <returns>List of reviews for the product</returns>
         [HttpGet("product/{productId}")]
-        [AllowAnonymous] 
-        public async Task<IActionResult> GetReviewsByProductId(int productId)
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ReviewResponseDto>))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<IEnumerable<ReviewResponseDto>>> GetReviewsByProductId(int productId, CancellationToken ct)
         {
-            try {
-                var reviews = await _reviewService.GetReviewsByProductIdAsync(productId);
-                return Ok(reviews);
-            }
-            catch(Exception ex) {
-                return StatusCode(500, new { message = "An error occurred while retrieving reviews", error = ex.Message });
-            }
-
+            var reviews = await _reviewService.GetReviewsByProductIdAsync(productId);
+            return Ok(reviews);
         }
 
+        /// <summary>
+        /// Get a single review by id.
+        /// </summary>
+        [HttpGet("{id}", Name = "GetReviewById")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReviewResponseDto))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ReviewResponseDto>> GetReviewById(int id)
+        {
+            var review = await _reviewService.GetReviewsByProductIdAsync(id);
+            if (review == null) return NotFound();
+            return Ok(review);
+        }
+
+        /// <summary>
+        /// Add a new review.
+        /// </summary>
         [HttpPost]
         [Authorize(Roles = "admin,client,seller")]
-        public async Task<IActionResult> AddReview([FromBody] ReviewCreateDto dto)
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ReviewResponseDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<ReviewResponseDto>> AddReview([FromBody] ReviewCreateDto dto)
         {
-            try {
-                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                var created = await _reviewService.AddReviewAsync(userId, dto);
-                return Ok(created);
-            }
-            catch(Exception ex) {
-                return BadRequest(new { message = "Invalid review data", error = ex.Message });
-            }
-            
+            if (!TryGetUserId(out var userId)) return Unauthorized();
+
+            var created = await _reviewService.AddReviewAsync(userId, dto);
+
+            return CreatedAtRoute("GetReviewById", new { id = created.ReviewID }, created);
         }
 
+        /// <summary>
+        /// Update an existing review.
+        /// </summary>
         [HttpPut("{id}")]
         [Authorize(Roles = "admin,client,seller")]
-
-        public async Task<IActionResult> UpdateReview(int id, [FromBody] ReviewUpdateDto dto)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReviewResponseDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<ReviewResponseDto>> UpdateReview(int id, [FromBody] ReviewUpdateDto dto)
         {
-            try {
-                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                var isAdmin = User.IsInRole("admin");
-                var updated = await _reviewService.UpdateReviewAsync(id, userId, dto, isAdmin);
-                return Ok(updated);
-            }
-            catch(Exception ex) {
-                return BadRequest(new { message = "Invalid review data", error = ex.Message });
-            }
-          
+            if (!TryGetUserId(out var userId)) return Unauthorized();
+            var isAdmin = User.IsInRole("admin");
+
+            var updated = await _reviewService.UpdateReviewAsync(id, userId, dto, isAdmin);
+            if (updated == null)
+                return NotFound(new { Message = $"Review with ID {id} not found or not authorized." });
+
+            return Ok(updated);
         }
 
+        /// <summary>
+        /// Delete a review.
+        /// </summary>
         [HttpDelete("{id}")]
         [Authorize(Roles = "admin,client,seller")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> DeleteReview(int id)
         {
-            try {
-                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                var isAdmin = User.IsInRole("admin");
-                var result = await _reviewService.DeleteReviewAsync(id, userId, isAdmin);
-                if (!result) return NotFound();
-                return Ok("Deleted successfully");
-            }
-            catch(Exception ex) {
-                return BadRequest(new { message = "Error deleting review", error = ex.Message });
-            }
-           
+            if (!TryGetUserId(out var userId)) return Unauthorized();
+            var isAdmin = User.IsInRole("admin");
+
+            var deleted = await _reviewService.DeleteReviewAsync(id, userId, isAdmin);
+            if (!deleted) return NotFound(new { Message = $"Review with ID {id} not found or not authorized." });
+
+            return NoContent();
+        }
+
+        private bool TryGetUserId(out int userId)
+        {
+            userId = default;
+            var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.TryParse(idClaim, out userId);
         }
     }
 }

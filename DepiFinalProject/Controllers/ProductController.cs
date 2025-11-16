@@ -1,10 +1,7 @@
 ﻿using DepiFinalProject.Interfaces;
-using DepiFinalProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using static DepiFinalProject.DTOs.ProductDTO;
 
 namespace DepiFinalProject.Controllers
@@ -14,13 +11,14 @@ namespace DepiFinalProject.Controllers
     [Authorize]
     public class ProductController : ControllerBase
     {
-        protected readonly IProductService _productService;
+        private readonly IProductService _productService;
+
         public ProductController(IProductService productService)
         {
             _productService = productService;
         }
 
-        [HttpGet] //api/products
+        [HttpGet]
         [Authorize(Roles = "admin,client,seller")]
         public async Task<ActionResult<IEnumerable<ProductResponseDTO>>> GetAll()
         {
@@ -31,102 +29,109 @@ namespace DepiFinalProject.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while fetching products.", details = ex.Message });
+                return BadRequest($"An error occurred while fetching products.:{ex.Message} \n {ex.InnerException}");
             }
         }
 
-        [HttpGet("{id:int}")] //api/products/{id}
+        [HttpGet("{id:int}")]
         [Authorize(Roles = "admin,client,seller")]
         public async Task<ActionResult<ProductDetailsDTO>> GetById(int id)
         {
-
             try
             {
                 var product = await _productService.GetById(id);
+
+                if (product == null)
+                    return NotFound(new { message = $"Product with ID {id} not found." });
+
                 return Ok(product);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred.", details = ex.Message });
+                return BadRequest($"An error occurred while fetching product.:{ex.Message} \n {ex.InnerException}");
             }
         }
 
+        [HttpGet("category/{categoryId:int}")]
         [Authorize(Roles = "admin,client,seller")]
-        [HttpGet("category/{categoryId}")] //api/products/category/{categoryId}
         public async Task<ActionResult<IEnumerable<ProductResponseDTO>>> GetByCategory(int categoryId)
         {
             try
             {
                 var products = await _productService.GetByCategoryAsync(categoryId);
+
                 if (products == null || !products.Any())
                     return NotFound(new { message = $"No products found for category ID {categoryId}." });
+
                 return Ok(products);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while fetching products by category.", details = ex.Message });
+                return BadRequest($"Failed to fetch products by category.:{ex.Message} \n {ex.InnerException}");
             }
-
         }
 
-        [HttpPost] //api/products
+        [HttpPost]
         [Authorize(Roles = "admin,seller")]
         public async Task<ActionResult<ProductResponseDTO>> Create(CreateProductDTO dto)
         {
+            if (!ModelState.IsValid)
+                return ValidationProblem(ModelState);
+
             try
             {
                 var product = await _productService.CreateAsync(dto);
-                return CreatedAtAction(
-                    nameof(GetById),
+
+                return CreatedAtAction(nameof(GetById),
                     new { id = product.ProductID },
                     product);
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = "Failed to create product.", details = ex.Message });
+                return BadRequest($"Failed to create product.:{ex.Message} \n {ex.InnerException}");
             }
         }
 
-        [HttpPut("{id:int}")] //api/products/{id}
+        [HttpPut("{id:int}")]
         [Authorize(Roles = "admin,seller")]
         public async Task<ActionResult<ProductResponseDTO>> UpdateProduct(int id, UpdateProductDTO dto)
         {
+            if (!ModelState.IsValid)
+                return ValidationProblem(ModelState);
+
             try
             {
+                var updated = await _productService.UpdateAsync(id, dto);
 
-                var product = await _productService.UpdateAsync(id, dto);
-                return Ok(product);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
+                if (updated == null)
+                    return NotFound(new { message = $"Product with ID {id} not found." });
+
+                return Ok(updated);
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = "Failed to update product.", details = ex.Message });
+                return BadRequest($"Failed to update product.t.:{ex.Message} \n {ex.InnerException}");
             }
         }
 
-        [HttpDelete("{id:int}")] //api/products/{id}
+        [HttpDelete("{id:int}")]
         [Authorize(Roles = "admin,seller")]
-        public async Task<ActionResult> DeleteProduct(int id)
+        public async Task<IActionResult> DeleteProduct(int id)
         {
             try
             {
-                var result = await _productService.DeleteAsync(id);
-                if (!result)
-                    return NotFound(new { message = "Product not found" });
+                var deleted = await _productService.DeleteAsync(id);
+
+                if (!deleted)
+                    return NotFound(new { message = $"Product with ID {id} not found." });
+
                 return Ok(new { message = "Product deleted successfully." });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Error deleting product.", details = ex.Message });
+                return BadRequest($"Error deleting product.:{ex.Message} \n {ex.InnerException}");
+
             }
         }
-
     }
 }
