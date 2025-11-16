@@ -10,6 +10,8 @@ namespace DepiFinalProject.Models
 
         [ForeignKey("Category")]
         public int CategoryID { get; set; }
+        [ForeignKey("User")]
+        public int userid { get; set; }
         public string ProductName { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
@@ -19,6 +21,7 @@ namespace DepiFinalProject.Models
 
         // Navigation Properties
         public virtual Category Category { get; set; }
+        public virtual User user { get; set; }
         public virtual ICollection<Cart> Carts { get; set; }
         public virtual ICollection<OrderItem> OrderItems { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }

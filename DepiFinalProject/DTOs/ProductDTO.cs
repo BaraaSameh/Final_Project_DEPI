@@ -22,14 +22,15 @@ namespace DepiFinalProject.DTOs
 
             [Required]
             public int Stock { get; set; }
+
             public string? ImageUrl { get; set; }
         }
 
         public class UpdateProductDTO
         {
             public int? CategoryId { get; set; }
-            [MaxLength(200)]
 
+            [MaxLength(200)]
             public string? Name { get; set; }
 
             [StringLength(2000)]
@@ -38,13 +39,18 @@ namespace DepiFinalProject.DTOs
             public decimal? Price { get; set; }
 
             public int? Stock { get; set; }
+
             public string? ImageUrl { get; set; }
         }
-        public class ProductResponseDTO //create , update ,Get
+
+        public class ProductResponseDTO
         {
             public int ProductID { get; set; }
             public int CategoryID { get; set; }
             public string CategoryName { get; set; }
+            public int UserId { get; set; }
+            public string SellerName { get; set; }
+            public string SellerEmail { get; set; }
             public string ProductName { get; set; }
             public string Description { get; set; }
             public decimal Price { get; set; }
@@ -53,11 +59,11 @@ namespace DepiFinalProject.DTOs
             public DateTime CreatedAt { get; set; }
             public bool IsInStock => Stock > 0;
         }
+
         public class ProductDetailsDTO : ProductResponseDTO
         {
             public double AverageRating { get; set; }
             public int TotalReviews { get; set; }
         }
-
     }
 }
