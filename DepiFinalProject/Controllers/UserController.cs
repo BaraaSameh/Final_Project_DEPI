@@ -21,6 +21,10 @@ namespace DepiFinalProject.Controllers
 
         [HttpGet]
         [Authorize(Roles = "admin")]
+        [ProducesResponseType(typeof(ICollection<User>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ICollection<User>>> GetAllUsers()
         {
             try
@@ -36,6 +40,11 @@ namespace DepiFinalProject.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Roles = "admin")]
+        [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<UserResponseDTO>> GetUserById(int id)
         {
             try
@@ -55,6 +64,11 @@ namespace DepiFinalProject.Controllers
 
         [HttpGet("email/{email}")]
         [Authorize(Roles = "admin")]
+        [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<User>> GetUserByEmail(string email)
         {
             try
@@ -74,6 +88,10 @@ namespace DepiFinalProject.Controllers
 
         [HttpPost]
         [AllowAnonymous]
+        [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<User>> CreateUser([FromBody] User user)
         {
             try
@@ -99,6 +117,11 @@ namespace DepiFinalProject.Controllers
 
         [HttpPut("{id}")]
         [Authorize]
+        [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<User>> UpdateUser(int id, [FromBody] User user)
         {
             try
@@ -128,6 +151,11 @@ namespace DepiFinalProject.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "admin")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> DeleteUser(int id)
         {
             try
@@ -147,6 +175,11 @@ namespace DepiFinalProject.Controllers
 
         [HttpPost("change-password")]
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordRequestDTO request)
         {
             try
@@ -175,6 +208,8 @@ namespace DepiFinalProject.Controllers
 
         [HttpGet("check-email/{email}")]
         [AllowAnonymous]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<bool>> CheckEmailExists(string email)
         {
             try

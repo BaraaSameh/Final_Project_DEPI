@@ -20,6 +20,11 @@ namespace DepiFinalProject.Controllers
 
         [HttpGet]
         [Authorize(Roles = "admin,client,seller")]
+        [ProducesResponseType(typeof(IEnumerable<OrderItemResponseDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<IEnumerable<OrderItemResponseDTO>>> GetOrderItems(int orderId)
         {
             if (orderId <= 0)
@@ -42,6 +47,11 @@ namespace DepiFinalProject.Controllers
 
         [HttpPost]
         [Authorize(Roles = "admin,client")]
+        [ProducesResponseType(typeof(OrderItemResponseDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<OrderItemResponseDTO>> AddOrderItem(int orderId, AddOrderItemDTO dto)
         {
             if (!ModelState.IsValid)
