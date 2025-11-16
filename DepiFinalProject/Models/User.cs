@@ -22,6 +22,7 @@ namespace DepiFinalProject.Models
         public string UserRole { get; set; } = "client"; // مثل "Admin" أو "Customer"
 
         // Navigation Properties
+        public virtual ICollection<Return> Returns { get; set; }
         public virtual ICollection<Address> Addresses { get; set; }
         public virtual ICollection<Cart> Carts { get; set; }
         public virtual ICollection<Order> Orders { get; set; }

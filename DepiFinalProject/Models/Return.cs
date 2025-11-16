@@ -8,14 +8,27 @@ namespace DepiFinalProject.Models
         [Key]
         public int ReturnID { get; set; }
 
-        [ForeignKey("OrderItem")]
+        // FK → Users table
+        [Required]
+        [ForeignKey(nameof(User))]
+        public int UserId { get; set; }
+
+        [Required]
+        [ForeignKey(nameof(OrderItem))]
         public int OrderItemID { get; set; }
+
+        [Required]
         public string Reason { get; set; }
-        public string Status { get; set; }  // مثل "Approved", "Rejected","In Process"
+
+        [Required]
+        public string Status { get; set; }  
+
         public DateTime RequestedAt { get; set; } = DateTime.UtcNow;
+
         public bool IsCancelled { get; set; } = false;
 
-        // Navigation Property
+        // Navigation Properties
+        public virtual User User { get; set; }
         public virtual OrderItem OrderItem { get; set; }
     }
 }

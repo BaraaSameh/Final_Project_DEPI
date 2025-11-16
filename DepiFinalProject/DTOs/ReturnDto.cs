@@ -6,17 +6,18 @@ namespace DepiFinalProject.DTOs
     {
         public class CreateReturnDto
         {
-            [Required]
+            [Required(ErrorMessage = "Order Item Id is required")]
             public int OrderItemId { get; set; }
 
-            [Required]
-            [StringLength(250)]
+            [Required(ErrorMessage ="Reason of return is required")]
+            [StringLength(250,ErrorMessage = "reason cannot exceed 250 characters")]
             public string Reason { get; set; }
         }
 
         public class UpdateReturnStatusDto
         {
-            [Required]
+            [Required(ErrorMessage ="new Status for the return request is required")]
+            [AllowedValues("approved", "rejected",ErrorMessage ="the status should be either approved or rejected only")]
             public string Status { get; set; } // "Approved" or "Rejected"
         }
 

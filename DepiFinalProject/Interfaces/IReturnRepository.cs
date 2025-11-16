@@ -1,4 +1,5 @@
 ﻿using DepiFinalProject.Models;
+using static DepiFinalProject.DTOs.ReturnDto;
 
 
 namespace DepiFinalProject.Interfaces
@@ -12,6 +13,7 @@ namespace DepiFinalProject.Interfaces
         Task<bool> DeleteReturnAsync(int id);
         Task<bool> CancelAsync(int id);
         Task<Return?> GetByOrderItemIdAsync(int orderItemId);
-
+        Task<IEnumerable<Return?>> GetByUserIdAsync(int userId);
+ 
     }
 }
