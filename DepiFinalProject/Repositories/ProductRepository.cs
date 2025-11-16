@@ -1,5 +1,4 @@
-﻿
-using DepiFinalProject.Data;
+﻿using DepiFinalProject.Data;
 using DepiFinalProject.Interfaces;
 using DepiFinalProject.Models;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +8,7 @@ namespace DepiFinalProject.Repositories
     public class ProductRepository : IProductRepository
     {
         protected readonly AppDbContext _context;
+
         public ProductRepository(AppDbContext context)
         {
             _context = context;
@@ -18,7 +18,11 @@ namespace DepiFinalProject.Repositories
         {
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
+
+            // Load related entities
             await _context.Entry(product).Reference(p => p.Category).LoadAsync();
+            await _context.Entry(product).Reference(p => p.user).LoadAsync();
+
             return product;
         }
 
@@ -26,6 +30,7 @@ namespace DepiFinalProject.Repositories
         {
             var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductID == ProductId);
             if (product == null) return false;
+
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
             return true;
@@ -33,17 +38,34 @@ namespace DepiFinalProject.Repositories
 
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            return await _context.Products.Include(p => p.Category).ToListAsync();
+            return await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.user)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Product>> GetByCategoryAsync(int CategoryId)
         {
-            return await _context.Products.Include(p => p.Category)
-              .Where(p => p.CategoryID == CategoryId).ToListAsync();
+            return await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.user)
+                .Where(p => p.CategoryID == CategoryId)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Product>> GetByUserIdAsync(int userId)
+        {
+            return await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.user)
+                .Where(p => p.userid == userId)
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
         }
         public async Task<Product?> GetByIdAsync(int ProductId)
         {
-            return await _context.Products.Include(p => p.Category)
+            return await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.user)
                 .Include(p => p.Reviews)
                 .FirstOrDefaultAsync(p => p.ProductID == ProductId);
         }
@@ -52,11 +74,22 @@ namespace DepiFinalProject.Repositories
         {
             _context.Products.Update(product);
             await _context.SaveChangesAsync();
+
+            // Reload navigation properties
+            await _context.Entry(product).Reference(p => p.Category).LoadAsync();
+            await _context.Entry(product).Reference(p => p.user).LoadAsync();
+
             return product;
         }
+
         public async Task<bool> CategoryExistsAsync(int categoryId)
         {
             return await _context.Categories.AnyAsync(c => c.CategoryID == categoryId);
+        }
+
+        public async Task<bool> UserExistsAsync(int userId)
+        {
+            return await _context.Users.AnyAsync(u => u.UserID == userId);
         }
     }
 }

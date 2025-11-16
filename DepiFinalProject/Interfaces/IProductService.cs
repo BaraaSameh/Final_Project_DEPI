@@ -10,6 +10,8 @@ namespace DepiFinalProject.Interfaces
         Task<ProductResponseDTO?> CreateAsync(CreateProductDTO dto);
         Task<ProductResponseDTO?> UpdateAsync(int productId, UpdateProductDTO dto);
         Task<bool> DeleteAsync(int productId);
+        Task<IEnumerable<ProductResponseDTO>> GetByUserIdAsync(int userId);
+
 
 
     }

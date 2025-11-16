@@ -31,5 +31,6 @@ namespace DepiFinalProject.Models
 
         //add refresh tokens list "Seif"
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
+        public virtual ICollection<Product> Products { get; set; }
     }
 }
