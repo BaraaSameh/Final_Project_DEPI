@@ -6,6 +6,7 @@ using DepiFinalProject.DTOs.Reviews;
 using DepiFinalProject.Interfaces;
 using DepiFinalProject.Models;
 using DepiFinalProject.Repositories;
+using PaypalServerSdk.Standard.Models;
 
 namespace DepiFinalProject.Services
 {
@@ -39,9 +40,9 @@ namespace DepiFinalProject.Services
         {
             ValidateRating(dto.Rating);
             if(!await _orderRepository.HasuserorderedproductAsync(userId, dto.ProductID))
-                throw new InvalidOperationException("User has not purchased this product.");
+                throw new BadHttpRequestException("User has not purchased this product.");
             if (await _reviewRepository.HasUserReviewedProductAsync(userId, dto.ProductID))
-                throw new InvalidOperationException("User has already reviewed this product.");
+                throw new BadHttpRequestException("User has already reviewed this product.");
 
 
             var review = new Review
@@ -104,6 +105,19 @@ namespace DepiFinalProject.Services
                 throw new UnauthorizedAccessException("You can only delete your own reviews.");
 
             return await _reviewRepository.DeleteReviewAsync(id);
+        }
+        public async Task<IEnumerable<ReviewResponseDto>> GetReviewsByUserIdAsync(int userid)
+        {
+            var reviews= await _reviewRepository.getreviewsbyuser(userid);
+            return reviews.Select(r => new ReviewResponseDto
+            {
+                ReviewID = r.ReviewID,
+                ProductID = r.ProductID,
+                UserName = r.User?.UserFirstName + ' ' + r.User?.UserLastName,
+                Rating = r.Rating,
+                Comment = r.Comment,
+                CreatedAt = r.CreatedAt
+            });
         }
         private void ValidateRating(int rating)
         {

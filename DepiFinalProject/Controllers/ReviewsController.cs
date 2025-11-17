@@ -2,6 +2,9 @@
 using DepiFinalProject.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.EntityFrameworkCore.Query;
+using System.Collections.Specialized;
 using System.Security.Claims;
 
 namespace DepiFinalProject.Controllers
@@ -30,7 +33,7 @@ namespace DepiFinalProject.Controllers
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ReviewResponseDto>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<ReviewResponseDto>>> GetReviewsByProductId(int productId, CancellationToken ct)
+        public async Task<ActionResult<IEnumerable<ReviewResponseDto>>> GetReviewsByProductId(int productId)
         {
             var reviews = await _reviewService.GetReviewsByProductIdAsync(productId);
             return Ok(reviews);
@@ -61,10 +64,18 @@ namespace DepiFinalProject.Controllers
         public async Task<ActionResult<ReviewResponseDto>> AddReview([FromBody] ReviewCreateDto dto)
         {
             if (!TryGetUserId(out var userId)) return Unauthorized();
+            try
+            {
+                var created = await _reviewService.AddReviewAsync(userId, dto);
+                return CreatedAtRoute("GetReviewById", new { id = created.ReviewID }, created);
 
-            var created = await _reviewService.AddReviewAsync(userId, dto);
 
-            return CreatedAtRoute("GetReviewById", new { id = created.ReviewID }, created);
+            }
+            catch (BadHttpRequestException ex)
+            {
+                return BadRequest($"{ex.Message}");
+            }
+
         }
 
         /// <summary>
@@ -105,6 +116,24 @@ namespace DepiFinalProject.Controllers
             if (!deleted) return NotFound(new { Message = $"Review with ID {id} not found or not authorized." });
 
             return NoContent();
+        }
+
+        /// <summary>
+        /// Get all reviews of this user.
+        /// </summary>
+        [HttpGet("/User")]
+        [Authorize(Roles = "admin,client,seller")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ReviewResponseDto>))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<IEnumerable<ReviewResponseDto>>> getreviewsByUsers()
+        {
+            if (!TryGetUserId(out var userId)) return Unauthorized();
+            
+            var reviews = await _reviewService.GetReviewsByUserIdAsync(userId);
+           
+            return Ok(reviews);
         }
 
         private bool TryGetUserId(out int userId)

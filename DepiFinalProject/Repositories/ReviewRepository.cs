@@ -59,5 +59,12 @@ namespace DepiFinalProject.Infrastructure.Repositories
             return await _context.Reviews
                 .AnyAsync(r => r.UserID == userId && r.ProductID == productId);
         }
+        public async Task<IEnumerable<Review>> getreviewsbyuser(int userid)
+        {
+            return await _context.Reviews
+                .Where(r => r.UserID == userid)
+                .Include(r => r.User)
+                .ToListAsync();
+        }
     }
 }

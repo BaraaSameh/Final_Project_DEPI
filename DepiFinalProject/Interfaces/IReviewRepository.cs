@@ -12,6 +12,6 @@ namespace DepiFinalProject.Interfaces
         Task<bool> DeleteReviewAsync(int id);
         Task<Review?> GetByIdAsync(int id);
         Task<bool> HasUserReviewedProductAsync(int userId, int productId);
-
+        Task<IEnumerable<Review>> getreviewsbyuser(int userid);
     }
 }
