@@ -33,7 +33,7 @@ namespace DepiFinalProject.Services
             if (!allowed.Contains(file.ContentType))
                 throw new BadHttpRequestException("Only JPG, PNG, WEBP files are allowed");
             if(file.Length>maxfilesize)
-                throw new BadHttpRequestException("image size shouldn't be more than 5 MB");
+                throw new BadHttpRequestException("image size shouldn't be more than 1 MB");
             using var stream = file.OpenReadStream();
 
             var uploadParams = new ImageUploadParams
