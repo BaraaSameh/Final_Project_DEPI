@@ -14,7 +14,8 @@ namespace DepiFinalProject.Models
 
         [Required]
         public string UserPassword { get; set; }  // هاش الباسوورد في الواقع
-
+        public string ImageUrl { get; set; }
+        public string ImagePublicId { get; set; }
         public string UserFirstName { get; set; }
         public string UserLastName { get; set; }
         public string UserPhone { get; set; }

@@ -13,5 +13,7 @@ namespace DepiFinalProject.Interfaces
         Task<User> CreateAsync(User user);
         Task<User> UpdateAsync(User user);
         Task<bool> DeleteAsync(int userId);
+        Task<string> UpdateUserImageAsync(int userId, IFormFile file);
+        Task<bool> DeleteUserImageAsync(int userId);
     }
 }

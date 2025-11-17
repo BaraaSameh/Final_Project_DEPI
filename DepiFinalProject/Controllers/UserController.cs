@@ -1,4 +1,5 @@
-﻿using DepiFinalProject.DTOs;
+﻿using System.Security.Claims;
+using DepiFinalProject.DTOs;
 using DepiFinalProject.Interfaces;
 using DepiFinalProject.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -85,6 +86,58 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(500, new { message = "An error occurred while retrieving the user", error = ex.Message });
             }
         }
+        /// <summary>
+        /// Upload or update the user's profile image.
+        /// </summary>
+        /// <remarks>
+        /// Accepted formats: JPG, PNG, WEBP  
+        /// Max recommended size: 1MB  
+        /// Returns the Cloudinary secure URL.
+        /// </remarks>
+        /// <param name="id">User ID</param>
+        /// <param name="dto">Image file</param>
+        /// <response code="200">Image uploaded successfully</response>
+        /// <response code="400">Invalid image or validation error</response>
+        /// <response code="401">User not registerd error</response>
+        [HttpPost("/upload-image")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UploadImage([FromForm] UpdateUserImageDto dto)
+        {
+            if(!TryGetUserId(out var userid)) Unauthorized("Only registered Users can upload thier images");
+            var url = await _userService.UpdateUserImageAsync(userid, dto.Image);
+            return Ok(new { imageUrl = url });
+        }
+
+        /// <summary>
+        /// Delete user's profile image.
+        /// </summary>
+        /// <param name="id">User ID</param>
+        /// <response code="200">Image deleted successfully</response>
+        /// <response code="404">User or image not found</response>
+        /// <response code="401">User not registerd error</response>
+        /// <reponse code="404">NO User Image Found</reponse>
+        [HttpDelete("/delete-image")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+
+        public async Task<IActionResult> DeleteImage()
+        {
+            if (!TryGetUserId(out var userid)) Unauthorized("Only registered Users can upload thier images");
+
+            var deleted = await _userService.DeleteUserImageAsync(userid);
+
+            if (!deleted)
+                return NotFound("No image found to delete.");
+
+            return Ok(new { message = "Image deleted successfully" });
+        }
+
+
+
+
 
         [HttpPost]
         [AllowAnonymous]
@@ -221,6 +274,12 @@ namespace DepiFinalProject.Controllers
             {
                 return StatusCode(500, new { message = "An error occurred while checking email", error = ex.Message });
             }
+        }
+        private bool TryGetUserId(out int userId)
+        {
+            userId = default;
+            var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.TryParse(idClaim, out userId);
         }
     }
 

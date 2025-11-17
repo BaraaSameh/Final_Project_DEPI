@@ -63,7 +63,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ReviewResponseDto>> AddReview([FromBody] ReviewCreateDto dto)
         {
-            if (!TryGetUserId(out var userId)) return Unauthorized();
+            if (!TryGetUserId(out var userId)) return Unauthorized("only registerd users can add reviews");
             try
             {
                 var created = await _reviewService.AddReviewAsync(userId, dto);
@@ -89,7 +89,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ReviewResponseDto>> UpdateReview(int id, [FromBody] ReviewUpdateDto dto)
         {
-            if (!TryGetUserId(out var userId)) return Unauthorized();
+            if (!TryGetUserId(out var userId)) return Unauthorized("You can only update Reviews that you own!");
             var isAdmin = User.IsInRole("admin");
 
             var updated = await _reviewService.UpdateReviewAsync(id, userId, dto, isAdmin);
@@ -109,7 +109,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> DeleteReview(int id)
         {
-            if (!TryGetUserId(out var userId)) return Unauthorized();
+            if (!TryGetUserId(out var userId)) return Unauthorized("You can only Delte Reviews that you own!");
             var isAdmin = User.IsInRole("admin");
 
             var deleted = await _reviewService.DeleteReviewAsync(id, userId, isAdmin);

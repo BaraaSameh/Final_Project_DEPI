@@ -3,6 +3,7 @@ using System.Text;
 using DepiFinalProject.Data;
 using DepiFinalProject.Infrastructure.Repositories;
 using DepiFinalProject.Interfaces;
+using DepiFinalProject.Models;
 using DepiFinalProject.Repositories;
 using DepiFinalProject.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -74,6 +75,7 @@ namespace DepiFinalProject
             builder.Services.AddScoped<IPaymentService, PayPalService>();
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
             builder.Services.AddHttpContextAccessor();
+            builder.Services.Configure<PayPalSettings>(builder.Configuration.GetSection("PayPalSettings"));
 
             // FlashSale Repository
             builder.Services.AddScoped<IFlashSaleRepository, FlashSaleRepository>();
@@ -87,6 +89,10 @@ namespace DepiFinalProject
             //Return Service
             builder.Services.AddScoped<IReturnRepository, ReturnRepository>();
             builder.Services.AddScoped<IReturnService, ReturnService>();
+            //cloudinary
+            builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+
+            builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
             // Add Swagger with JWT support
 
             // Define the securityScheme before using it in AddSecurityDefinition and AddSecurityRequirement
