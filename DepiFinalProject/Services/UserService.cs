@@ -66,6 +66,8 @@ namespace DepiFinalProject.Services
                 OrdersNumber = user.Orders?.Count ?? 0,
                 ReviewsNumber = user.Reviews?.Count ?? 0,
                 WishListNumber = user.Wishlists?.Count ?? 0,
+                imgeurl = user.ImageUrl ?? string.Empty,
+                imageid = user.ImagePublicId ?? string.Empty,
             }).ToList();
             return usersResponse;
         }
@@ -89,6 +91,8 @@ namespace DepiFinalProject.Services
                 OrdersNumber = user.Orders?.Count ?? 0,
                 ReviewsNumber = user.Reviews?.Count ?? 0,
                 WishListNumber = user.Wishlists?.Count ?? 0,
+                imgeurl = user.ImageUrl ?? string.Empty,
+                imageid=user.ImagePublicId??string.Empty,
             };
         }
 
@@ -105,6 +109,7 @@ namespace DepiFinalProject.Services
             existingUser.UserPhone = user.UserPhone;
             existingUser.UserEmail = user.UserEmail;
             existingUser.UserRole = user.UserRole;
+            
 
             return await _userRepository.UpdateAsync(existingUser);
         }
