@@ -40,7 +40,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,client,seller")]
         [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -50,6 +50,7 @@ namespace DepiFinalProject.Controllers
         {
             try
             {
+               
                 var user = await _userService.GetByIdAsync(id);
                 if (user == null)
                 {
