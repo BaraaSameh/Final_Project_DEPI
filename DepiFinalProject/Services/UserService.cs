@@ -8,10 +8,12 @@ namespace DepiFinalProject.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordService _passwordService;
-        public UserService(IUserRepository userRepository, IPasswordService passwordService)
+        private readonly ICloudinaryService _cloudinary;
+        public UserService(IUserRepository userRepository, IPasswordService passwordService, ICloudinaryService cloudinary)
         {
             _userRepository = userRepository;
             _passwordService = passwordService;
+            _cloudinary = cloudinary;
         }
         public async Task<bool> ChangePasswordAsync(int userId, string currentPassword, string newPassword)
         {
@@ -106,5 +108,48 @@ namespace DepiFinalProject.Services
 
             return await _userRepository.UpdateAsync(existingUser);
         }
+        public async Task<string> UpdateUserImageAsync(int userId, IFormFile file)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+                throw new KeyNotFoundException($"User with ID {user.UserID} not found");
+
+            if (!string.IsNullOrEmpty(user.ImagePublicId))
+                await _cloudinary.DeleteImageAsync(user.ImagePublicId);
+            
+
+            var (url, publicId) = await _cloudinary.UploadUserImageAsync(file);
+
+            user.ImageUrl = url;
+            user.ImagePublicId = publicId;
+
+            await _userRepository.UpdateAsync(user);
+
+            return url;
+        }
+
+        public async Task<bool> DeleteUserImageAsync(int userId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+                throw new KeyNotFoundException($"User with ID {user.UserID} not found");
+
+            if (string.IsNullOrEmpty(user.ImagePublicId))
+                return false;
+
+            var deleted = await _cloudinary.DeleteImageAsync(user.ImagePublicId);
+
+            if (deleted)
+            {
+                user.ImageUrl = null;
+                user.ImagePublicId = null;
+                await _userRepository.UpdateAsync(user);
+            }
+            
+
+                return deleted;
+        }
     }
+
 }
+

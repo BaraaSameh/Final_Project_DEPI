@@ -16,13 +16,12 @@ namespace DepiFinalProject.Controllers
     {
         private readonly IPaymentRepository _paymentRepository;
         private readonly IPaymentService _paymentService;
-
-        private const string PayPalSandboxApproveBase = "https://www.sandbox.paypal.com/checkoutnow?token=";
-
-        public PaymentsController(IPaymentRepository paymentRepository, IPaymentService paymentService)
+        private readonly Microsoft.Extensions.Configuration.IConfiguration _configuration;
+        public PaymentsController(IPaymentRepository paymentRepository, IPaymentService paymentService, Microsoft.Extensions.Configuration.IConfiguration configuration)
         {
             _paymentRepository = paymentRepository;
             _paymentService = paymentService;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -213,7 +212,7 @@ namespace DepiFinalProject.Controllers
                 {
                     PayPalOrderId = payment.PayPalOrderId,
                     PayPalLink = approveUrl ??
-                        (string.IsNullOrEmpty(payment.PayPalOrderId) ? "" : PayPalSandboxApproveBase + payment.PayPalOrderId)
+                        (string.IsNullOrEmpty(payment.PayPalOrderId) ? "" : _configuration["PayPal:SandboxApproveBase"] + payment.PayPalOrderId)
                 }
             };
         }
