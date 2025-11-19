@@ -557,12 +557,12 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> AddImages(int productId, [FromBody] List<string> imageUrls)
+        public async Task<IActionResult> AddImages(int productId, [FromBody] List<IFormFile> images)
         {
-            if (imageUrls == null || imageUrls.Count == 0)
-                return BadRequest(new { message = "No image URLs provided." });
+            if (images == null || images.Count == 0)
+                return BadRequest(new { message = "No images provided." });
 
-            bool success = await _productService.AddImagesAsync(productId, imageUrls);
+            bool success = await _productService.AddImagesAsync(productId, images);
 
             if (!success)
                 return NotFound(new { message = "Product not found." });

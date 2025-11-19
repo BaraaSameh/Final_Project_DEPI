@@ -14,7 +14,7 @@ namespace DepiFinalProject.Interfaces
 
         Task<bool> DeleteAllImagesAsync(int productId);
         Task<bool> DeleteImageAsync(int productId, int imageId);
-        Task<bool> AddImagesAsync(int productId, List<string> imageUrls);
+        Task<bool> AddImagesAsync(int productId, List<IFormFile> images);
 
     }
 }

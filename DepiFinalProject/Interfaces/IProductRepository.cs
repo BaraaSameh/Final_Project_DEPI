@@ -13,8 +13,10 @@ public interface IProductRepository
 
     // NEW METHOD
     Task<IEnumerable<Product>> GetByUserIdAsync(int userId);
-    Task AddImagesAsync(int productId, List<string> imageUrls);
+    Task AddImagesAsync(int productId, List<string> imageUrls, List<string> imagepublicid);
     Task<bool> DeleteImageAsync(int imageId, int productId);
     Task<bool> DeleteAllImagesAsync(int productId);
+    Task<ProductImage> getimagebyid(int imageid,int productid);
+    Task<List<ProductImage>> GetProductImagesAsync(int productId);
 
 }
