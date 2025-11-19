@@ -10,6 +10,7 @@ namespace DepiFinalProject.Models
         public string CategoryName { get; set; }
         public string Description { get; set; }
         public string? IconUrl { get; set; }
+        public string? IconPublicId { get; set; }
 
         // Navigation Property
         public virtual ICollection<Product> Products { get; set; }

@@ -7,10 +7,45 @@ namespace DepiFinalProject.Services
     public class CategoryService:ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
-
-        public CategoryService(ICategoryRepository categoryRepository)
+        private readonly ICloudinaryService _cloudinary;
+        public CategoryService(ICategoryRepository categoryRepository, ICloudinaryService cloudinary)
         {
             _categoryRepository = categoryRepository;
+            _cloudinary = cloudinary;
+        }
+        public async Task<bool> UploadCategoryIconAsync(int categoryId, IFormFile file)
+        {
+            var category = await _categoryRepository.GetByIdAsync(categoryId);
+            if (category == null)
+                return false;
+
+            if (!string.IsNullOrEmpty(category.IconPublicId))
+                await _cloudinary.DeleteImageAsync(category.IconPublicId);
+
+            var (url, publicId) = await _cloudinary.UploadImageAsync(file);
+
+            category.IconUrl = url;
+            category.IconPublicId = publicId;
+
+            await _categoryRepository.UpdateAsync(category);
+            return true;
+        }
+        public async Task<bool> DeleteCategoryIconAsync(int categoryId)
+        {
+            var category = await _categoryRepository.GetByIdAsync(categoryId);
+            if (category == null)
+                return false;
+
+            if (string.IsNullOrEmpty(category.IconPublicId))
+                return false; 
+
+            await _cloudinary.DeleteImageAsync(category.IconPublicId);
+
+            category.IconUrl = null;
+            category.IconPublicId = null;
+
+            await _categoryRepository.UpdateAsync(category);
+            return true;
         }
 
         public async Task<IEnumerable<CategoryDTO>> GetAllCategoriesAsync()

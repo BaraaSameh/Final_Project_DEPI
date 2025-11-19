@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DepiFinalProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251116093509_cleanflashsale")]
-    partial class cleanflashsale
+    [Migration("20251119162431_fixingdb")]
+    partial class fixingdb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,6 +100,9 @@ namespace DepiFinalProject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("IconPublicId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("IconUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -138,10 +141,7 @@ namespace DepiFinalProject.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("UserID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("userid")
+                    b.Property<int>("UserID")
                         .HasColumnType("int");
 
                     b.HasKey("FlashSaleID");
@@ -153,8 +153,6 @@ namespace DepiFinalProject.Migrations
                     b.HasIndex("StartDate");
 
                     b.HasIndex("UserID");
-
-                    b.HasIndex("userid");
 
                     b.ToTable("FlashSales");
                 });
@@ -182,19 +180,9 @@ namespace DepiFinalProject.Migrations
                     b.Property<int?>("StockLimit")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("userid")
-                        .HasColumnType("int");
-
                     b.HasKey("FlashSaleProductID");
 
                     b.HasIndex("ProductID");
-
-                    b.HasIndex("UserID");
-
-                    b.HasIndex("userid");
 
                     b.HasIndex("FlashSaleID", "ProductID")
                         .IsUnique();
@@ -372,6 +360,28 @@ namespace DepiFinalProject.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("DepiFinalProject.Models.ProductImage", b =>
+                {
+                    b.Property<int>("ImageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ImageId"));
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ImageId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductImages");
+                });
+
             modelBuilder.Entity("DepiFinalProject.Models.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
@@ -519,6 +529,12 @@ namespace DepiFinalProject.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("ImagePublicId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserEmail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -607,15 +623,13 @@ namespace DepiFinalProject.Migrations
 
             modelBuilder.Entity("DepiFinalProject.Models.FlashSale", b =>
                 {
-                    b.HasOne("DepiFinalProject.Models.User", null)
-                        .WithMany("FlashSales")
-                        .HasForeignKey("UserID");
-
-                    b.HasOne("DepiFinalProject.Models.User", null)
+                    b.HasOne("DepiFinalProject.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("userid")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DepiFinalProject.Models.FlashSaleProduct", b =>
@@ -623,22 +637,12 @@ namespace DepiFinalProject.Migrations
                     b.HasOne("DepiFinalProject.Models.FlashSale", "FlashSale")
                         .WithMany("FlashSaleProducts")
                         .HasForeignKey("FlashSaleID")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DepiFinalProject.Models.Product", "Product")
                         .WithMany("FlashSaleProducts")
                         .HasForeignKey("ProductID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("DepiFinalProject.Models.User", null)
-                        .WithMany("FlashSaleProducts")
-                        .HasForeignKey("UserID");
-
-                    b.HasOne("DepiFinalProject.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("userid")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -721,13 +725,26 @@ namespace DepiFinalProject.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DepiFinalProject.Models.User", null)
+                    b.HasOne("DepiFinalProject.Models.User", "user")
                         .WithMany("Products")
                         .HasForeignKey("userid")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Category");
+
+                    b.Navigation("user");
+                });
+
+            modelBuilder.Entity("DepiFinalProject.Models.ProductImage", b =>
+                {
+                    b.HasOne("DepiFinalProject.Models.Product", "Product")
+                        .WithMany("Images")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("DepiFinalProject.Models.RefreshToken", b =>
@@ -828,6 +845,8 @@ namespace DepiFinalProject.Migrations
 
                     b.Navigation("FlashSaleProducts");
 
+                    b.Navigation("Images");
+
                     b.Navigation("OrderItems");
 
                     b.Navigation("Reviews");
@@ -845,10 +864,6 @@ namespace DepiFinalProject.Migrations
                     b.Navigation("Addresses");
 
                     b.Navigation("Carts");
-
-                    b.Navigation("FlashSaleProducts");
-
-                    b.Navigation("FlashSales");
 
                     b.Navigation("Orders");
 

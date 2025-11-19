@@ -518,7 +518,81 @@ namespace DepiFinalProject.Controllers
                 });
             }
         }
+        /// <summary>
+        /// Delete a specific image from a product.
+        /// </summary>
+        /// <param name="productId">The ID of the product.</param>
+        /// <param name="imageId">The ID of the image to delete.</param>
+        /// <returns>Result of deletion operation.</returns>
+        /// <response code="200">Image deleted successfully.</response>
+        /// <response code="404">Image or product not found.</response>
+        /// <response code="401">Unauthorized if user does not have seller/admin role.</response>
+        [HttpDelete("{productId}/images/{imageId}")]
+        [Authorize(Roles = "seller,admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> DeleteImage(int productId, int imageId)
+        {
+            bool result = await _productService.DeleteImageAsync(productId, imageId);
 
+            if (!result)
+                return NotFound(new { message = "Image not found." });
+
+            return Ok(new { message = "Image deleted successfully." });
+        }
+
+        /// <summary>
+        /// Add image URLs to a specific product (Cloudinary URLs).
+        /// Only admins and sellers can perform this action.
+        /// </summary>
+        /// <param name="productId">The ID of the product.</param>
+        /// <param name="imageUrls">List of image URLs to add.</param>
+        /// <returns>Result of the operation.</returns>
+        /// <response code="200">Images added successfully.</response>
+        /// <response code="400">No URLs provided.</response>
+        /// <response code="401">Unauthorized if user is not seller/admin.</response>
+        [HttpPost("{productId}/images")]
+        [Authorize(Roles = "seller,admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> AddImages(int productId, [FromBody] List<string> imageUrls)
+        {
+            if (imageUrls == null || imageUrls.Count == 0)
+                return BadRequest(new { message = "No image URLs provided." });
+
+            bool success = await _productService.AddImagesAsync(productId, imageUrls);
+
+            if (!success)
+                return NotFound(new { message = "Product not found." });
+
+            return Ok(new { message = "Images added successfully." });
+        }
+
+
+        /// <summary>
+        /// Delete all images associated with a product.
+        /// </summary>
+        /// <param name="productId">The ID of the product.</param>
+        /// <returns>Result of deletion operation.</returns>
+        /// <response code="200">All images deleted successfully.</response>
+        /// <response code="404">No images found for the product.</response>
+        /// <response code="401">Unauthorized if user does not have seller/admin role.</response>
+        [HttpDelete("{productId}/images")]
+        [Authorize(Roles = "seller,admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> DeleteAllImages(int productId)
+        {
+            bool result = await _productService.DeleteAllImagesAsync(productId);
+
+            if (!result)
+                return NotFound(new { message = "No images found." });
+
+            return Ok(new { message = "All images deleted successfully." });
+        }
         /// <summary>
         /// Deletes a product
         /// </summary>
