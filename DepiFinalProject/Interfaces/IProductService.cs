@@ -12,7 +12,9 @@ namespace DepiFinalProject.Interfaces
         Task<bool> DeleteAsync(int productId);
         Task<IEnumerable<ProductResponseDTO>> GetByUserIdAsync(int userId);
 
-
+        Task<bool> DeleteAllImagesAsync(int productId);
+        Task<bool> DeleteImageAsync(int productId, int imageId);
+        Task<bool> AddImagesAsync(int productId, List<string> imageUrls);
 
     }
 }

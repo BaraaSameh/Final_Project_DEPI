@@ -17,6 +17,58 @@ namespace DepiFinalProject.Services
             _productRepository = productRepository;
             _httpContextAccessor = httpContextAccessor;
         }
+        private int GetCurrentUserId()
+        {
+            var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+                throw new UnauthorizedAccessException("Invalid User.");
+
+            return userId;
+        }
+        public async Task<bool> AddImagesAsync(int productId, List<string> imageUrls)
+        {
+            var product = await _productRepository.GetByIdAsync(productId);
+
+            if (product == null)
+                throw new Exception("Product not found.");
+
+            int userId = GetCurrentUserId();
+
+            if (product.userid != userId)
+                throw new UnauthorizedAccessException("You can only upload images to your own products.");
+
+            await _productRepository.AddImagesAsync(productId, imageUrls);
+            return true;
+        }
+        public async Task<bool> DeleteImageAsync(int productId, int imageId)
+        {
+            var product = await _productRepository.GetByIdAsync(productId);
+
+            if (product == null)
+                throw new Exception("Product not found.");
+
+            int userId = GetCurrentUserId();
+
+            if (product.userid != userId)
+                throw new UnauthorizedAccessException("You cannot delete images from another seller's product.");
+
+            return await _productRepository.DeleteImageAsync(imageId, productId);
+        }
+        public async Task<bool> DeleteAllImagesAsync(int productId)
+        {
+            var product = await _productRepository.GetByIdAsync(productId);
+
+            if (product == null)
+                throw new Exception("Product not found.");
+
+            int userId = GetCurrentUserId();
+
+            if (product.userid != userId)
+                throw new UnauthorizedAccessException("You cannot delete images from another seller's product.");
+
+            return await _productRepository.DeleteAllImagesAsync(productId);
+        }
 
         public async Task<ProductResponseDTO?> CreateAsync([FromBody] CreateProductDTO dto)
         {

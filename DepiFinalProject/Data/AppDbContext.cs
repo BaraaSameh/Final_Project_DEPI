@@ -7,7 +7,7 @@ namespace DepiFinalProject.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        // DbSets لكل كيان
+        // DbSets for each entity
         public DbSet<User> Users { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -24,13 +24,13 @@ namespace DepiFinalProject.Data
         public DbSet<FlashSale> FlashSales { get; set; }
         public DbSet<FlashSaleProduct> FlashSaleProducts { get; set; }
 
-        // add RefreshTokens DbSet "Seif"
+        // RefreshTokens DbSet "Seif"
         public DbSet<RefreshToken> RefreshTokens { get; set; }
-
+        public DbSet<ProductImage> ProductImages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // تكوين العلاقات إذا لزم الأمر (EF Core يتعرف تلقائيًا على معظمها)
+            // Relationships and keys configuration
             modelBuilder.Entity<OrderShipping>()
                 .HasKey(os => new { os.OrderID, os.ShippingID });
 
@@ -50,33 +50,32 @@ namespace DepiFinalProject.Data
                 .HasForeignKey(w => w.UserID)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // تكوين العلاقة بين Wishlist و Product
+            // Relationship between Wishlist and Product
             modelBuilder.Entity<Wishlist>()
                 .HasOne(w => w.Product)
                 .WithMany(p => p.Wishlists)
                 .HasForeignKey(w => w.ProductID)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // مفتاح مركب (Composite Key) لمنع التكرار: مستخدم + منتج واحد بس
+            // Composite Key to prevent duplicate: User + Product (Wishlist)
             modelBuilder.Entity<Wishlist>()
                 .HasIndex(w => new { w.UserID, w.ProductID })
                 .IsUnique();
 
-            // FlashSale
-
+            // FlashSale Entity Configuration
             modelBuilder.Entity<FlashSale>(entity =>
             {
                 entity.HasKey(e => e.FlashSaleID);
                 entity.Property(e => e.Title).HasMaxLength(100);
                 entity.Property(e => e.IsActive).HasDefaultValue(false);
 
-                // فهرس للأداء
+                // Indexes for performance
                 entity.HasIndex(e => e.StartDate);
                 entity.HasIndex(e => e.EndDate);
                 entity.HasIndex(e => e.IsActive);
             });
 
-            // FlashSaleProduct
+            // FlashSaleProduct Entity Configuration
             modelBuilder.Entity<FlashSaleProduct>(entity =>
             {
                 entity.HasKey(e => e.FlashSaleProductID);
@@ -89,14 +88,14 @@ namespace DepiFinalProject.Data
                 entity.HasOne(e => e.Product)
                       .WithMany(p => p.FlashSaleProducts)
                       .HasForeignKey(e => e.ProductID)
-                      .OnDelete(DeleteBehavior.Restrict); // لا نحذف المنتج لو في عرض
+                      .OnDelete(DeleteBehavior.Restrict); // Don't delete product if it's in a flash sale
 
-                // منع تكرار منتج في نفس العرض
+                // Prevent duplicate product in the same flash sale
                 entity.HasIndex(e => new { e.FlashSaleID, e.ProductID })
                       .IsUnique();
             });
 
-            // refresh token configuration flount api "Seif"
+            // RefreshToken Entity Configuration "Seif"
             modelBuilder.Entity<RefreshToken>(entity =>
             {
                 entity.HasKey(e => e.Id);
@@ -104,11 +103,22 @@ namespace DepiFinalProject.Data
                 entity.HasIndex(e => e.Token).IsUnique();
             });
 
+            // Configure the Product entity's relationship with User
+            modelBuilder.Entity<Product>()
+              .HasOne(p => p.user)
+              .WithMany(u => u.Products)
+              .HasForeignKey(p => p.userid)
+              .OnDelete(DeleteBehavior.Restrict);
 
-            // علاقات أخرى إذا احتجت تخصيص
+            // ProductImage Entity Configuration
+            modelBuilder.Entity<ProductImage>()
+                .HasOne(pi => pi.Product)
+                .WithMany(p => p.Images)
+                .HasForeignKey(pi => pi.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Additional configurations if needed
             base.OnModelCreating(modelBuilder);
-
-
         }
     }
 }

@@ -41,6 +41,45 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(500, $"Error deleting product.:{ex.Message} \n {ex.InnerException}");
             }
         }
+        /// <summary>
+        /// Upload an icon for a category (Admin only).
+        /// </summary>
+        /// <param name="categoryId">Category ID</param>
+        /// <param name="file">Image file</param>
+        [HttpPost("{categoryId}/icon")]
+        [Authorize(Roles = "admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UploadIcon(int categoryId, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("File is empty.");
+
+            var result = await _categoryService.UploadCategoryIconAsync(categoryId, file);
+
+            if (!result)
+                return NotFound(new { message = $"Category with ID {categoryId} not found" });
+
+            return Ok("Icon uploaded successfully.");
+        }
+        /// <summary>
+        /// Delete the icon of a category (Admin only).
+        /// </summary>
+        /// <param name="categoryId">Category ID</param>
+        [HttpDelete("{categoryId}/icon")]
+        [Authorize(Roles = "admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteIcon(int categoryId)
+        {
+            var result = await _categoryService.DeleteCategoryIconAsync(categoryId);
+
+            if (!result)
+                return NotFound(new { message = "Category not found or this category has no icon." });
+
+            return Ok("Icon deleted successfully.");
+        }
 
         /// <summary>
         /// Get a specific category by ID.

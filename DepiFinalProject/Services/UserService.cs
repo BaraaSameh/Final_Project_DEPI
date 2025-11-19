@@ -123,7 +123,7 @@ namespace DepiFinalProject.Services
                 await _cloudinary.DeleteImageAsync(user.ImagePublicId);
             
 
-            var (url, publicId) = await _cloudinary.UploadUserImageAsync(file);
+            var (url, publicId) = await _cloudinary.UploadImageAsync(file);
 
             user.ImageUrl = url;
             user.ImagePublicId = publicId;

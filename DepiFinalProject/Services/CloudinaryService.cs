@@ -23,7 +23,7 @@ namespace DepiFinalProject.Services
             _cloudinary = new Cloudinary(acc);
         }
 
-        public async Task<(string Url, string PublicId)> UploadUserImageAsync(IFormFile file)
+        public async Task<(string Url, string PublicId)> UploadImageAsync(IFormFile file)
         {
             const long maxfilesize = 1024 * 1024;
             if (file == null || file.Length == 0)

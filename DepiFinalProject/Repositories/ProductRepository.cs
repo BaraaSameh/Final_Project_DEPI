@@ -13,6 +13,38 @@ namespace DepiFinalProject.Repositories
         {
             _context = context;
         }
+        public async Task AddImagesAsync(int productId, List<string> imageUrls)
+        {
+            var images = imageUrls.Select(url => new ProductImage
+            {
+                ProductId = productId,
+                ImageUrl = url
+            }).ToList();
+
+            await _context.ProductImages.AddRangeAsync(images);
+            await _context.SaveChangesAsync();
+        }
+        public async Task<bool> DeleteImageAsync(int imageId, int productId)
+        {
+            var image = await _context.ProductImages
+                .FirstOrDefaultAsync(i => i.ImageId == imageId && i.ProductId == productId);
+
+            if (image == null) return false;
+
+            _context.ProductImages.Remove(image);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> DeleteAllImagesAsync(int productId)
+        {
+            var images = _context.ProductImages.Where(i => i.ProductId == productId).ToList();
+
+            if (!images.Any()) return false;
+
+            _context.ProductImages.RemoveRange(images);
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
         public async Task<Product> CreateNewAsync(Product product)
         {
