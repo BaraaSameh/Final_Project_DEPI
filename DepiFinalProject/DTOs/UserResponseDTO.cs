@@ -1,4 +1,6 @@
-﻿namespace DepiFinalProject.DTOs
+﻿using DepiFinalProject.Models;
+
+namespace DepiFinalProject.DTOs
 {
     public class UserResponseDTO
     {
@@ -14,5 +16,16 @@
         public string RefershToken { get; set; }
         public string imgeurl { get; set; }
         public string imageid { get; set; }
+    }
+    public class UpdateUserDTO {
+        public string UserEmail { get; set; }
+        public string UserFirstName { get; set; }
+        public string UserLastName { get; set; }
+        public string UserPhone { get; set; }
+
+        public List<Address> Addresses { get; set; }
+    }
+    public class UpdateUserRoleDTO {
+        public string UserRole { get; set; }
     }
 }

@@ -176,7 +176,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<User>> UpdateUser(int id, [FromBody] User user)
+        public async Task<ActionResult<User>> UpdateUser(int id, [FromBody] UpdateUserDTO user)
         {
             try
             {
@@ -184,13 +184,24 @@ namespace DepiFinalProject.Controllers
                 {
                     return BadRequest(ModelState);
                 }
+                var userId = int.Parse(User.FindFirst("userId")!.Value);
+                var isAdmin = User.IsInRole("admin");
+                var userdata = await _userService.GetByIdAsync(userId);
 
-                if (id != user.UserID)
+
+                if (id != userId ||!isAdmin)
                 {
-                    return BadRequest(new { message = "User ID mismatch" });
+                    return Unauthorized(new { message = "User ID mismatch" });
                 }
+                var olduser = await _userService.GetByEmailAsync(userdata.UserEmail);
+                olduser.UserEmail = user.UserEmail;
+                olduser.UserPhone = user.UserPhone;
+                olduser.UserFirstName = user.UserFirstName;
+                olduser.UserLastName = user.UserLastName;
+                olduser.Addresses = user.Addresses;
+     
 
-                var updatedUser = await _userService.UpdateAsync(user);
+                var updatedUser = await _userService.UpdateAsync(olduser);
                 return Ok(updatedUser);
             }
             catch (KeyNotFoundException ex)
@@ -202,7 +213,45 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(500, new { message = "An error occurred while updating the user", error = ex.Message });
             }
         }
+        [HttpPut("updateRole/{id}")]
+        [Authorize(Roles = "admin")]
+        [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<User>> UpdateUserRole(int id, [FromBody] UpdateUserRoleDTO user) {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                var userId = int.Parse(User.FindFirst("userId")!.Value);
+                var isAdmin = User.IsInRole("admin");
+                var userdata = await _userService.GetByIdAsync(userId);
 
+
+                if (id != userId || !isAdmin)
+                {
+                    return Unauthorized(new { message = "User ID mismatch" });
+                }
+                var olduser = await _userService.GetByEmailAsync(userdata.UserEmail);
+                olduser.UserRole = user.UserRole;
+
+
+                var updatedUser = await _userService.UpdateAsync(olduser);
+                return Ok(updatedUser);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while updating the user", error = ex.Message });
+            }
+        }
         [HttpDelete("{id}")]
         [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
