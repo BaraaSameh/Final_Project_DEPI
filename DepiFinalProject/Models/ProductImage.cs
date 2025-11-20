@@ -12,6 +12,7 @@ namespace DepiFinalProject.Models
         public int ProductId { get; set; }
 
         public string ImageUrl { get; set; }
+        public string imagepublicid { get; set; }
 
         public virtual Product Product { get; set; }
     }

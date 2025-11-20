@@ -2,6 +2,7 @@
 using DepiFinalProject.Interfaces;
 using DepiFinalProject.Models;
 using Microsoft.EntityFrameworkCore;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace DepiFinalProject.Repositories
 {
@@ -13,7 +14,7 @@ namespace DepiFinalProject.Repositories
         {
             _context = context;
         }
-        public async Task AddImagesAsync(int productId, List<string> imageUrls)
+        public async Task AddImagesAsync(int productId, List<string> imageUrls,List<string>imagepublicid)
         {
             var images = imageUrls.Select(url => new ProductImage
             {
@@ -34,6 +35,22 @@ namespace DepiFinalProject.Repositories
             _context.ProductImages.Remove(image);
             await _context.SaveChangesAsync();
             return true;
+        }
+        public async Task<ProductImage> getimagebyid(int imageid,int productid)
+        {
+            var image = await _context.ProductImages
+                .FirstOrDefaultAsync(i => i.ImageId == imageid&&i.ProductId==productid);
+            if (image != null) { return image; }
+            else
+            {
+                return null; 
+            }
+        }
+        public async Task<List<ProductImage>> GetProductImagesAsync(int productId) {
+            var images = _context.ProductImages.Where(i => i.ProductId == productId).ToList();
+
+            if (!images.Any()) return null;
+            return images;
         }
         public async Task<bool> DeleteAllImagesAsync(int productId)
         {

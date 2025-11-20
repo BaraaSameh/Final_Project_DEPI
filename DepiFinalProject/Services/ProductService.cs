@@ -11,11 +11,12 @@ namespace DepiFinalProject.Services
     {
         protected readonly IProductRepository _productRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public ProductService(IProductRepository productRepository, IHttpContextAccessor httpContextAccessor)
+        private readonly ICloudinaryService _cloudinaryService;
+        public ProductService(IProductRepository productRepository, IHttpContextAccessor httpContextAccessor,ICloudinaryService cloudinaryService)
         {
             _productRepository = productRepository;
             _httpContextAccessor = httpContextAccessor;
+            _cloudinaryService = cloudinaryService;
         }
         private int GetCurrentUserId()
         {
@@ -26,7 +27,7 @@ namespace DepiFinalProject.Services
 
             return userId;
         }
-        public async Task<bool> AddImagesAsync(int productId, List<string> imageUrls)
+        public async Task<bool> AddImagesAsync(int productId, List<IFormFile> images)
         {
             var product = await _productRepository.GetByIdAsync(productId);
 
@@ -37,8 +38,18 @@ namespace DepiFinalProject.Services
 
             if (product.userid != userId)
                 throw new UnauthorizedAccessException("You can only upload images to your own products.");
+            List<string> imageUrls = new List<string>();
+            List<string> imagepublicid = new List<string>();
+            foreach (IFormFile imageFile in images)
+            {
+                var (url, publicId) = await _cloudinaryService.UploadImageAsync(imageFile);
+                imageUrls.Add(url);
+                imagepublicid.Add(publicId);
+            }
 
-            await _productRepository.AddImagesAsync(productId, imageUrls);
+
+
+            await _productRepository.AddImagesAsync(productId, imageUrls,imagepublicid);
             return true;
         }
         public async Task<bool> DeleteImageAsync(int productId, int imageId)
@@ -46,12 +57,19 @@ namespace DepiFinalProject.Services
             var product = await _productRepository.GetByIdAsync(productId);
 
             if (product == null)
-                throw new Exception("Product not found.");
+                throw new KeyNotFoundException($"Product {productId} not found.");
 
             int userId = GetCurrentUserId();
 
             if (product.userid != userId)
                 throw new UnauthorizedAccessException("You cannot delete images from another seller's product.");
+            var image=await _productRepository.getimagebyid(imageId,productId);
+            if(image == null)
+            {
+                throw new KeyNotFoundException($"image with this id: {imageId} is not found");
+            }
+            await _cloudinaryService.DeleteImageAsync(image.imagepublicid);
+
 
             return await _productRepository.DeleteImageAsync(imageId, productId);
         }
@@ -60,12 +78,20 @@ namespace DepiFinalProject.Services
             var product = await _productRepository.GetByIdAsync(productId);
 
             if (product == null)
-                throw new Exception("Product not found.");
+                throw new KeyNotFoundException("Product not found.");
 
             int userId = GetCurrentUserId();
 
             if (product.userid != userId)
                 throw new UnauthorizedAccessException("You cannot delete images from another seller's product.");
+            var images=await _productRepository.GetProductImagesAsync(productId);
+            if (images == null) { 
+                throw new KeyNotFoundException($"no Images Found for this product: {productId}");   
+            }
+            foreach(var image in images)
+            {
+                await _cloudinaryService.DeleteImageAsync(image.imagepublicid);
+            }
 
             return await _productRepository.DeleteAllImagesAsync(productId);
         }
