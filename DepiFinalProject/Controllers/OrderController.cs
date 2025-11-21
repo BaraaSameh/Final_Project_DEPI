@@ -23,11 +23,11 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Get all orders (admin, client, seller)
+        /// Get all orders (admin)
         /// </summary>
         /// <returns>List of orders</returns>
         [HttpGet]
-        [Authorize(Roles = "admin,client,seller")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
