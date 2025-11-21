@@ -5,6 +5,7 @@ using DepiFinalProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using static DepiFinalProject.DTOs.AddressDTO;
 
 namespace DepiFinalProject.Controllers
 {
@@ -14,10 +15,11 @@ namespace DepiFinalProject.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-
-        public UserController(IUserService userService)
+        private readonly IAddressService _addressService;
+        public UserController(IUserService userService, IAddressService addressService)
         {
             _userService = userService;
+            _addressService = addressService;
         }
 
         [HttpGet]
@@ -181,36 +183,34 @@ namespace DepiFinalProject.Controllers
             try
             {
                 if (!ModelState.IsValid)
-                {
                     return BadRequest(ModelState);
-                }
-                var userId = int.Parse(User.FindFirst("userId")!.Value);
+
+                var loggedUserId = int.Parse(User.FindFirst("userId")!.Value);
                 var isAdmin = User.IsInRole("admin");
-                var userdata = await _userService.GetByIdAsync(userId);
 
-
-                if (id != userId ||!isAdmin)
-                {
+                if (id != loggedUserId && !isAdmin)
                     return Unauthorized(new { message = "User ID mismatch" });
-                }
-                var olduser = await _userService.GetByEmailAsync(userdata.UserEmail);
-                olduser.UserEmail = user.UserEmail;
-                olduser.UserPhone = user.UserPhone;
-                olduser.UserFirstName = user.UserFirstName;
-                olduser.UserLastName = user.UserLastName;
-                olduser.Addresses = user.Addresses;
-     
 
-                var updatedUser = await _userService.UpdateAsync(olduser);
+                var userdto = await _userService.GetByIdAsync(id);
+                var userdata = await _userService.GetByEmailAsync(userdto.UserEmail);
+                if (userdata == null)
+                    return NotFound();
+
+                userdata.UserEmail = user.UserEmail;
+                userdata.UserPhone = user.UserPhone;
+                userdata.UserFirstName = user.UserFirstName;
+                userdata.UserLastName = user.UserLastName;
+                
+                var updatedUser = await _userService.UpdateAsync(userdata);
                 return Ok(updatedUser);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while updating the user", error = ex.Message });
+                return StatusCode(500, new
+                {
+                    message = "An error occurred while updating the user",
+                    error = ex.Message
+                });
             }
         }
         [HttpPut("updateRole/{id}")]
@@ -229,10 +229,10 @@ namespace DepiFinalProject.Controllers
                 }
                 var userId = int.Parse(User.FindFirst("userId")!.Value);
                 var isAdmin = User.IsInRole("admin");
-                var userdata = await _userService.GetByIdAsync(userId);
+                var userdata = await _userService.GetByIdAsync(id);
 
 
-                if (id != userId || !isAdmin)
+                if (id != userId && !isAdmin)
                 {
                     return Unauthorized(new { message = "User ID mismatch" });
                 }

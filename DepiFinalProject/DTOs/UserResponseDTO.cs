@@ -1,4 +1,5 @@
 ﻿using DepiFinalProject.Models;
+using static DepiFinalProject.DTOs.AddressDTO;
 
 namespace DepiFinalProject.DTOs
 {
@@ -23,8 +24,7 @@ namespace DepiFinalProject.DTOs
         public string UserLastName { get; set; }
         public string UserPhone { get; set; }
 
-        public List<Address> Addresses { get; set; }
-    }
+     }
     public class UpdateUserRoleDTO {
         public string UserRole { get; set; }
     }
