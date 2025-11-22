@@ -54,5 +54,13 @@ namespace DepiFinalProject.Repositories
             await _context.SaveChangesAsync();
             return payment;
         }
+
+        async Task<Payment?> IPaymentRepository.GetByPayPalOrderIdAsync(string paypalOrderId)
+        {
+            return await _context.Payments
+                .Include(p => p.Order)
+                .Include(p => p.User)
+                .FirstOrDefaultAsync(p => p.PayPalOrderId == paypalOrderId);
+        }
     }
 }

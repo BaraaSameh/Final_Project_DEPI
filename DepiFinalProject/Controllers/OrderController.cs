@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using static DepiFinalProject.DTOs.OrderDto;
 
@@ -95,24 +96,39 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(500, $"Failed to fetch user orders.:{ex.Message} \n {ex.InnerException}");
             }
         }
-
+        // ========== NEW ENDPOINT - Add this ==========
         /// <summary>
-        /// Create a new order
+        /// Create an order from the current user's cart (Checkout)
         /// </summary>
-        [HttpPost]
+        /// <returns>Created order details</returns>
+        [HttpPost("checkout")]
         [Authorize(Roles = "admin,client")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(OrderResponseDTO), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<OrderResponseDTO>> CreateOrder([FromBody] CreateOrderDTO dto)
+        public async Task<ActionResult<OrderResponseDTO>> CheckoutFromCart()
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
-                var order = await _orderService.CreateAsync(dto);
-                return CreatedAtAction(nameof(GetOrderById), new { id = order.OrderID }, order);
+                // Get current user ID from JWT token
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+                {
+                    return Unauthorized(new { message = "Invalid user authentication" });
+                }
+
+                var order = await _orderService.CreateOrderFromCartAsync(userId);
+
+                return CreatedAtAction(
+                    nameof(GetOrderById),
+                    new { id = order.OrderID },
+                    new
+                    {
+                        message = "Order placed successfully. Your cart has been cleared.",
+                        order = order
+                    });
             }
             catch (InvalidOperationException ex)
             {
@@ -122,11 +138,46 @@ namespace DepiFinalProject.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Failed to create the order.:{ex.Message} \n {ex.InnerException}");
+                return StatusCode(500, $"Failed to create order from cart.:{ex.Message} \n {ex.InnerException}");
             }
         }
+        /// <summary>
+        /// Create a new order
+        /// </summary>
+        //[HttpPost]
+        //[Authorize(Roles = "admin,client")]
+        //[ProducesResponseType(StatusCodes.Status201Created)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        //public async Task<ActionResult<OrderResponseDTO>> CreateOrder([FromBody] CreateOrderDTO dto)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return BadRequest(ModelState);
+
+        //    try
+        //    {
+        //        var order = await _orderService.CreateAsync(dto);
+        //        return CreatedAtAction(nameof(GetOrderById), new { id = order.OrderID }, order);
+        //    }
+        //    catch (InvalidOperationException ex)
+        //    {
+        //        return BadRequest(new { message = ex.Message });
+        //    }
+        //    catch (ArgumentException ex)
+        //    {
+        //        return BadRequest(new { message = ex.Message });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Failed to create the order.:{ex.Message} \n {ex.InnerException}");
+        //    }
+        //}
 
         /// <summary>
         /// Update an order’s status

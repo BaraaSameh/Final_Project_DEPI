@@ -10,10 +10,15 @@ namespace DepiFinalProject.Services
     {
         protected readonly IOrderRepository _orderRepository;
         protected readonly IProductRepository _productRepository;
-        public OrderService(IOrderRepository orderRepository, IProductRepository productRepository)
+        private readonly ICartRepository _cartRepository;
+
+        public OrderService(IOrderRepository orderRepository,
+                            IProductRepository productRepository,
+                            ICartRepository cartRepository)
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;
+            _cartRepository = cartRepository;
         }
         public async Task<OrderResponseDTO?> CreateAsync(CreateOrderDTO dto)
         {
@@ -240,5 +245,68 @@ namespace DepiFinalProject.Services
         {
             return _orderRepository.GetByIdAsync(orderId);
         }
+
+        async Task<OrderResponseDTO> IOrderService.CreateOrderFromCartAsync(int userId)
+        {
+            var cartItems = await _cartRepository.GetAll(userId);
+
+            if (cartItems == null || !cartItems.Any())
+                throw new InvalidOperationException("Your cart is empty. Please add items before placing an order.");
+
+            decimal totalAmount = 0;
+            var orderItems = new List<OrderItem>();
+
+            // Validate all products and check stock
+            foreach (var cartItem in cartItems)
+            {
+                var product = await _productRepository.GetByIdAsync(cartItem.ProductId);
+
+                if (product == null)
+                    throw new InvalidOperationException($"Product '{cartItem.ProductName}' is no longer available.");
+
+                // Check if product has sufficient stock
+                if (product.Stock < cartItem.Quantity)
+                    throw new InvalidOperationException(
+                        $"Not enough stock for '{product.ProductName}'. Available: {product.Stock}, In cart: {cartItem.Quantity}. Please update your cart.");
+
+                var orderItem = new OrderItem
+                {
+                    ProductID = product.ProductID,
+                    ProductName = product.ProductName,
+                    Quantity = cartItem.Quantity,
+                    Price = product.Price // Use current price
+                };
+
+                totalAmount += orderItem.Quantity * orderItem.Price;
+                orderItems.Add(orderItem);
+            }
+
+            // Create the order
+            var order = new Order
+            {
+                UserID = userId,
+                OrderNo = GenerateOrderNumber(),
+                OrderDate = DateTime.UtcNow,
+                TotalAmount = totalAmount,
+                OrderStatus = "Pending",
+                OrderItems = orderItems
+            };
+
+            var createdOrder = await _orderRepository.CreateAsync(order);
+
+            // Update stock for all products
+            foreach (var cartItem in cartItems)
+            {
+                var product = await _productRepository.GetByIdAsync(cartItem.ProductId);
+                product.Stock -= cartItem.Quantity;
+                await _productRepository.UpdateAsync(product);
+            }
+
+            // Clear the cart after successful order creation
+            await _cartRepository.Clear(userId);
+
+            return MapToResponseDto(createdOrder);
+        }
     }
+    
 }

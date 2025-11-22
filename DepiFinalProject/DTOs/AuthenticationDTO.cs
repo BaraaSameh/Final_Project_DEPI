@@ -9,10 +9,10 @@ namespace DepiFinalProject.DTOs
 
         public class RegisterRequest
         {
-            [Required(ErrorMessage ="User email is required")]
+            [Required(ErrorMessage = "User email is required")]
             [EmailAddress]
             public string UserEmail { get; set; }
-            [Required(ErrorMessage ="user passowrd is required")]
+            [Required(ErrorMessage = "user passowrd is required")]
             [PasswordPropertyText]
             public string UserPassword { get; set; }
             public string UserFirstName { get; set; }
@@ -28,7 +28,7 @@ namespace DepiFinalProject.DTOs
             [Required(ErrorMessage = "User Email is required")]
             [EmailAddress]
             public string UserEmail { get; set; }
-            [Required(ErrorMessage ="User Password is required")]
+            [Required(ErrorMessage = "User Password is required")]
             public string UserPassword { get; set; }
         }
 
@@ -40,7 +40,7 @@ namespace DepiFinalProject.DTOs
 
         public class RevokeTokenRequest
         {
-            [Required(ErrorMessage ="token is required")]
+            [Required(ErrorMessage = "token is required")]
             public string RefreshToken { get; set; }
         }
 
