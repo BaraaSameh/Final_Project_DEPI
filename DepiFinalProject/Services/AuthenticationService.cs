@@ -5,7 +5,7 @@ using static DepiFinalProject.DTOs.AuthenticationDTO;
 
 namespace DepiFinalProject.Services
 {
-    public class AuthenticationService: IAuthenticationService
+    public class AuthenticationService : IAuthenticationService
     {
         private readonly IUserRepository _userRepository;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
@@ -43,6 +43,7 @@ namespace DepiFinalProject.Services
                 UserFirstName = request.UserFirstName,
                 UserLastName = request.UserLastName,
                 UserPhone = request.UserPhone,
+                UserRole = "client",
                 CreatedAt = DateTime.UtcNow,
             };
 

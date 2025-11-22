@@ -16,18 +16,23 @@ namespace DepiFinalProject.Controllers
     {
         private readonly IPaymentRepository _paymentRepository;
         private readonly IPaymentService _paymentService;
+        private readonly IOrderService _orderService;
         private readonly Microsoft.Extensions.Configuration.IConfiguration _configuration;
-        public PaymentsController(IPaymentRepository paymentRepository, IPaymentService paymentService, Microsoft.Extensions.Configuration.IConfiguration configuration)
+        public PaymentsController(IPaymentRepository paymentRepository,
+             IOrderService orderService, 
+             IPaymentService paymentService, Microsoft.Extensions.Configuration.IConfiguration configuration)
         {
             _paymentRepository = paymentRepository;
             _paymentService = paymentService;
+            _orderService = orderService;
             _configuration = configuration;
         }
 
         /// <summary>
-        /// Create a new PayPal payment (admin, client)
+        /// Create a new PayPal payment for an order
+        /// Amount is automatically retrieved from the order
         /// </summary>
-        /// <param name="dto">Amount + OrderId</param>
+        /// <param name="dto">Only OrderId is required</param>
         /// <returns>Payment details + PayPal approval URL</returns>
         [HttpPost]
         [Authorize(Roles = "admin,client")]
@@ -36,12 +41,61 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreatePayment([FromBody] CreatePaymentRequestDto dto)
         {
-            if (dto == null || dto.Amount <= 0)
-                return BadRequest(new { message = "Invalid payment amount" });
+            //if (dto == null || dto.Amount <= 0)
+            //    return BadRequest(new { message = "Invalid payment amount" });
 
+            //try
+            //{
+            //    var (paymentId, approveUrl) = await _paymentService.CreateOrderAsync(dto.Amount, dto.OrderID);
+
+            //    var payment = await _paymentRepository.GetByIdAsync(paymentId);
+
+            //    if (payment == null)
+            //        return BadRequest(new { message = "Payment could not be created" });
+
+            //    var response = MapPaymentToDto(payment, approveUrl);
+
+            //    return Ok(new
+            //    {
+            //        payment = response,
+            //        approveUrl,
+            //        message = "PayPal order created successfully"
+            //    });
+            //}
+            //catch (Exception ex)
+            //{
+            //    return StatusCode(500,  $"Error deleting product.:{ex.Message} \n {ex.InnerException}");
+            //}
             try
             {
-                var (paymentId, approveUrl) = await _paymentService.CreateOrderAsync(dto.Amount, dto.OrderID);
+                // Get the order first to retrieve its amount
+                var order = await _orderService.GetByIdAsync(dto.OrderID);
+
+                if (order == null)
+                    return NotFound(new { message = $"Order with ID {dto.OrderID} not found" });
+
+                // Verify order belongs to current user (security check)
+                var userIdClaim = User.FindFirst("userId")?.Value;
+                var isAdmin = User.IsInRole("admin");
+
+                if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out int currentUserId))
+                {
+                    if (order.UserID != currentUserId && !isAdmin)
+                        return Forbid();
+                }
+
+                // Check if order is in valid state for payment
+                if (order.OrderStatus == "Cancelled")
+                    return BadRequest(new { message = "Cannot create payment for cancelled order" });
+
+                if (order.OrderStatus == "Delivered")
+                    return BadRequest(new { message = "Order already completed" });
+
+                // Get amount automatically from order
+                decimal amount = order.TotalAmount;
+
+                // Create payment with order's amount
+                var (paymentId, approveUrl) = await _paymentService.CreateOrderAsync(amount, dto.OrderID);
 
                 var payment = await _paymentRepository.GetByIdAsync(paymentId);
 
@@ -54,12 +108,12 @@ namespace DepiFinalProject.Controllers
                 {
                     payment = response,
                     approveUrl,
-                    message = "PayPal order created successfully"
+                    message = $"PayPal order created successfully for amount ${amount}"
                 });
             }
             catch (Exception ex)
             {
-                return StatusCode(500,  $"Error deleting product.:{ex.Message} \n {ex.InnerException}");
+                return StatusCode(500, $"Error creating payment.:{ex.Message} \n {ex.InnerException}");
             }
         }
 

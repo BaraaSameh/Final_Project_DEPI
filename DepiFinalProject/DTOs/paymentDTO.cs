@@ -7,9 +7,9 @@ namespace DepiFinalProject.DTOs
         [Required(ErrorMessage ="Order ID is required")]
         public int OrderID { get; set; }
 
-        [Required]
-        [Range(1,int.MaxValue, ErrorMessage ="Amount must be greater than zero")]
-        public decimal Amount { get; set; }
+        //[Required]
+        //[Range(1,int.MaxValue, ErrorMessage ="Amount must be greater than zero")]
+        //public decimal Amount { get; set; }
     }
 
     public class PaymentResponseDto

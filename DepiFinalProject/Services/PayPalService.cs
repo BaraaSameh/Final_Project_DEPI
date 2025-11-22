@@ -8,6 +8,7 @@ using PaypalServerSdk.Standard;
 using PaypalServerSdk.Standard.Authentication;
 using PaypalServerSdk.Standard.Controllers;
 using PaypalServerSdk.Standard.Models;
+using static DepiFinalProject.DTOs.OrderDto;
 
 namespace PayPalAdvancedIntegration.Services
 {
@@ -114,7 +115,14 @@ namespace PayPalAdvancedIntegration.Services
                 payment.PaidAt = DateTime.UtcNow;
                 await _paymentRepository.UpdateAsync(payment);
             }
-
+            if (status == "COMPLETED" && payment.OrderID.HasValue)
+            {
+                await _orderService.UpdateStatusAsync(payment.OrderID.Value, new UpdateOrderStatusDTO
+                {
+                    OrderStatus = "Paid"
+                });
+            }
+        
             return result.Data;
         }
     }
