@@ -74,8 +74,8 @@ namespace DepiFinalProject.Controllers
                     new List<string> { ex.Message, ex.InnerException?.Message }));
             }
         }
-        [AllowAnonymous]
 
+        [AllowAnonymous]
         [HttpPost("refresh-token")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

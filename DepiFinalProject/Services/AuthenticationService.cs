@@ -67,10 +67,10 @@ namespace DepiFinalProject.Services
 
             return new AuthenticationResponse
             {
-                UserId = user.UserID,
-                UserEmail = user.UserEmail,
-                UserFirstName = user.UserFirstName,
-                UserLastName = user.UserLastName,
+                //UserId = user.UserID,
+                //UserEmail = user.UserEmail,
+                //UserFirstName = user.UserFirstName,
+                //UserLastName = user.UserLastName,
                 AccessToken = accessToken,
                 RefreshToken = refreshToken
             };
@@ -103,10 +103,10 @@ namespace DepiFinalProject.Services
 
             return new AuthenticationResponse
             {
-                UserId = user.UserID,
-                UserEmail = user.UserEmail,
-                UserFirstName = user.UserFirstName,
-                UserLastName = user.UserLastName,
+                //UserId = user.UserID,
+                //UserEmail = user.UserEmail,
+                //UserFirstName = user.UserFirstName,
+                //UserLastName = user.UserLastName,
                 AccessToken = accessToken,
                 RefreshToken = refreshToken
             };
@@ -145,10 +145,10 @@ namespace DepiFinalProject.Services
 
             return new AuthenticationResponse
             {
-                UserId = refreshToken.User.UserID,
-                UserEmail = refreshToken.User.UserEmail,
-                UserFirstName = refreshToken.User.UserFirstName,
-                UserLastName = refreshToken.User.UserLastName,
+                //UserId = refreshToken.User.UserID,
+                //UserEmail = refreshToken.User.UserEmail,
+                //UserFirstName = refreshToken.User.UserFirstName,
+                //UserLastName = refreshToken.User.UserLastName,
                 AccessToken = newAccessToken,
                 RefreshToken = newRefreshToken
             };
