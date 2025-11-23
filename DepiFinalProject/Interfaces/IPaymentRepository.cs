@@ -9,6 +9,6 @@ namespace DepiFinalProject.Interfaces
         Task<List<Payment>> GetByUserIdAsync(int userId);
         Task<Payment> UpdateAsync(Payment payment);
         Task<List<Payment>> GetAllAsync();
-
+        Task<Payment?> GetByPayPalOrderIdAsync(string paypalOrderId);
     }
 }

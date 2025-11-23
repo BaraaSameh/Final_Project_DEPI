@@ -55,7 +55,7 @@ namespace DepiFinalProject.DTOs
 
         public class RevokeTokenRequest
         {
-            [Required(ErrorMessage ="token is required")]
+            [Required(ErrorMessage = "token is required")]
             public string RefreshToken { get; set; }
         }
 
