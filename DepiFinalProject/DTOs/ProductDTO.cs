@@ -43,7 +43,16 @@ namespace DepiFinalProject.DTOs
             public string? ImageUrl { get; set; }
         }
 
-        public class ProductResponseDTO
+    
+        public class ProductImageDTO
+        {
+            public int ImageId { get; set; }
+            public string Url { get; set; }
+            public string PublicId { get; set; }
+        }
+    
+
+    public class ProductResponseDTO
         {
             public int ProductID { get; set; }
             public int CategoryID { get; set; }
@@ -58,12 +67,31 @@ namespace DepiFinalProject.DTOs
             public string ImageURL { get; set; }
             public DateTime CreatedAt { get; set; }
             public bool IsInStock => Stock > 0;
+
+            public List<ProductImageDTO> Images { get; set; } = new();
         }
 
-        public class ProductDetailsDTO : ProductResponseDTO
+        public class ProductDetailsDTO
         {
+            public int ProductID { get; set; }
+            public int CategoryID { get; set; }
+            public string CategoryName { get; set; }
+            public int UserId { get; set; }
+            public string SellerName { get; set; }
+            public string SellerEmail { get; set; }
+            public string ProductName { get; set; }
+            public string Description { get; set; }
+            public decimal Price { get; set; }
+            public int Stock { get; set; }
+            public string ImageURL { get; set; }
+            public DateTime CreatedAt { get; set; }
+
             public double AverageRating { get; set; }
             public int TotalReviews { get; set; }
+            public bool IsInStock => Stock > 0;
+
+            public List<ProductImageDTO> Images { get; set; } = new();
         }
+
     }
 }

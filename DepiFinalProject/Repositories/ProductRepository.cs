@@ -16,10 +16,11 @@ namespace DepiFinalProject.Repositories
         }
         public async Task AddImagesAsync(int productId, List<string> imageUrls,List<string>imagepublicid)
         {
-            var images = imageUrls.Select(url => new ProductImage
+            var images = imageUrls.Select((url, index) => new ProductImage
             {
                 ProductId = productId,
-                ImageUrl = url
+                ImageUrl = url,
+                imagepublicid = imagepublicid[index]
             }).ToList();
 
             await _context.ProductImages.AddRangeAsync(images);
@@ -90,6 +91,7 @@ namespace DepiFinalProject.Repositories
             return await _context.Products
                 .Include(p => p.Category)
                 .Include(p => p.user)
+                .Include(p => p.Images)
                 .ToListAsync();
         }
 
@@ -98,6 +100,7 @@ namespace DepiFinalProject.Repositories
             return await _context.Products
                 .Include(p => p.Category)
                 .Include(p => p.user)
+                .Include(p => p.Images)
                 .Where(p => p.CategoryID == CategoryId)
                 .ToListAsync();
         }
@@ -106,6 +109,7 @@ namespace DepiFinalProject.Repositories
             return await _context.Products
                 .Include(p => p.Category)
                 .Include(p => p.user)
+                .Include(p => p.Images)
                 .Where(p => p.userid == userId)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
@@ -116,6 +120,7 @@ namespace DepiFinalProject.Repositories
                 .Include(p => p.Category)
                 .Include(p => p.user)
                 .Include(p => p.Reviews)
+                .Include(p => p.Images)
                 .FirstOrDefaultAsync(p => p.ProductID == ProductId);
         }
 

@@ -12,11 +12,13 @@ namespace DepiFinalProject.Services
         protected readonly IProductRepository _productRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ICloudinaryService _cloudinaryService;
-        public ProductService(IProductRepository productRepository, IHttpContextAccessor httpContextAccessor,ICloudinaryService cloudinaryService)
+        private readonly IUserRepository _userRepository;
+        public ProductService(IProductRepository productRepository, IHttpContextAccessor httpContextAccessor,ICloudinaryService cloudinaryService, IUserRepository userRepository)
         {
             _productRepository = productRepository;
             _httpContextAccessor = httpContextAccessor;
             _cloudinaryService = cloudinaryService;
+            _userRepository = userRepository;
         }
         private int GetCurrentUserId()
         {
@@ -48,7 +50,8 @@ namespace DepiFinalProject.Services
             }
 
 
-
+            product.ImageURL = imageUrls[0];
+            await _productRepository.UpdateAsync(product);
             await _productRepository.AddImagesAsync(productId, imageUrls,imagepublicid);
             return true;
         }
@@ -60,8 +63,9 @@ namespace DepiFinalProject.Services
                 throw new KeyNotFoundException($"Product {productId} not found.");
 
             int userId = GetCurrentUserId();
+            var userRole = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Role)?.Value;
 
-            if (product.userid != userId)
+            if (product.userid != userId&& userRole != "admin")
                 throw new UnauthorizedAccessException("You cannot delete images from another seller's product.");
             var image=await _productRepository.getimagebyid(imageId,productId);
             if(image == null)
@@ -81,8 +85,9 @@ namespace DepiFinalProject.Services
                 throw new KeyNotFoundException("Product not found.");
 
             int userId = GetCurrentUserId();
+            var userRole = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Role)?.Value;
 
-            if (product.userid != userId)
+            if (product.userid != userId && userRole != "admin")
                 throw new UnauthorizedAccessException("You cannot delete images from another seller's product.");
             var images=await _productRepository.GetProductImagesAsync(productId);
             if (images == null) { 
@@ -213,16 +218,24 @@ namespace DepiFinalProject.Services
                 CategoryID = product.CategoryID,
                 CategoryName = product.Category?.CategoryName ?? "Unknown",
                 UserId = product.userid,
-                SellerName = product.user?.UserFirstName +" "+ product.user?.UserLastName ?? "Unknown",
+                SellerName = product.user?.UserFirstName + " " + product.user?.UserLastName ?? "Unknown",
                 SellerEmail = product.user?.UserEmail ?? "Unknown",
                 ProductName = product.ProductName,
                 Description = product.Description,
                 Price = product.Price,
                 Stock = product.Stock,
                 ImageURL = product.ImageURL,
-                CreatedAt = product.CreatedAt
+                CreatedAt = product.CreatedAt,
+
+                Images = product.Images?.Select(img => new ProductImageDTO
+                {
+                    ImageId = img.ImageId,
+                    Url = img.ImageUrl,
+                    PublicId = img.imagepublicid
+                }).ToList() ?? new List<ProductImageDTO>()
             };
         }
+
 
         private ProductDetailsDTO MapToDetailDto(Product product)
         {
@@ -244,8 +257,16 @@ namespace DepiFinalProject.Services
                 ImageURL = product.ImageURL,
                 CreatedAt = product.CreatedAt,
                 AverageRating = Math.Round(averageRating, 2),
-                TotalReviews = reviews.Count
+                TotalReviews = reviews.Count,
+
+                Images = product.Images?.Select(img => new ProductImageDTO
+                {
+                    ImageId = img.ImageId,
+                    Url = img.ImageUrl,
+                    PublicId = img.imagepublicid
+                }).ToList() ?? new List<ProductImageDTO>()
             };
         }
+
     }
 }

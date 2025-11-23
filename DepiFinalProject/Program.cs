@@ -94,7 +94,16 @@ namespace DepiFinalProject
 
             builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
             // Add Swagger with JWT support
-
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy
+                        .AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
             // Define the securityScheme before using it in AddSecurityDefinition and AddSecurityRequirement
             var securityScheme = new Microsoft.OpenApi.Models.OpenApiSecurityScheme
             {
