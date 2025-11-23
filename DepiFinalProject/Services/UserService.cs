@@ -1,6 +1,7 @@
 ﻿using DepiFinalProject.DTOs;
 using DepiFinalProject.Interfaces;
 using DepiFinalProject.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace DepiFinalProject.Services
 {
@@ -39,6 +40,10 @@ namespace DepiFinalProject.Services
                 user.UserPassword = _passwordService.HashPassword(user.UserPassword);
             }
             user.CreatedAt = DateTime.UtcNow;
+            if (!numberval(user.UserPhone))
+            {
+              throw new BadHttpRequestException("User phone must be digits");
+            }
             return await _userRepository.CreateAsync(user);
         }
 
@@ -103,7 +108,10 @@ namespace DepiFinalProject.Services
             {
                 throw new KeyNotFoundException($"User with ID {user.UserID} not found");
             }
-
+            if (!numberval(user.UserPhone))
+            {
+                throw new BadHttpRequestException("User phone must be digits");
+            }
             existingUser.UserFirstName = user.UserFirstName;
             existingUser.UserLastName = user.UserLastName;
             existingUser.UserPhone = user.UserPhone;
@@ -153,6 +161,17 @@ namespace DepiFinalProject.Services
             
 
                 return deleted;
+        }
+        private bool numberval(string num)
+        {
+            foreach (char x in num)
+            {
+                if (x < '0' || x > '9')
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 

@@ -5,6 +5,7 @@ using DepiFinalProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using static DepiFinalProject.DTOs.AddressDTO;
 
 namespace DepiFinalProject.Controllers
@@ -331,6 +332,8 @@ namespace DepiFinalProject.Controllers
             var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return int.TryParse(idClaim, out userId);
         }
+       
+
     }
 
 }
