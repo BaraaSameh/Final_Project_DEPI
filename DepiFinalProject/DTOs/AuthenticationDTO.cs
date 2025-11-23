@@ -10,25 +10,40 @@ namespace DepiFinalProject.DTOs
         public class RegisterRequest
         {
             [Required(ErrorMessage = "User email is required")]
-            [EmailAddress]
+            [EmailAddress(ErrorMessage = "Invalid email format")]
+            [RegularExpression(@"^[A-Za-z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com|hotmail\.com|icloud\.com)$",
+                ErrorMessage = "Email must be from a known provider (gmail, yahoo, outlook, hotmail, icloud)")]
             public string UserEmail { get; set; }
-            [Required(ErrorMessage = "user passowrd is required")]
-            [PasswordPropertyText]
+
+            [Required(ErrorMessage = "User password is required")]
+            [MinLength(6, ErrorMessage = "Password must be at least 6 characters")]
+            [RegularExpression(@"^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};:'""\\|,.<>\/?]).{6,}$",
+                ErrorMessage = "Password must contain an uppercase letter, a number, and a special character")]
             public string UserPassword { get; set; }
+
+            [Required(ErrorMessage = "First name is required")]
+            [RegularExpression(@"^[\p{L} ]+$", ErrorMessage = "First name must contain only letters")]
             public string UserFirstName { get; set; }
+
+            [Required(ErrorMessage = "Last name is required")]
+            [RegularExpression(@"^[\p{L} ]+$", ErrorMessage = "Last name must contain only letters")]
             public string UserLastName { get; set; }
-            [Phone]
-            [MaxLength(11, ErrorMessage = "Description should be 11 number")]
-            [MinLength(11, ErrorMessage = "Description should be 11 number")]
+
+            [Required(ErrorMessage = "Phone number is required")]
+            [RegularExpression(@"^(010|011|012|015)[0-9]{8}$",
+                ErrorMessage = "Phone number must be a valid Egyptian mobile number (e.g., 010xxxxxxxx)")]
             public string UserPhone { get; set; }
         }
 
         public class LoginRequest
         {
-            [Required(ErrorMessage = "User Email is required")]
-            [EmailAddress]
+            [Required(ErrorMessage = "User email is required")]
+            [EmailAddress(ErrorMessage = "Invalid email format")]
+            [RegularExpression(@"^[A-Za-z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com|hotmail\.com|icloud\.com)$",
+                ErrorMessage = "Email must be from a known provider")]
             public string UserEmail { get; set; }
-            [Required(ErrorMessage = "User Password is required")]
+
+            [Required(ErrorMessage = "User password is required")]
             public string UserPassword { get; set; }
         }
 
@@ -48,10 +63,10 @@ namespace DepiFinalProject.DTOs
 
         public class AuthenticationResponse
         {
-            public int UserId { get; set; }
-            public string UserEmail { get; set; }
-            public string UserFirstName { get; set; }
-            public string UserLastName { get; set; }
+            //public int UserId { get; set; }
+            //public string UserEmail { get; set; }
+            //public string UserFirstName { get; set; }
+            //public string UserLastName { get; set; }
             public string AccessToken { get; set; }
             public string RefreshToken { get; set; }
         }
