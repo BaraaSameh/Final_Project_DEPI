@@ -27,6 +27,7 @@ namespace DepiFinalProject.Data
         // RefreshTokens DbSet "Seif"
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
+        public DbSet<OTP> OtpEntries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

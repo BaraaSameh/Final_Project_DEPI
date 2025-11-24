@@ -112,7 +112,33 @@ namespace DepiFinalProject.Services
                 RefreshToken = refreshToken
             };
         }
+        public async Task<AuthenticationResponse> GenerateJwtTokenAsync(User user){
+            var accessToken = _tokenService.GenerateAccessToken(user);
+            var refreshToken = _tokenService.GenerateRefreshToken();
 
+        // Save refresh token
+        var refreshTokenEntity = new RefreshToken
+        {
+            UserId = user.UserID,
+            Token = refreshToken,
+            ExpiryDate = DateTime.UtcNow.AddDays(
+                _configuration.GetValue<int>("JwtSettings:RefreshTokenExpirationDays")),
+            CreatedAt = DateTime.UtcNow,
+            IsRevoked = false
+        };
+
+        await _refreshTokenRepository.CreateAsync(refreshTokenEntity);
+
+            return new AuthenticationResponse
+            {
+                //UserId = user.UserID,
+                //UserEmail = user.UserEmail,
+                //UserFirstName = user.UserFirstName,
+                //UserLastName = user.UserLastName,
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
+    };
+}
         public async Task<AuthenticationResponse> RefreshTokenAsync(string token)
         {
             var refreshToken = await _refreshTokenRepository.GetByTokenAsync(token);
