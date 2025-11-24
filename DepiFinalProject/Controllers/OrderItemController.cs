@@ -46,7 +46,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "admin,client")]
+        [Authorize]
         [ProducesResponseType(typeof(OrderItemResponseDTO), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -54,6 +54,11 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<OrderItemResponseDTO>> AddOrderItem(int orderId, AddOrderItemDTO dto)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And client" });
+            }
+
             if (!ModelState.IsValid)
                 return ValidationProblem(ModelState);
 

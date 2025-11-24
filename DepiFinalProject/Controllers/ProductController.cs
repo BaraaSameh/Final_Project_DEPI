@@ -211,13 +211,18 @@ namespace DepiFinalProject.Controllers
         /// <response code="401">If the user is not authenticated or user ID is invalid</response>
         /// <response code="403">If the user doesn't have seller or admin role</response>
         [HttpGet("my-products")]
-        [Authorize(Roles = "admin,seller")]
+        [Authorize]
         [ProducesResponseType(typeof(SuccessResponse<IEnumerable<ProductResponseDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<IEnumerable<ProductResponseDTO>>> GetMyProducts()
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
+            }
+
             try
             {
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -269,7 +274,7 @@ namespace DepiFinalProject.Controllers
         /// <response code="403">If the user doesn't have admin role</response>
         /// <response code="404">If no products are found for the specified user</response>
         [HttpGet("user/{userId:int}")]
-        [Authorize(Roles = "admin")]
+        [Authorize]
         [ProducesResponseType(typeof(SuccessResponse<IEnumerable<ProductResponseDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -277,6 +282,11 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<ProductResponseDTO>>> GetByUserId(int userId)
         {
+            if (!User.IsInRole("admin"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin" });
+            }
+
             if (userId <= 0)
             {
                 return BadRequest(new ErrorResponse
@@ -346,7 +356,7 @@ namespace DepiFinalProject.Controllers
         /// <response code="403">If the user doesn't have seller or admin role</response>
         /// <response code="422">If validation fails</response>
         [HttpPost]
-        [Authorize(Roles = "admin,seller")]
+        [Authorize]
         [ProducesResponseType(typeof(SuccessResponse<ProductResponseDTO>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
@@ -354,6 +364,11 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(typeof(ValidationErrorResponse), StatusCodes.Status422UnprocessableEntity)]
         public async Task<ActionResult<ProductResponseDTO>> Create([FromBody] CreateProductDTO dto)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
+            }
+
             if (!ModelState.IsValid)
             {
                 var errors = ModelState
@@ -432,7 +447,7 @@ namespace DepiFinalProject.Controllers
         /// <response code="404">If the product is not found</response>
         /// <response code="422">If validation fails</response>
         [HttpPut("{id:int}")]
-        [Authorize(Roles = "admin,seller")]
+        [Authorize]
         [ProducesResponseType(typeof(SuccessResponse<ProductResponseDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
@@ -441,6 +456,11 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(typeof(ValidationErrorResponse), StatusCodes.Status422UnprocessableEntity)]
         public async Task<ActionResult<ProductResponseDTO>> UpdateProduct(int id, [FromBody] UpdateProductDTO dto)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
+            }
+
             if (id <= 0)
             {
                 return BadRequest(new ErrorResponse
@@ -528,12 +548,17 @@ namespace DepiFinalProject.Controllers
         /// <response code="404">Image or product not found.</response>
         /// <response code="401">Unauthorized if user does not have seller/admin role.</response>
         [HttpDelete("{productId}/images/{imageId}")]
-        [Authorize(Roles = "seller,admin")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> DeleteImage(int productId, int imageId)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
+            }
+
             bool result = await _productService.DeleteImageAsync(productId, imageId);
 
             if (!result)
@@ -553,12 +578,17 @@ namespace DepiFinalProject.Controllers
         /// <response code="400">No URLs provided.</response>
         /// <response code="401">Unauthorized if user is not seller/admin.</response>
         [HttpPost("{productId}/images")]
-        [Authorize(Roles = "seller,admin")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> AddImages(int productId, [FromForm] List<IFormFile> images)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
+            }
+
             if (images == null || images.Count == 0)
                 return BadRequest(new { message = "No images provided." });
              bool success = await _productService.AddImagesAsync(productId, images);
@@ -579,12 +609,17 @@ namespace DepiFinalProject.Controllers
         /// <response code="404">No images found for the product.</response>
         /// <response code="401">Unauthorized if user does not have seller/admin role.</response>
         [HttpDelete("{productId}/images")]
-        [Authorize(Roles = "seller,admin")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> DeleteAllImages(int productId)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
+            }
+
             bool result = await _productService.DeleteAllImagesAsync(productId);
 
             if (!result)
@@ -605,7 +640,7 @@ namespace DepiFinalProject.Controllers
         /// <response code="403">If the user is not authorized to delete this product</response>
         /// <response code="404">If the product is not found</response>
         [HttpDelete("{id:int}")]
-        [Authorize(Roles = "admin,seller")]
+        [Authorize]
         [ProducesResponseType(typeof(SuccessResponse<object>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
@@ -613,6 +648,11 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteProduct(int id)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
+            }
+
             if (id <= 0)
             {
                 return BadRequest(new ErrorResponse

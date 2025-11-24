@@ -47,12 +47,17 @@ namespace DepiFinalProject.Controllers
         /// <param name="categoryId">Category ID</param>
         /// <param name="file">Image file</param>
         [HttpPost("{categoryId}/icon")]
-        [Authorize(Roles = "admin")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UploadIcon(int categoryId, IFormFile file)
         {
+            if (!User.IsInRole("admin") )
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin" });
+            }
+
             if (file == null || file.Length == 0)
                 return BadRequest("File is empty.");
 
@@ -68,11 +73,16 @@ namespace DepiFinalProject.Controllers
         /// </summary>
         /// <param name="categoryId">Category ID</param>
         [HttpDelete("{categoryId}/icon")]
-        [Authorize(Roles = "admin")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteIcon(int categoryId)
         {
+            if (!User.IsInRole("admin"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin" });
+            }
+
             var result = await _categoryService.DeleteCategoryIconAsync(categoryId);
 
             if (!result)
@@ -115,12 +125,16 @@ namespace DepiFinalProject.Controllers
         /// <param name="inputDto">Category input data</param>
         /// <returns>Created category</returns>
         [HttpPost]
-        [Authorize(Roles = "admin,seller")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<CategoryDTO>> CreateCategory([FromBody] CategoryInputDTO inputDto)
         {
+            if (!User.IsInRole("admin"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin" });
+            }
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -141,13 +155,17 @@ namespace DepiFinalProject.Controllers
         /// <param name="id">Category ID</param>
         /// <param name="inputDto">Updated category data</param>
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,seller")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateCategory(int id, [FromBody] CategoryInputDTO inputDto)
         {
+            if (!User.IsInRole("admin"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin " });
+            }
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -170,12 +188,17 @@ namespace DepiFinalProject.Controllers
         /// </summary>
         /// <param name="id">Category ID</param>
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,seller")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteCategory(int id)
         {
+            if (!User.IsInRole("admin"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin " });
+            }
+
             try
             {
                 var deleted = await _categoryService.DeleteCategoryAsync(id);

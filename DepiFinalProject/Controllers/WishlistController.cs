@@ -32,10 +32,18 @@ namespace DepiFinalProject.Controllers
         /// Get all wishlist items for the logged-in user.
         /// </summary>
         [HttpGet]
+        [Authorize]
         [ProducesResponseType(typeof(WishlistResponseDto), 200)]
-        [ProducesResponseType(401)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<WishlistResponseDto>> GetWishlist()
         {
+            if (!User.IsInRole("admin")|| !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "only Allowed To Admin And Client" });
+            }
+
             if (!TryGetUserId(out var userId))
                 return Unauthorized();
 
@@ -51,11 +59,20 @@ namespace DepiFinalProject.Controllers
         /// <summary>
         /// Get a specific wishlist item by product ID.
         /// </summary>
+        [Authorize]
         [HttpGet("{productId:int}")]
         [ProducesResponseType(typeof(WishlistItemDto), 200)]
         [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<WishlistItemDto>> GetWishlistItem(int productId)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "only Allowed To Admin And Client" });
+            }
+
             if (!TryGetUserId(out var userId))
                 return Unauthorized();
 
@@ -69,12 +86,21 @@ namespace DepiFinalProject.Controllers
         /// <summary>
         /// Add a product to the wishlist.
         /// </summary>
+        [Authorize]
         [HttpPost("{productId:int}")]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> AddToWishlist(int productId)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "only Allowed To Admin And Client" });
+            }
+
             if (!TryGetUserId(out var userId))
                 return Unauthorized();
 
@@ -88,11 +114,20 @@ namespace DepiFinalProject.Controllers
         /// <summary>
         /// Remove a product from the wishlist.
         /// </summary>
+        [Authorize]
         [HttpDelete("{productId:int}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RemoveFromWishlist(int productId)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "only Allowed To Admin And Client" });
+            }
+
             if (!TryGetUserId(out var userId))
                 return Unauthorized();
 
@@ -106,11 +141,20 @@ namespace DepiFinalProject.Controllers
         /// <summary>
         /// Clear the entire wishlist.
         /// </summary>
+        [Authorize]
         [HttpDelete]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ClearWishlist()
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "only Allowed To Admin And Client" });
+            }
+
             if (!TryGetUserId(out var userId))
                 return Unauthorized();
 

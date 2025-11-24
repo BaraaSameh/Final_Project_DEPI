@@ -24,13 +24,18 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "admin")]
+        [Authorize]
         [ProducesResponseType(typeof(ICollection<User>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ICollection<User>>> GetAllUsers()
         {
+            if (!User.IsInRole("admin"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin" });
+            }
+
             try
             {
                 var users = await _userService.GetAllAsync();
@@ -68,7 +73,7 @@ namespace DepiFinalProject.Controllers
         }
 
         [HttpGet("email/{email}")]
-        [Authorize(Roles = "admin")]
+        [Authorize]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -76,6 +81,11 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<User>> GetUserByEmail(string email)
         {
+            if (!User.IsInRole("admin"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin" });
+            }
+
             try
             {
                 var user = await _userService.GetByEmailAsync(email);
@@ -104,13 +114,20 @@ namespace DepiFinalProject.Controllers
         /// <response code="400">Invalid image or validation error</response>
         /// <response code="401">User not registerd error</response>
         [HttpPost("/upload-image")]
+        [Authorize]
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UploadImage([FromForm] UpdateUserImageDto dto)
         {
-            if(!TryGetUserId(out var userid)) Unauthorized("Only registered Users can upload thier images");
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
+            }
+            if (!TryGetUserId(out var userid)) Unauthorized("Only registered Users can upload thier images");
             var url = await _userService.UpdateUserImageAsync(userid, dto.Image);
             return Ok(new { imageUrl = url });
         }
@@ -124,11 +141,20 @@ namespace DepiFinalProject.Controllers
         /// <response code="401">User not registerd error</response>
         /// <reponse code="404">NO User Image Found</reponse>
         [HttpDelete("/delete-image")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
         public async Task<IActionResult> DeleteImage()
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
+            }
+
             if (!TryGetUserId(out var userid)) Unauthorized("Only registered Users can upload thier images");
 
             var deleted = await _userService.DeleteUserImageAsync(userid);
@@ -139,18 +165,19 @@ namespace DepiFinalProject.Controllers
             return Ok(new { message = "Image deleted successfully" });
         }
 
-
-
-
-
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize]
         [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<User>> CreateUser([FromBody] User user)
         {
+            if (!User.IsInRole("admin"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin" });
+            }
+
             try
             {
                 if (!ModelState.IsValid)
@@ -181,6 +208,10 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<User>> UpdateUser(int id, [FromBody] UpdateUserDTO user)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
+            }
             try
             {
                 if (!ModelState.IsValid)
@@ -215,13 +246,18 @@ namespace DepiFinalProject.Controllers
             }
         }
         [HttpPut("updateRole/{id}")]
-        [Authorize(Roles = "admin")]
+        [Authorize]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<User>> UpdateUserRole(int id, [FromBody] UpdateUserRoleDTO user) {
+            if (!User.IsInRole("admin"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin " });
+            }
+
             try
             {
                 if (!ModelState.IsValid)
@@ -254,7 +290,7 @@ namespace DepiFinalProject.Controllers
             }
         }
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -262,6 +298,10 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> DeleteUser(int id)
         {
+            if (!User.IsInRole("admin"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin" });
+            }
             try
             {
                 var result = await _userService.DeleteAsync(id);
@@ -286,6 +326,11 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordRequestDTO request)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
+            }
+
             try
             {
                 if (!ModelState.IsValid)

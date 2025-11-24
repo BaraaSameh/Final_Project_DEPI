@@ -172,7 +172,7 @@ namespace DepiFinalProject.Controllers
                     new List<string> { ex.Message, ex.InnerException?.Message }));
             }
         }
-
+        [AllowAnonymous]
         [HttpPost("revoke-token")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

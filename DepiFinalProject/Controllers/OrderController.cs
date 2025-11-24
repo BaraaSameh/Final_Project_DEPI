@@ -28,12 +28,17 @@ namespace DepiFinalProject.Controllers
         /// </summary>
         /// <returns>List of orders</returns>
         [HttpGet]
-        [Authorize(Roles = "admin")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<OrderResponseDTO>>> GetAllOrders()
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
+            }
+
             try
             {
                 var orders = await _orderService.GetAllAsync();
@@ -77,12 +82,17 @@ namespace DepiFinalProject.Controllers
         /// Get all orders belonging to a specific user
         /// </summary>
         [HttpGet("user/{userId:int}")]
-        [Authorize(Roles = "admin,client")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<OrderResponseDTO>>> GetUserOrders(int userId)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And client" });
+            }
+
             try
             {
                 var orders = await _orderService.GetByUserAsync(userId);
@@ -102,13 +112,17 @@ namespace DepiFinalProject.Controllers
         /// </summary>
         /// <returns>Created order details</returns>
         [HttpPost("checkout")]
-        [Authorize(Roles = "admin,client")]
+        [Authorize]
         [ProducesResponseType(typeof(OrderResponseDTO), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<OrderResponseDTO>> CheckoutFromCart()
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And client" });
+            }
             try
             {
                 // Get current user ID from JWT token
@@ -183,13 +197,18 @@ namespace DepiFinalProject.Controllers
         /// Update an order’s status
         /// </summary>
         [HttpPut("{id:int}")]
-        [Authorize(Roles = "admin,seller")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<OrderResponseDTO>> UpdateOrderStatus(int id, [FromBody] UpdateOrderStatusDTO dto)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
+            }
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 

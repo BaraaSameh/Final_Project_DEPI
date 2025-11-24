@@ -30,11 +30,16 @@ namespace DepiFinalProject.Controllers
         /// Get the current user's cart with all items.
         /// </summary>
         [HttpGet]
-        [Authorize(Roles = "admin,client")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<CartResponseDto>> GetCart()
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
+            }
+
             try
             {
                 var userId = GetUserId();
@@ -60,12 +65,17 @@ namespace DepiFinalProject.Controllers
         /// Get a specific item in the current user's cart.
         /// </summary>
         [HttpGet("{productId}")]
-        [Authorize(Roles = "admin,client")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<CartItemDto>> GetCartItem(int productId)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
+            }
+
             try
             {
                 var userId = GetUserId();
@@ -86,12 +96,16 @@ namespace DepiFinalProject.Controllers
         /// Add a product to the current user's cart.
         /// </summary>
         [HttpPost("{productId}")]
-        [Authorize(Roles = "admin,client")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> AddToCart(int productId, int quantity = 1)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
+            }
             try
             {
                 var userId = GetUserId();
@@ -125,11 +139,15 @@ namespace DepiFinalProject.Controllers
         /// Update the quantity of a specific product in the cart.
         /// </summary>
         [HttpPut("{productId}")]
-        [Authorize(Roles = "admin,client")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateQuantity(int productId, [FromBody] UpdateQuantityDto dto)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
+            }
             try
             {
                 var userId = GetUserId();
@@ -150,11 +168,15 @@ namespace DepiFinalProject.Controllers
         /// Remove all items from the current user's cart.
         /// </summary>
         [HttpDelete]
-        [Authorize(Roles = "admin,client")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ClearCart()
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
+            }
             try
             {
                 var userId = GetUserId();
@@ -171,11 +193,15 @@ namespace DepiFinalProject.Controllers
         /// Remove a specific item from the current user's cart.
         /// </summary>
         [HttpDelete("{productId}")]
-        [Authorize(Roles = "admin,client")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RemoveItem(int productId)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
+            }
             try
             {
                 var userId = GetUserId();

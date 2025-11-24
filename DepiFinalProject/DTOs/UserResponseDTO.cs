@@ -14,7 +14,6 @@ namespace DepiFinalProject.DTOs
         public int OrdersNumber { get; set; }
         public int ReviewsNumber { get; set; }
         public int WishListNumber { get; set; }
-        public string RefershToken { get; set; }
         public string imgeurl { get; set; }
         public string imageid { get; set; }
     }

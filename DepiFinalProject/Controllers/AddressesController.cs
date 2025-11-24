@@ -72,13 +72,17 @@ namespace DepiFinalProject.Controllers
         /// Add a new address
         /// </summary>
         [HttpPost]
-        [Authorize(Roles = "admin,client")]
+        [Authorize]
         [ProducesResponseType(typeof(AddressDto), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
         public async Task<ActionResult<AddressDto>> AddAddress([FromBody] AddressCreateUpdateDto addressDto)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
+            }
             try
             {
                 if (!ModelState.IsValid)
@@ -132,13 +136,17 @@ namespace DepiFinalProject.Controllers
         /// Update an existing address
         /// </summary>
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,client")]
+        [Authorize]
         [ProducesResponseType(typeof(AddressDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
         public async Task<ActionResult<AddressDto>> UpdateAddress(int id, [FromBody] AddressCreateUpdateDto addressDto)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
+            }
             try
             {
                 if (!ModelState.IsValid)
@@ -192,13 +200,17 @@ namespace DepiFinalProject.Controllers
         /// Delete an address
         /// </summary>
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,client")]
+        [Authorize]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         [ProducesResponseType(403)]
         [ProducesResponseType(500)]
         public async Task<ActionResult> DeleteAddress(int id)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
+            }
             try
             {
                 var currentUserId = GetUserId();
