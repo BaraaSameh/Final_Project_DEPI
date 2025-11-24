@@ -93,6 +93,10 @@ namespace DepiFinalProject
             builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
             builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+            builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("Smtp"));
+            builder.Services.AddScoped<IOtpRepository, OtpRepository>();
+            builder.Services.AddScoped<IEmailService, SmtpEmailService>();
+            builder.Services.AddScoped<IOtpService, OtpService>();
             // Add Swagger with JWT support
             builder.Services.AddCors(options =>
             {

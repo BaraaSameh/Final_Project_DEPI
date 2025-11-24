@@ -1,5 +1,6 @@
 ﻿using DepiFinalProject.DTOs;
 using DepiFinalProject.Interfaces;
+using DepiFinalProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +14,72 @@ namespace DepiFinalProject.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthenticationService _authService;
-
-        public AuthenticationController(IAuthenticationService authService)
+        private readonly IOtpService _otpService;
+        private readonly IUserRepository _userRepo;
+        public AuthenticationController(IAuthenticationService authService, IOtpService otpService, IUserRepository userRepo)
         {
             _authService = authService;
+            _otpService = otpService;
+            _userRepo = userRepo;
         }
+
+        [HttpPost("request-otp")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> RequestOtp([FromBody] RequestOtpDto dto)
+        {
+            if (dto == null || string.IsNullOrWhiteSpace(dto.Purpose)) return BadRequest("Invalid request");
+
+            User user = null;
+            if (!string.IsNullOrEmpty(dto.Email))
+                user = await _userRepo.GetByEmailAsync(dto.Email);
+            else if (!string.IsNullOrEmpty(dto.PhoneNumber))
+                user = await _userRepo.GetByPhoneAsync(dto.PhoneNumber);
+
+            if (user == null) return NotFound("User not found");
+
+            var destination = !string.IsNullOrEmpty(dto.Email) ? dto.Email :" ";
+
+            await _otpService.RequestOtpAsync(user, dto.Purpose, destination);
+
+            return Ok(new { message = "OTP sent" });
+        }
+        [HttpPost("verify-otp")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpDto dto)
+        {
+            if (dto == null || string.IsNullOrEmpty(dto.Code)) return BadRequest("Invalid request");
+
+            User user = null;
+            if (!string.IsNullOrEmpty(dto.Email))
+                user = await _userRepo.GetByEmailAsync(dto.Email);
+            else if (!string.IsNullOrEmpty(dto.PhoneNumber))
+                user = await _userRepo.GetByPhoneAsync(dto.PhoneNumber);
+
+            if (user == null) return NotFound("User not found");
+
+            var ok = await _otpService.VerifyOtpAsync(user, dto.Purpose, dto.Code);
+            if (!ok) return BadRequest("Invalid or expired code");
+
+            if (dto.Purpose == "login")
+            {
+                var response = await _authService.GenerateJwtTokenAsync(user);
+                SetRefreshTokenCookie(response.RefreshToken);
+                return Ok(ApiResponse<AuthenticationResponse>.SuccessResponse(
+                    response, "OTP verified and login successful"));
+
+            }
+
+            return Ok(new { message = "OTP verified" });
+        }
+
 
         [AllowAnonymous]
         [HttpPost("register")]

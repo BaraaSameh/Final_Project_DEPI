@@ -1,4 +1,5 @@
-﻿using static DepiFinalProject.DTOs.AuthenticationDTO;
+﻿using DepiFinalProject.Models;
+using static DepiFinalProject.DTOs.AuthenticationDTO;
 
 namespace DepiFinalProject.Interfaces
 {
@@ -7,6 +8,7 @@ namespace DepiFinalProject.Interfaces
         Task<AuthenticationResponse> RegisterAsync(RegisterRequest request);
         Task<AuthenticationResponse> LoginAsync(LoginRequest request);
         Task<AuthenticationResponse> RefreshTokenAsync(string token);
+        Task<AuthenticationResponse> GenerateJwtTokenAsync(User user);
         Task<bool> RevokeTokenAsync(string token);
     }
 }
