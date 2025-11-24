@@ -23,13 +23,18 @@ public class ReturnsController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(Roles = "admin")]
+    [Authorize]
     [ProducesResponseType(typeof(IEnumerable<ReturnDto.ReturnResponseDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAllReturns()
     {
+        if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+        {
+            return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
+        }
+
         var returns = await _returnService.GetAllReturnsAsync();
 
         var result = returns.Select(r => new ReturnDto.ReturnResponseDto
@@ -45,13 +50,18 @@ public class ReturnsController : ControllerBase
     }
 
     [HttpGet("{returnId}")]
-    [Authorize(Roles = "admin,client")]
+    [Authorize]
     [ProducesResponseType(typeof(ReturnDto.ReturnResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetReturnById(int returnId)
     {
+        if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+        {
+            return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
+        }
+
         var r = await _returnService.GetReturnByIdAsync(returnId);
         if (r == null)
             return NotFound(new { Message = "Return not found." });
@@ -70,7 +80,7 @@ public class ReturnsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "client")]
+    [Authorize]
     [ProducesResponseType(typeof(ReturnDto.ReturnResponseDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -78,6 +88,11 @@ public class ReturnsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> RequestReturn([FromBody] ReturnDto.CreateReturnDto dto)
     {
+        if (!User.IsInRole("admin") || !User.IsInRole("client"))
+        {
+            return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
+        }
+
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
@@ -101,7 +116,7 @@ public class ReturnsController : ControllerBase
     }
 
     [HttpPut("{returnId}")]
-    [Authorize(Roles = "admin")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -109,6 +124,11 @@ public class ReturnsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateReturnStatus(int returnId, [FromBody] ReturnDto.UpdateReturnStatusDto dto)
     {
+        if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+        {
+            return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
+        }
+
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
@@ -120,13 +140,18 @@ public class ReturnsController : ControllerBase
     }
 
     [HttpDelete("{returnId}")]
-    [Authorize(Roles = "admin")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteReturn(int returnId)
     {
+        if (!User.IsInRole("admin"))
+        {
+            return StatusCode(403, new { Error = "Only Allowed To Admin" });
+        }
+
         var success = await _returnService.DeleteReturnAsync(returnId);
         if (!success)
             return NotFound("Return not found.");
@@ -135,7 +160,7 @@ public class ReturnsController : ControllerBase
     }
 
     [HttpPut("{returnId}/cancel")]
-    [Authorize(Roles = "admin,client")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -144,6 +169,11 @@ public class ReturnsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CancelReturn(int returnId)
     {
+        if (!User.IsInRole("admin") || !User.IsInRole("client"))
+        {
+            return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
+        }
+
         var r = await _returnService.GetReturnByIdAsync(returnId);
         if (r == null)
             return NotFound("Return not found.");
@@ -169,11 +199,16 @@ public class ReturnsController : ControllerBase
         return Ok(new { Message = "Return cancelled successfully." });
     }
     [HttpGet("User")]
+    [Authorize]
     [ProducesResponseType(typeof(IEnumerable<ReturnDto.ReturnResponseDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetMyReturnRequests()
     {
+        if (!User.IsInRole("admin") || !User.IsInRole("client"))
+        {
+            return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
+        }
         var userId = GetUserIdFromToken();
 
         var returns = await _returnService.GetReturnRequestsByUserIdAsync(userId);

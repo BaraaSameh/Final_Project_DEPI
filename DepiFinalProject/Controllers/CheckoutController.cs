@@ -35,12 +35,17 @@ namespace DepiFinalProject.Controllers
         /// <param name="dto">Only OrderId is required</param>
         /// <returns>Payment details + PayPal approval URL</returns>
         [HttpPost]
-        [Authorize(Roles = "admin,client")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreatePayment([FromBody] CreatePaymentRequestDto dto)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
+            }
+
             //if (dto == null || dto.Amount <= 0)
             //    return BadRequest(new { message = "Invalid payment amount" });
 
@@ -121,11 +126,16 @@ namespace DepiFinalProject.Controllers
         /// Get all payments (admin only)
         /// </summary>
         [HttpGet]
-        [Authorize(Roles = "admin")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllPayments()
         {
+            if (!User.IsInRole("admin"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin " });
+            }
+
             try
             {
                 var payments = await _paymentRepository.GetAllAsync();
@@ -142,13 +152,17 @@ namespace DepiFinalProject.Controllers
         /// Get payment by ID (admin or the payment owner)
         /// </summary>
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,client")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetPaymentById(string id)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
+            }
             try
             {
                 var payment = await _paymentRepository.GetByIdAsync(id);
@@ -173,12 +187,16 @@ namespace DepiFinalProject.Controllers
         /// Get all payments for a specific user (admin or the user themselves)
         /// </summary>
         [HttpGet("user/{userId}")]
-        [Authorize(Roles = "admin,client")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetUserPayments(int userId)
         {
+            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
+            }
             try
             {
                 var currentUserId = int.Parse(User.FindFirst("userId")!.Value);
@@ -201,12 +219,16 @@ namespace DepiFinalProject.Controllers
         /// Update payment status (admin only)
         /// </summary>
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdatePaymentStatus(string id, [FromBody] UpdatePaymentDto dto)
         {
+            if (!User.IsInRole("admin"))
+            {
+                return StatusCode(403, new { Error = "Only Allowed To Admin" });
+            }
             try
             {
                 var payment = await _paymentRepository.GetByIdAsync(id);
