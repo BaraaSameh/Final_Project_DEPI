@@ -1,6 +1,6 @@
 ﻿using CloudinaryDotNet.Actions;
 
-namespace DepiFinalProject.Commmon.Pagination
+namespace DepiFinalProject.Core.Commmon.Pagination
 {
     public class PaginationParameters
     {

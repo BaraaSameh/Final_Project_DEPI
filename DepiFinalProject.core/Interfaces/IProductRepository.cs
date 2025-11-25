@@ -1,6 +1,6 @@
-﻿using DepiFinalProject.Commmon.Pagination;
-using static DepiFinalProject.Core.DTOs.ProductDTO;
+﻿using DepiFinalProject.Core.Commmon.Pagination;
 using DepiFinalProject.Core.Models;
+using static DepiFinalProject.Core.DTOs.ProductDTO;
 
 public interface IProductRepository
 {

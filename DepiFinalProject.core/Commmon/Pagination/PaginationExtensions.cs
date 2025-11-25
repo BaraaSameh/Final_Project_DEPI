@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace DepiFinalProject.Commmon.Pagination
+namespace DepiFinalProject.Core.Commmon.Pagination
 {
     public static class PaginationExtensions
     {

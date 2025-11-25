@@ -1,11 +1,10 @@
-﻿using DepiFinalProject.Commmon.Pagination;
+﻿using DepiFinalProject.Core.Commmon.Pagination;
 using Microsoft.AspNetCore.Mvc;
-﻿using DepiFinalProject.Core.Interfaces;
+using DepiFinalProject.Core.Interfaces;
 using DepiFinalProject.Core.Models;
 using System.Security.Claims;
-using static DepiFinalProject.Core.DTOs;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using static DepiFinalProject.Core.DTOs.ProductDTO;
 
 namespace DepiFinalProject.Services
 {

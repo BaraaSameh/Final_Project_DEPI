@@ -1,4 +1,4 @@
-﻿using DepiFinalProject.Commmon.Pagination;
+﻿using DepiFinalProject.Core.Commmon.Pagination;
 ﻿using Microsoft.AspNetCore.Http;
 using static DepiFinalProject.Core.DTOs.ProductDTO;
 

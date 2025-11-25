@@ -1,10 +1,10 @@
-﻿using DepiFinalProject.Commmon.Pagination;
+﻿using DepiFinalProject.Core.Commmon.Pagination;
 ﻿using DepiFinalProject.InfraStructure.Data;
 using DepiFinalProject.Core.Interfaces;
 using DepiFinalProject.Core.Models;
 using Microsoft.EntityFrameworkCore;
-using static DepiFinalProject.DTOs.ProductDTO;
 using static System.Net.Mime.MediaTypeNames;
+using static DepiFinalProject.Core.DTOs.ProductDTO;
 
 namespace DepiFinalProject.Infrastructurenamespace.Repositories
 {

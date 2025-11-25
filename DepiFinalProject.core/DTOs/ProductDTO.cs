@@ -1,4 +1,4 @@
-﻿using DepiFinalProject.Commmon.Pagination;
+﻿using DepiFinalProject.Core.Commmon.Pagination;
 using System.ComponentModel.DataAnnotations;
 
 namespace DepiFinalProject.Core.DTOs

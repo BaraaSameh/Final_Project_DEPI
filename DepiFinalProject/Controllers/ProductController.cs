@@ -1,4 +1,4 @@
-﻿using DepiFinalProject.Commmon.Pagination;
+﻿using DepiFinalProject.Core.Commmon.Pagination;
 ﻿using DepiFinalProject.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
