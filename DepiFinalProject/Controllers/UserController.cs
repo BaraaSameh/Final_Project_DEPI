@@ -120,7 +120,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UploadImage([FromForm] UpdateUserImageDto dto)
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
             }
@@ -147,7 +147,7 @@ namespace DepiFinalProject.Controllers
 
         public async Task<IActionResult> DeleteImage()
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
             }
@@ -205,7 +205,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<User>> UpdateUser(int id, [FromBody] UpdateUserDTO user)
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
             }
@@ -323,7 +323,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordRequestDTO request)
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
             }

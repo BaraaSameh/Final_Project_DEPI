@@ -79,7 +79,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(500)]
         public async Task<ActionResult<AddressDto>> AddAddress([FromBody] AddressCreateUpdateDto addressDto)
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
             }
@@ -143,7 +143,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(500)]
         public async Task<ActionResult<AddressDto>> UpdateAddress(int id, [FromBody] AddressCreateUpdateDto addressDto)
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
             }
@@ -207,7 +207,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(500)]
         public async Task<ActionResult> DeleteAddress(int id)
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
             }

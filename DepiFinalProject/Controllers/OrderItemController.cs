@@ -53,7 +53,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<OrderItemResponseDTO>> AddOrderItem(int orderId, AddOrderItemDTO dto)
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And client" });
             }

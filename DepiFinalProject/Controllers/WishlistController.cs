@@ -39,7 +39,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<WishlistResponseDto>> GetWishlist()
         {
-            if (!User.IsInRole("admin")|| !User.IsInRole("client"))
+            if (!User.IsInRole("admin")&& !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "only Allowed To Admin And Client" });
             }
@@ -68,7 +68,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<WishlistItemDto>> GetWishlistItem(int productId)
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "only Allowed To Admin And Client" });
             }
@@ -96,7 +96,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> AddToWishlist(int productId)
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "only Allowed To Admin And Client" });
             }
@@ -123,7 +123,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RemoveFromWishlist(int productId)
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "only Allowed To Admin And Client" });
             }
@@ -150,7 +150,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ClearWishlist()
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            if (!User.IsInRole("admin") &&   !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "only Allowed To Admin And Client" });
             }

@@ -28,7 +28,7 @@ public class ReturnsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAllReturns()
     {
-        if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+        if (!User.IsInRole("admin") && !User.IsInRole("seller"))
         {
             return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
         }
@@ -55,7 +55,7 @@ public class ReturnsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetReturnById(int returnId)
     {
-        if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+        if (!User.IsInRole("admin") && !User.IsInRole("seller"))
         {
             return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
         }
@@ -85,8 +85,8 @@ public class ReturnsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> RequestReturn([FromBody] ReturnDto.CreateReturnDto dto)
-    {
-        if (!User.IsInRole("admin") || !User.IsInRole("client"))
+    {   
+        if (!User.IsInRole("admin") && !User.IsInRole("client"))
         {
             return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
         }
@@ -122,7 +122,7 @@ public class ReturnsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateReturnStatus(int returnId, [FromBody] ReturnDto.UpdateReturnStatusDto dto)
     {
-        if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+        if (!User.IsInRole("admin") && !User.IsInRole("seller"))
         {
             return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
         }
@@ -167,7 +167,7 @@ public class ReturnsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CancelReturn(int returnId)
     {
-        if (!User.IsInRole("admin") || !User.IsInRole("client"))
+        if (!User.IsInRole("admin") && !User.IsInRole("client"))
         {
             return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
         }
@@ -203,7 +203,7 @@ public class ReturnsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetMyReturnRequests()
     {
-        if (!User.IsInRole("admin") || !User.IsInRole("client"))
+        if (!User.IsInRole("admin") && !User.IsInRole("client"))
         {
             return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
         }

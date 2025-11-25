@@ -33,7 +33,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<IEnumerable<ShippingDto>>> GetAllShippings()
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
             }
