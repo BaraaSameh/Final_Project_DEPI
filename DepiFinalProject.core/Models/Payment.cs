@@ -23,6 +23,9 @@ namespace DepiFinalProject.Core.Models
         [StringLength(50)]
         public string PaymentMethod { get; set; } = "PayPal";
 
+        [StringLength(100)]
+        public string? PayPalCaptureId { get; set; } // handle refunds 
+
         [Required]
         [StringLength(50)]
         public string Status { get; set; } = "Pending";  // Pending, Paid, Failed...

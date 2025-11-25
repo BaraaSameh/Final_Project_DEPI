@@ -30,5 +30,11 @@ namespace DepiFinalProject.Core.Models
         // Navigation Properties
         public virtual User User { get; set; }
         public virtual OrderItem OrderItem { get; set; }
+
+        //handel refunds
+        public string? RefundId { get; set; }  // PayPal Refund ID
+        public decimal? RefundAmount { get; set; }  // Amount refunded
+        public DateTime? RefundedAt { get; set; }  // When refund was processed
+        public string? RefundStatus { get; set; }
     }
 }

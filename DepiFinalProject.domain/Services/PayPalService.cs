@@ -84,7 +84,9 @@ namespace PayPalAdvancedIntegration.Services
                 Amount = amount,
                 Status = "Pending",
                 PaymentMethod = "PayPal",
-                PaidAt = DateTime.UtcNow
+                PaidAt = DateTime.UtcNow,
+                PayPalCaptureId = null, // Will be set during capture
+
             };
 
             await _paymentRepository.CreateAsync(payment);
@@ -101,6 +103,18 @@ namespace PayPalAdvancedIntegration.Services
                 ? decimal.Parse(result.Data.PurchaseUnits.First().Amount.MValue)
                 : 0;
 
+            // CRITICAL: Extract the Capture ID from the response
+            string captureId = null;
+            var purchaseUnit = result.Data.PurchaseUnits?.FirstOrDefault();
+            if (purchaseUnit != null)
+            {
+                var capture = purchaseUnit.Payments?.Captures?.FirstOrDefault();
+                if (capture != null)
+                {
+                    captureId = capture.Id;
+                }
+            }
+
             // Find existing payment record
             var payments = await _paymentRepository.GetAllAsync();
             var payment = payments.FirstOrDefault(p => p.PayPalOrderId == paymentid);
@@ -110,6 +124,11 @@ namespace PayPalAdvancedIntegration.Services
                 payment.Status = status;
                 payment.Amount = amount;
                 payment.PaidAt = DateTime.UtcNow;
+                // IMPORTANT: Store the capture ID for future refunds
+                if (!string.IsNullOrEmpty(captureId))
+                {
+                    payment.PayPalCaptureId = captureId;
+                }
                 await _paymentRepository.UpdateAsync(payment);
             }
             if (status == "COMPLETED" && payment.OrderID.HasValue)

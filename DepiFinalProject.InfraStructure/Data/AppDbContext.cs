@@ -1,4 +1,5 @@
-﻿using DepiFinalProject.Core.Models;
+﻿using DepiFinalProject.core.Models;
+using DepiFinalProject.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DepiFinalProject.InfraStructure.Data
@@ -23,6 +24,8 @@ namespace DepiFinalProject.InfraStructure.Data
         public DbSet<Wishlist> Wishlists { get; set; }
         public DbSet<FlashSale> FlashSales { get; set; }
         public DbSet<FlashSaleProduct> FlashSaleProducts { get; set; }
+
+        public DbSet<ReturnSettings> ReturnSettings { get; set; }
 
         // RefreshTokens DbSet "Seif"
         public DbSet<RefreshToken> RefreshTokens { get; set; }
