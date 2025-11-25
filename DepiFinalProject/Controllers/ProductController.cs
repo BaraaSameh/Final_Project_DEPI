@@ -1,3 +1,4 @@
+﻿using DepiFinalProject.Core.Commmon.Pagination;
 ﻿using DepiFinalProject.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,57 @@ namespace DepiFinalProject.Controllers
         {
             _productService = productService;
         }
+        
+/// <summary>
+/// Get paginated products with optional category filter (NEW ENDPOINT)
+/// </summary>
+/// <param name="parameters">Pagination and filter parameters</param>
+/// <remarks>
+/// Returns paginated list of products with metadata.
+/// 
+/// Query Parameters:
+/// - pageNumber: Page number (default: 1, min: 1)
+/// - pageSize: Items per page (default: 10, min: 1, max: 100)
+/// - categoryID: Optional category filter
+/// 
+/// Sample requests:
+/// - GET /api/product/paginated (first page, 10 items)
+/// - GET /api/product/paginated?pageNumber=2&pageSize=20
+/// - GET /api/product/paginated?categoryID=5
+/// - GET /api/product/paginated?pageNumber=1&pageSize=50&categoryID=3
+/// </remarks>
+/// <response code="200">Returns paginated products successfully</response>
+/// <response code="400">If an error occurs</response>
+[AllowAnonymous]
+[HttpGet("paginated")]
+[ProducesResponseType(typeof(SuccessResponse<PagedResult<ProductResponseDTO>>), StatusCodes.Status200OK)]
+[ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+public async Task<ActionResult<PagedResult<ProductResponseDTO>>> GetProductsPaginated(
+    [FromQuery] ProductFilterParameters parameters)
+{
+    try
+    {
+        var result = await _productService.GetProductsAsync(parameters);
+
+        return Ok(new SuccessResponse<PagedResult<ProductResponseDTO>>
+        {
+            Success = true,
+            Message = $"Retrieved {result.Data.Count} products from page {result.PageNumber} of {result.TotalPages}",
+            Data = result
+        });
+    }
+    catch (Exception ex)
+    {
+        return BadRequest(new ErrorResponse
+        {
+            Success = false,
+            Message = "An error occurred while fetching paginated products",
+            Error = ex.Message,
+            Details = ex.InnerException?.Message
+        });
+    }
+}
+
 
         /// <summary>
         /// Retrieves all products from the system

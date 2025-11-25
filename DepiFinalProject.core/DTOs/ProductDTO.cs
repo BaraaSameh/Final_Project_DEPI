@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DepiFinalProject.Core.Commmon.Pagination;
+using System.ComponentModel.DataAnnotations;
 
 namespace DepiFinalProject.Core.DTOs
 {
@@ -91,6 +92,17 @@ namespace DepiFinalProject.Core.DTOs
             public bool IsInStock => Stock > 0;
 
             public List<ProductImageDTO> Images { get; set; } = new();
+        }
+        /// <summary>
+        /// Product filtering and pagination parameters
+        /// Inherits PageNumber and PageSize from PaginationParameters
+        /// </summary>
+        public class ProductFilterParameters : PaginationParameters
+        {
+            /// <summary>
+            /// Optional: Filter products by category ID
+            /// </summary>
+            public int? CategoryID { get; set; }
         }
 
     }

@@ -1,9 +1,10 @@
-﻿using DepiFinalProject.Core.Interfaces;
+﻿using DepiFinalProject.Core.Commmon.Pagination;
+using Microsoft.AspNetCore.Mvc;
+using DepiFinalProject.Core.Interfaces;
 using DepiFinalProject.Core.Models;
 using System.Security.Claims;
-using static DepiFinalProject.Core.DTOs.ProductDTO;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using static DepiFinalProject.Core.DTOs.ProductDTO;
 
 namespace DepiFinalProject.Services
 {
@@ -266,6 +267,22 @@ namespace DepiFinalProject.Services
                     PublicId = img.imagepublicid
                 }).ToList() ?? new List<ProductImageDTO>()
             };
+        }
+        public async Task<PagedResult<ProductResponseDTO>> GetProductsAsync(ProductFilterParameters parameters)
+        {
+            // Get paginated products from repository
+            var pagedProducts = await _productRepository.GetProductsAsync(parameters);
+
+            // Map Product entities to ProductResponseDTO
+            var productDtos = pagedProducts.Data.Select(p => MapToResponseDto(p)).ToList();
+
+            // Return new PagedResult with mapped DTOs
+            return new PagedResult<ProductResponseDTO>(
+                productDtos,
+                pagedProducts.PageNumber,
+                pagedProducts.PageSize,
+                pagedProducts.TotalRecords
+            );
         }
 
     }

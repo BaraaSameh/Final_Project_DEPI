@@ -1,3 +1,4 @@
+﻿using DepiFinalProject.Core.Commmon.Pagination;
 ﻿using Microsoft.AspNetCore.Http;
 using static DepiFinalProject.Core.DTOs.ProductDTO;
 
@@ -16,6 +17,7 @@ namespace DepiFinalProject.Core.Interfaces
         Task<bool> DeleteAllImagesAsync(int productId);
         Task<bool> DeleteImageAsync(int productId, int imageId);
         Task<bool> AddImagesAsync(int productId, List<IFormFile> images);
+        Task<PagedResult<ProductResponseDTO>> GetProductsAsync(ProductFilterParameters parameters);
 
     }
 }
