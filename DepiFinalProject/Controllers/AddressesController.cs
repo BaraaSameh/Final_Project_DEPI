@@ -1,9 +1,9 @@
-﻿using DepiFinalProject.Interfaces;
-using DepiFinalProject.Models;
+﻿using DepiFinalProject.Core.Interfaces;
+using DepiFinalProject.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using static DepiFinalProject.DTOs.AddressDTO;
+using static DepiFinalProject.Core.DTOs.AddressDTO;
 
 namespace DepiFinalProject.Controllers
 {
@@ -79,7 +79,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(500)]
         public async Task<ActionResult<AddressDto>> AddAddress([FromBody] AddressCreateUpdateDto addressDto)
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
             }
@@ -143,7 +143,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(500)]
         public async Task<ActionResult<AddressDto>> UpdateAddress(int id, [FromBody] AddressCreateUpdateDto addressDto)
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
             }
@@ -207,7 +207,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(500)]
         public async Task<ActionResult> DeleteAddress(int id)
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
             }

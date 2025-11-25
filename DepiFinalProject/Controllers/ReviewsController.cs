@@ -1,5 +1,5 @@
-﻿using DepiFinalProject.DTOs.Reviews;
-using DepiFinalProject.Interfaces;
+﻿using DepiFinalProject.Core.DTOs.Reviews;
+using DepiFinalProject.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Diagnostics;

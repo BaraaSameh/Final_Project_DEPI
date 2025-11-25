@@ -1,10 +1,7 @@
-﻿using DepiFinalProject.DTOs;
-using DepiFinalProject.Interfaces;
+﻿using DepiFinalProject.Core.DTOs;
+using DepiFinalProject.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace DepiFinalProject.Controllers
 {

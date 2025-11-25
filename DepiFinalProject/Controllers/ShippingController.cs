@@ -1,8 +1,7 @@
-﻿using DepiFinalProject.DTOs;
-using DepiFinalProject.Interfaces;
-using DepiFinalProject.Models;
+﻿using DepiFinalProject.Core.DTOs;
+using DepiFinalProject.Core.Interfaces;
+using DepiFinalProject.Core.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DepiFinalProject.Controllers
@@ -34,7 +33,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<IEnumerable<ShippingDto>>> GetAllShippings()
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
             }

@@ -1,15 +1,15 @@
 using System.Security.Claims;
 using System.Text;
-using DepiFinalProject.Data;
+using DepiFinalProject.InfraStructure.Data;
 using DepiFinalProject.Infrastructure.Repositories;
-using DepiFinalProject.Interfaces;
-using DepiFinalProject.Models;
-using DepiFinalProject.Repositories;
+using DepiFinalProject.Core.Interfaces;
+using DepiFinalProject.Core.Models;
 using DepiFinalProject.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PayPalAdvancedIntegration.Services;
+using DepiFinalProject.Infrastructurenamespace.Repositories;
 
 namespace DepiFinalProject
 {

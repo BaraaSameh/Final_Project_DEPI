@@ -1,10 +1,9 @@
 ﻿using DepiFinalProject.Commmon.Pagination;
-using DepiFinalProject.Interfaces;
+﻿using DepiFinalProject.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using static DepiFinalProject.DTOs.ProductDTO;
+using static DepiFinalProject.Core.DTOs.ProductDTO;
 
 namespace DepiFinalProject.Controllers
 {
@@ -270,7 +269,7 @@ public async Task<ActionResult<PagedResult<ProductResponseDTO>>> GetProductsPagi
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<IEnumerable<ProductResponseDTO>>> GetMyProducts()
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+            if (!User.IsInRole("admin") && !User.IsInRole("seller"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
             }
@@ -416,7 +415,7 @@ public async Task<ActionResult<PagedResult<ProductResponseDTO>>> GetProductsPagi
         [ProducesResponseType(typeof(ValidationErrorResponse), StatusCodes.Status422UnprocessableEntity)]
         public async Task<ActionResult<ProductResponseDTO>> Create([FromBody] CreateProductDTO dto)
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+            if (!User.IsInRole("admin") && !User.IsInRole("seller"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
             }
@@ -508,7 +507,7 @@ public async Task<ActionResult<PagedResult<ProductResponseDTO>>> GetProductsPagi
         [ProducesResponseType(typeof(ValidationErrorResponse), StatusCodes.Status422UnprocessableEntity)]
         public async Task<ActionResult<ProductResponseDTO>> UpdateProduct(int id, [FromBody] UpdateProductDTO dto)
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+            if (!User.IsInRole("admin") && !User.IsInRole("seller"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
             }
@@ -606,7 +605,7 @@ public async Task<ActionResult<PagedResult<ProductResponseDTO>>> GetProductsPagi
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> DeleteImage(int productId, int imageId)
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+            if (!User.IsInRole("admin") && !User.IsInRole("seller"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
             }
@@ -636,7 +635,7 @@ public async Task<ActionResult<PagedResult<ProductResponseDTO>>> GetProductsPagi
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> AddImages(int productId, [FromForm] List<IFormFile> images)
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+            if (!User.IsInRole("admin") && !User.IsInRole("seller"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
             }
@@ -667,7 +666,7 @@ public async Task<ActionResult<PagedResult<ProductResponseDTO>>> GetProductsPagi
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> DeleteAllImages(int productId)
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+            if (!User.IsInRole("admin") && !User.IsInRole("seller"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
             }
@@ -700,7 +699,7 @@ public async Task<ActionResult<PagedResult<ProductResponseDTO>>> GetProductsPagi
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+            if (!User.IsInRole("admin") && !User.IsInRole("seller"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
             }
