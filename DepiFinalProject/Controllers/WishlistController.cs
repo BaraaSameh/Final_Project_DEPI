@@ -1,5 +1,5 @@
-﻿using DepiFinalProject.DTOs;
-using DepiFinalProject.Interfaces;
+﻿using DepiFinalProject.Core.DTOs;
+using DepiFinalProject.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;

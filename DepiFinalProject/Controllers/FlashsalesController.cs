@@ -1,8 +1,7 @@
-﻿using DepiFinalProject.DTOs;
+﻿using DepiFinalProject.Core.DTOs;
 using DepiFinalProject.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 namespace DepiFinalProject.Controllers
 {
     [ApiController]

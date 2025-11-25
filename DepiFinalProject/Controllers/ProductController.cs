@@ -1,9 +1,8 @@
-﻿using DepiFinalProject.Interfaces;
+﻿using DepiFinalProject.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using static DepiFinalProject.DTOs.ProductDTO;
+using static DepiFinalProject.Core.DTOs.ProductDTO;
 
 namespace DepiFinalProject.Controllers
 {

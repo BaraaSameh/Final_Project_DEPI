@@ -1,10 +1,7 @@
-﻿using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using DepiFinalProject.DTOs;
-using DepiFinalProject.Interfaces;
+﻿using System.Security.Claims;
+using DepiFinalProject.Core.DTOs;
+using DepiFinalProject.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DepiFinalProject.Controllers
