@@ -2,6 +2,7 @@
 using DepiFinalProject.Core.Models;
 using Microsoft.Extensions.Configuration;
 using static DepiFinalProject.Core.DTOs.AuthenticationDTO;
+using Google.Apis.Auth;
 
 namespace DepiFinalProject.Services
 {
@@ -26,7 +27,70 @@ namespace DepiFinalProject.Services
             _passwordService = passwordService;
             _configuration = configuration;
         }
+        public async Task<AuthenticationResponse> GoogleLoginAsync(string idToken)
+        {
+            var settings = new GoogleJsonWebSignature.ValidationSettings()
+            {
+                Audience = new List<string> { _configuration["GoogleAuth:ClientId"] }
+            };
 
+            GoogleJsonWebSignature.Payload payload;
+
+            try
+            {
+                payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
+            }
+            catch
+            {
+                throw new UnauthorizedAccessException("Invalid Google token");
+            }
+
+            // Google user info
+            string email = payload.Email;
+            string firstName = payload.GivenName;
+            string lastName = payload.FamilyName;
+            string picture = payload.Picture;
+            var user = await _userRepository.GetByEmailAsync(email);
+
+            // If user doesn't exist → create one
+            if (user == null)
+            {
+                user = new User
+                {
+                    UserEmail = email,
+                    UserFirstName = firstName,
+                    UserLastName = lastName,
+                    UserPhone = "0000000000",
+                    UserRole = "client",
+                    ImageUrl = picture,
+                    CreatedAt = DateTime.UtcNow,
+                    UserPassword = null 
+                };
+
+                user = await _userRepository.CreateAsync(user);
+            }
+
+            var accessToken = _tokenService.GenerateAccessToken(user);
+            var refreshToken = _tokenService.GenerateRefreshToken();
+
+            var refreshTokenEntity = new RefreshToken
+            {
+                UserId = user.UserID,
+                Token = refreshToken,
+                ExpiryDate = DateTime.UtcNow.AddDays(
+                    _configuration.GetValue<int>("JwtSettings:RefreshTokenExpirationDays")),
+                CreatedAt = DateTime.UtcNow,
+                IsRevoked = false
+            };
+
+            await _refreshTokenRepository.CreateAsync(refreshTokenEntity);
+
+            return new AuthenticationResponse
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
+            };
+        }
         public async Task<AuthenticationResponse> RegisterAsync(RegisterRequest request)
         {
             // Check if email already exists

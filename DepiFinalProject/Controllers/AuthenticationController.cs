@@ -21,7 +21,20 @@ namespace DepiFinalProject.Controllers
             _otpService = otpService;
             _userRepo = userRepo;
         }
-
+        /// <summary>
+        /// Request a One-Time Password (OTP) for a specific purpose.
+        /// </summary>
+        /// <remarks>
+        ///   OTP purposes supported: <c>Login</c>, <c>PasswordReset</c>, <c>EmailVerification</c>, <c>Payment</c>.  
+        /// - If the purpose is <c>Login</c>, a JWT token is returned along with a refresh token.
+        ///  provide <c>Email</c>  identify the user.  
+        /// If the user does not exist, the endpoint returns <c>404 Not Found</c>.
+        /// </remarks>
+        /// <param name="dto">DTO containing the user's email or phone number and the OTP purpose.</param>
+        /// <response code="200">OTP sent successfully.</response>
+        /// <response code="400">Invalid request (missing purpose or invalid data).</response>
+        /// <response code="404">User not found.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpPost("request-otp")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -40,12 +53,27 @@ namespace DepiFinalProject.Controllers
 
             if (user == null) return NotFound("User not found");
 
-            var destination = !string.IsNullOrEmpty(dto.Email) ? dto.Email :" ";
+            var destination = !string.IsNullOrEmpty(dto.Email) ? dto.Email : " ";
 
             await _otpService.RequestOtpAsync(user, dto.Purpose, destination);
 
             return Ok(new { message = "OTP sent" });
         }
+        /// <summary>
+        /// Verify a previously requested OTP.
+        /// </summary>
+        /// <remarks>
+        /// Provide the OTP code, purpose, and either Email or PhoneNumber.  
+        /// OTP purposes supported: <c>Login</c>, <c>PasswordReset</c>, <c>EmailVerification</c>, <c>Payment</c>.  
+        /// - If the purpose is <c>Login</c>, a JWT token is returned along with a refresh token.
+        /// - Returns 400 if the OTP is invalid or expired.
+        /// - Returns 404 if the user does not exist.
+        /// </remarks>
+        /// <param name="dto">DTO containing the user's email/phone, OTP code, and purpose.</param>
+        /// <response code="200">OTP verified successfully.</response>
+        /// <response code="400">Invalid or expired OTP code.</response>
+        /// <response code="404">User not found.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpPost("verify-otp")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -67,13 +95,12 @@ namespace DepiFinalProject.Controllers
             var ok = await _otpService.VerifyOtpAsync(user, dto.Purpose, dto.Code);
             if (!ok) return BadRequest("Invalid or expired code");
 
-            if (dto.Purpose == "login")
+            if (dto.Purpose.ToLower() == "login")
             {
                 var response = await _authService.GenerateJwtTokenAsync(user);
                 SetRefreshTokenCookie(response.RefreshToken);
                 return Ok(ApiResponse<AuthenticationResponse>.SuccessResponse(
                     response, "OTP verified and login successful"));
-
             }
 
             return Ok(new { message = "OTP verified" });
@@ -204,6 +231,34 @@ namespace DepiFinalProject.Controllers
                     new List<string> { ex.Message, ex.InnerException?.Message }));
             }
         }
+        /// <summary>
+        /// Authenticates a user using a Google ID Token.
+        /// </summary>
+        /// <response code="200">
+        /// Returns an <see cref="AuthenticationResponse"/> containing JWT access token and refresh token.
+        /// </response>
+        /// <response code="401">
+        /// Returned when the Google ID Token is invalid or authentication fails.
+        /// </response>
+        [AllowAnonymous]
+        [HttpPost("google-login")]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginDto dto)
+        {
+            try
+            {
+                var response = await _authService.GoogleLoginAsync(dto.IdToken);
+                SetRefreshTokenCookie(response.RefreshToken);
+
+                return Ok(ApiResponse<AuthenticationResponse>.SuccessResponse(
+                    response, "Google login successful"));
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ApiResponse<AuthenticationResponse>.ErrorResponse(
+                    ex.Message, new List<string> { ex.Message }));
+            }
+        }
+
 
         private void SetRefreshTokenCookie(string refreshToken)
         {

@@ -10,5 +10,7 @@ namespace DepiFinalProject.Core.Interfaces
         Task<AuthenticationResponse> RefreshTokenAsync(string token);
         Task<AuthenticationResponse> GenerateJwtTokenAsync(User user);
         Task<bool> RevokeTokenAsync(string token);
+        Task<AuthenticationResponse> GoogleLoginAsync(string idToken);
+
     }
 }

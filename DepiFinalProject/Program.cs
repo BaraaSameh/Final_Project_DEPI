@@ -1,15 +1,16 @@
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
-using DepiFinalProject.InfraStructure.Data;
-using DepiFinalProject.Infrastructure.Repositories;
 using DepiFinalProject.Core.Interfaces;
 using DepiFinalProject.Core.Models;
+using DepiFinalProject.Infrastructure.Repositories;
+using DepiFinalProject.InfraStructure.Data;
+using DepiFinalProject.Infrastructurenamespace.Repositories;
 using DepiFinalProject.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PayPalAdvancedIntegration.Services;
-using DepiFinalProject.Infrastructurenamespace.Repositories;
 
 namespace DepiFinalProject
 {
@@ -21,13 +22,18 @@ namespace DepiFinalProject
 
             // Add services to the container.
 
-            builder.Services.AddDbContext<AppDbContext>(
-                options => options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("DefaultConnection")
-                )
-            );
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+                                     sql => sql.MigrationsAssembly("DepiFinalProject.InfraStructure")));
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 
-            builder.Services.AddControllers();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+            });
+
+
 
             // Register Repositories
             builder.Services.AddScoped<IUserRepository, UserRepository>();

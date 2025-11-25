@@ -47,8 +47,8 @@ namespace DepiFinalProject.Services
         {
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
-            var allowed = new[] { "Login", "PasswordReset", "EmailVerification" };
-
+            var allowed = new[] { "login", "passwordreset", "emailverification", "payment" };
+            purpose = purpose.ToLower();
             if (!allowed.Contains(purpose))
                 throw new ArgumentException("Invalid OTP purpose");
 
@@ -135,8 +135,8 @@ namespace DepiFinalProject.Services
         public async Task<bool> VerifyOtpAsync(User user, string purpose, string code)
         {
             if (user == null) return false;
-            var allowed = new[] { "Login", "PasswordReset", "EmailVerification" };
-
+            var allowed = new[] { "login", "passwordreset", "emailverification", "payment" };
+            purpose = purpose.ToLower();
             if (!allowed.Contains(purpose))
                 throw new ArgumentException("Invalid OTP purpose");
 
