@@ -1,7 +1,10 @@
-﻿using DepiFinalProject.Models;
+﻿using DepiFinalProject.Commmon.Pagination;
+using DepiFinalProject.Models;
+using static DepiFinalProject.DTOs.ProductDTO;
 
 public interface IProductRepository
 {
+    Task<PagedResult<Product>> GetProductsAsync(ProductFilterParameters parameters);
     Task<Product> CreateNewAsync(Product product);
     Task<bool> DeleteAsync(int ProductId);
     Task<IEnumerable<Product>> GetAllAsync();

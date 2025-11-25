@@ -1,7 +1,9 @@
-﻿using DepiFinalProject.Data;
+﻿using DepiFinalProject.Commmon.Pagination;
+using DepiFinalProject.Data;
 using DepiFinalProject.Interfaces;
 using DepiFinalProject.Models;
 using Microsoft.EntityFrameworkCore;
+using static DepiFinalProject.DTOs.ProductDTO;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace DepiFinalProject.Repositories
@@ -145,5 +147,31 @@ namespace DepiFinalProject.Repositories
         {
             return await _context.Users.AnyAsync(u => u.UserID == userId);
         }
+        public async Task<PagedResult<Product>> GetProductsAsync(ProductFilterParameters parameters)
+        {
+            // Start with base query including navigation properties
+            var query = _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.user)
+                .Include(p => p.Images)
+                .AsNoTracking()
+                .AsQueryable();
+
+            // Apply Category filter if provided
+            if (parameters.CategoryID.HasValue)
+            {
+                query = query.Where(p => p.CategoryID == parameters.CategoryID.Value);
+            }
+
+            // Default sorting: newest products first
+            query = query.OrderByDescending(p => p.CreatedAt);
+
+            // Apply pagination using extension method
+            return await query.ToPaginatedListAsync(
+                parameters.PageNumber,
+                parameters.PageSize
+            );
+        }
+
     }
 }
