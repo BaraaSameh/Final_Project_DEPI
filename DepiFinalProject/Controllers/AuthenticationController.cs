@@ -1,10 +1,9 @@
-﻿using DepiFinalProject.DTOs;
-using DepiFinalProject.Interfaces;
-using DepiFinalProject.Models;
+﻿using DepiFinalProject.Core.DTOs;
+using DepiFinalProject.Core.Interfaces;
+using DepiFinalProject.Core.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using static DepiFinalProject.DTOs.AuthenticationDTO;
+using static DepiFinalProject.Core.DTOs.AuthenticationDTO;
 
 namespace DepiFinalProject.Controllers
 {

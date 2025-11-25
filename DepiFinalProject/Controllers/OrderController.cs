@@ -1,13 +1,8 @@
-﻿using DepiFinalProject.DTOs;
-using DepiFinalProject.Interfaces;
+﻿using DepiFinalProject.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using static DepiFinalProject.DTOs.OrderDto;
+using static DepiFinalProject.Core.DTOs.OrderDto;
 
 namespace DepiFinalProject.Controllers
 {
@@ -34,7 +29,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<OrderResponseDTO>>> GetAllOrders()
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+            if (!User.IsInRole("admin") && !User.IsInRole("seller"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
             }
@@ -88,7 +83,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<OrderResponseDTO>>> GetUserOrders(int userId)
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And client" });
             }
@@ -119,7 +114,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<OrderResponseDTO>> CheckoutFromCart()
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("client"))
+            if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And client" });
             }
@@ -204,7 +199,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<OrderResponseDTO>> UpdateOrderStatus(int id, [FromBody] UpdateOrderStatusDTO dto)
         {
-            if (!User.IsInRole("admin") || !User.IsInRole("seller"))
+            if (!User.IsInRole("admin") && !User.IsInRole("seller"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Seller" });
             }
