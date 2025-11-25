@@ -110,6 +110,25 @@ namespace DepiFinalProject.InfraStructure.Data
               .WithMany(u => u.Products)
               .HasForeignKey(p => p.userid)
               .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<FlashSaleProduct>()
+             .Property(f => f.DiscountedPrice)
+             .HasPrecision(18, 2);
+
+            modelBuilder.Entity<FlashSaleProduct>()
+                .Property(f => f.OriginalPrice)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Order>()
+                .Property(o => o.TotalAmount)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<OrderItem>()
+                .Property(oi => oi.Price)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Price)
+                .HasPrecision(18, 2);
 
             // ProductImage Entity Configuration
             modelBuilder.Entity<ProductImage>()

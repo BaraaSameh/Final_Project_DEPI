@@ -2,7 +2,6 @@
 using DepiFinalProject.Core.Interfaces;
 using DepiFinalProject.Core.Models;
 using Microsoft.EntityFrameworkCore;
-
 namespace DepiFinalProject.Infrastructure.Repositories
 {
     public class UserRepository: IUserRepository
@@ -20,9 +19,17 @@ namespace DepiFinalProject.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return user;
         }
-        public Task<User> GetByPhoneAsync(string phone)
+        public async Task<User> GetByPhoneAsync(string phone)
         {
-                        return _context.Users.FirstOrDefaultAsync(u => u.UserPhone == phone);
+                    return await _context.Users
+                            .Include(u => u.Addresses)
+                            .Include(u => u.Carts)
+                            .Include(u => u.Orders)
+                            .Include(u => u.Reviews)
+                            .Include(u => u.Wishlists)
+                            .Include(u => u.RefreshTokens)
+                            .Include(u => u.Products)
+                            .FirstOrDefaultAsync(u => u.UserPhone == phone);
         }
         public async Task<bool> DeleteAsync(int userId)
         {
@@ -41,13 +48,29 @@ namespace DepiFinalProject.Infrastructure.Repositories
 
         public async Task<User> GetByEmailAsync(string email)
         {
-            
-            return await _context.Users.FirstOrDefaultAsync(u => u.UserEmail == email);
+
+            return await _context.Users
+                          .Include(u => u.Addresses)
+                          .Include(u => u.Carts)
+                          .Include(u => u.Orders)
+                          .Include(u => u.Reviews)
+                          .Include(u => u.Wishlists)
+                          .Include(u => u.RefreshTokens)
+                          .Include(u => u.Products)
+                          .FirstOrDefaultAsync(u => u.UserEmail == email);
         }
 
         public async Task<User> GetByIdAsync(int userId)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.UserID== userId);
+            return await _context.Users
+                .Include(u => u.Addresses)
+                .Include(u => u.Carts)
+                .Include(u => u.Orders)
+                .Include(u => u.Reviews)
+                .Include(u => u.Wishlists)
+                .Include(u => u.RefreshTokens)
+                .Include(u => u.Products)
+                .FirstOrDefaultAsync(u => u.UserID == userId);
         }
 
         public async Task<User> UpdateAsync(User user)
@@ -65,7 +88,15 @@ namespace DepiFinalProject.Infrastructure.Repositories
         }
         public async Task<ICollection<User>> GetAllAsync()
         {
-            var users = await _context.Users.ToListAsync();
+            var users =  await _context.Users
+                        .Include(u => u.Addresses)
+                        .Include(u => u.Carts)
+                        .Include(u => u.Orders)
+                        .Include(u => u.Reviews)
+                        .Include(u => u.Wishlists)
+                        .Include(u => u.RefreshTokens)
+                        .Include(u => u.Products)
+                        .ToListAsync();
             return users;
         }
     }
