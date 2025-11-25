@@ -47,6 +47,11 @@ namespace DepiFinalProject.Services
         {
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
+            var allowed = new[] { "Login", "PasswordReset", "EmailVerification" };
+
+            if (!allowed.Contains(purpose))
+                throw new ArgumentException("Invalid OTP purpose");
+
 
             var code = GenerateNumericCode(_otpLength);
             var hash = HashOtp(code);
@@ -130,6 +135,11 @@ namespace DepiFinalProject.Services
         public async Task<bool> VerifyOtpAsync(User user, string purpose, string code)
         {
             if (user == null) return false;
+            var allowed = new[] { "Login", "PasswordReset", "EmailVerification" };
+
+            if (!allowed.Contains(purpose))
+                throw new ArgumentException("Invalid OTP purpose");
+
 
             var otp = await _otpRepo.GetValidOtpAsync(user.UserID, purpose);
 
