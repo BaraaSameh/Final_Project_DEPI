@@ -1,7 +1,6 @@
 using DepiFinalProject.Controllers;
-using DepiFinalProject.core.Models;
-using DepiFinalProject.Core.Interfaces;
 using DepiFinalProject.Core.Models;
+using DepiFinalProject.Core.Interfaces;
 using DepiFinalProject.Infrastructure.Repositories;
 using DepiFinalProject.InfraStructure.Data;
 using DepiFinalProject.Infrastructurenamespace.Repositories;
@@ -14,6 +13,7 @@ using PayPalAdvancedIntegration.Services;
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
+using PaypalServerSdk;
 
 namespace DepiFinalProject
 {
@@ -108,6 +108,14 @@ namespace DepiFinalProject
             //Return Settings
             builder.Services.Configure<ReturnSettings>(builder.Configuration.GetSection("ReturnSettings"));
             builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<ReturnSettings>>().Value);
+          
+            
+
+ 
+
+            // Register ReturnService and interfaces
+            builder.Services.AddScoped<IReturnService, ReturnService>();
+
 
 
             //cloudinary
