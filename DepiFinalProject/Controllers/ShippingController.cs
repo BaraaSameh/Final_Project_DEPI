@@ -25,8 +25,11 @@ namespace DepiFinalProject.Controllers
             _orderShippingRepository = orderShippingRepository;
         }
 
-        [Authorize]
+        /// <summary>
+        /// Get All Shippings
+        /// </summary>
         [HttpGet]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -70,8 +73,11 @@ namespace DepiFinalProject.Controllers
             }
         }
 
-        [Authorize]
+        /// <summary>
+        /// Get Shipping By ID
+        /// </summary>
         [HttpGet("{id}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -126,8 +132,11 @@ namespace DepiFinalProject.Controllers
             }
         }
 
-        [Authorize]
+        /// <summary>
+        /// Create Shipping
+        /// </summary>
         [HttpPost]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -197,8 +206,11 @@ namespace DepiFinalProject.Controllers
             }
         }
 
-        [Authorize]
+        /// <summary>
+        /// Update Shipping
+        /// </summary>
         [HttpPut("{id}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -295,8 +307,11 @@ namespace DepiFinalProject.Controllers
             }
         }
 
-        [Authorize]
+        /// <summary>
+        /// Update Shipping Status
+        /// </summary>
         [HttpPatch("{id}/status")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

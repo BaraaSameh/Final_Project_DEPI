@@ -53,6 +53,7 @@ public class ReturnService : IReturnService
     {
         return await _returnRepository.GetByUserIdAsync(userId);
     }
+
     public async Task<Return> RequestReturnAsync(int userId, int orderItemId, string reason)
     {
         if (string.IsNullOrWhiteSpace(reason))
@@ -199,7 +200,7 @@ public class ReturnService : IReturnService
         catch (Exception ex)
         {
             returnRequest.RefundStatus = "failed";
-            await _returnRepository.UpdateStatusAsync(returnId, "approved");
+            await _returnRepository.UpdateStatusAsync(returnId, "failed");
             throw new InvalidOperationException($"PayPal refund failed: {ex.Message}");
         }
     }
