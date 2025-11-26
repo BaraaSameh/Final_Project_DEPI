@@ -1,5 +1,4 @@
-﻿using DepiFinalProject.core.Models;
-using DepiFinalProject.Core.Models;
+﻿using DepiFinalProject.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DepiFinalProject.InfraStructure.Data
@@ -53,6 +52,19 @@ namespace DepiFinalProject.InfraStructure.Data
                 .WithMany(u => u.Wishlists)
                 .HasForeignKey(w => w.UserID)
                 .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<ReturnSettings>()
+                .Property(r => r.AllowedReturnStatuses)
+                .HasConversion(
+                    v => string.Join(",", v),
+                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
+                );
+
+            modelBuilder.Entity<ReturnSettings>()
+                .Property(r => r.AllowedReturnReasons)
+                .HasConversion(
+                    v => string.Join(",", v),
+                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
+                );
 
             // Relationship between Wishlist and Product
             modelBuilder.Entity<Wishlist>()

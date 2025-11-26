@@ -1,5 +1,7 @@
 ﻿using DepiFinalProject.Core.Interfaces;
 using DepiFinalProject.Core.Models;
+using PaypalServerSdk.Standard;
+using PaypalServerSdk.Standard.Authentication;
 using PaypalServerSdk.Standard.Controllers;
 using PaypalServerSdk.Standard.Models;
 
@@ -13,17 +15,24 @@ public class ReturnService : IReturnService
     private readonly PaymentsController _paymentsController;
 
     public ReturnService(
+        Microsoft.Extensions.Configuration.IConfiguration config,
         IReturnRepository returnRepository,
         IOrderRepository orderRepository,
         IPaymentRepository paymentRepository,
-        IProductRepository productRepository,
-        PaymentsController paymentsController)
+        IProductRepository productRepository)
     {
         _returnRepository = returnRepository;
         _orderRepository = orderRepository;
         _paymentRepository = paymentRepository;
         _productRepository = productRepository;
-        _paymentsController = paymentsController;
+        var clientId = config["PayPal:ClientId"];
+        var secret = config["PayPal:ClientSecret"];
+
+        var client = new PaypalServerSdkClient.Builder()
+            .Environment(PaypalServerSdk.Standard.Environment.Sandbox)
+            .ClientCredentialsAuth(new ClientCredentialsAuthModel.Builder(clientId, secret).Build())
+            .Build();
+       _paymentsController=client.PaymentsController;
     }
 
     public async Task<IEnumerable<Return>> GetAllReturnsAsync()
