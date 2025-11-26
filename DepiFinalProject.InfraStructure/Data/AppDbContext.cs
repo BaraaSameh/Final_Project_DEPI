@@ -24,6 +24,8 @@ namespace DepiFinalProject.InfraStructure.Data
         public DbSet<FlashSale> FlashSales { get; set; }
         public DbSet<FlashSaleProduct> FlashSaleProducts { get; set; }
 
+        public DbSet<ReturnSettings> ReturnSettings { get; set; }
+
         // RefreshTokens DbSet "Seif"
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
@@ -50,6 +52,19 @@ namespace DepiFinalProject.InfraStructure.Data
                 .WithMany(u => u.Wishlists)
                 .HasForeignKey(w => w.UserID)
                 .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<ReturnSettings>()
+                .Property(r => r.AllowedReturnStatuses)
+                .HasConversion(
+                    v => string.Join(",", v),
+                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
+                );
+
+            modelBuilder.Entity<ReturnSettings>()
+                .Property(r => r.AllowedReturnReasons)
+                .HasConversion(
+                    v => string.Join(",", v),
+                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
+                );
 
             // Relationship between Wishlist and Product
             modelBuilder.Entity<Wishlist>()

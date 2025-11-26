@@ -13,6 +13,7 @@ namespace DepiFinalProject.Core.Interfaces
         Task<bool> UpdateReturnStatusAsync(int id, string status);
         Task<bool> DeleteReturnAsync(int id);
         Task<bool> CancelReturnAsync(int id);
+        Task<Return> ProcessRefundAsync(int returnId); // handel refunds
 
     }
 }

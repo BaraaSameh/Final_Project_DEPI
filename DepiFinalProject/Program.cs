@@ -1,16 +1,19 @@
-using System.Reflection;
-using System.Security.Claims;
-using System.Text;
-using DepiFinalProject.Core.Interfaces;
+using DepiFinalProject.Controllers;
 using DepiFinalProject.Core.Models;
+using DepiFinalProject.Core.Interfaces;
 using DepiFinalProject.Infrastructure.Repositories;
 using DepiFinalProject.InfraStructure.Data;
 using DepiFinalProject.Infrastructurenamespace.Repositories;
 using DepiFinalProject.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PayPalAdvancedIntegration.Services;
+using System.Reflection;
+using System.Security.Claims;
+using System.Text;
+using PaypalServerSdk;
 
 namespace DepiFinalProject
 {
@@ -23,8 +26,12 @@ namespace DepiFinalProject
             // Add services to the container.
 
             builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
-                                     sql => sql.MigrationsAssembly("DepiFinalProject.InfraStructure")));
+                options.UseSqlServer(
+                    builder.Configuration.GetConnectionString("DefaultConnection"),
+                    sql => sql.MigrationsAssembly("DepiFinalProject.InfraStructure")
+                )
+            );
+
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 
@@ -80,6 +87,7 @@ namespace DepiFinalProject
             // PayPal Service
             builder.Services.AddScoped<IPaymentService, PayPalService>();
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            builder.Services.AddScoped<IPaymentService, PayPalService>();
             builder.Services.AddHttpContextAccessor();
             builder.Services.Configure<PayPalSettings>(builder.Configuration.GetSection("PayPalSettings"));
 
@@ -92,9 +100,24 @@ namespace DepiFinalProject
             // Review Service
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<IReviewService, ReviewService>();
+
             //Return Service
             builder.Services.AddScoped<IReturnRepository, ReturnRepository>();
             builder.Services.AddScoped<IReturnService, ReturnService>();
+
+            //Return Settings
+            builder.Services.Configure<ReturnSettings>(builder.Configuration.GetSection("ReturnSettings"));
+            builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<ReturnSettings>>().Value);
+          
+            
+
+ 
+
+            // Register ReturnService and interfaces
+            builder.Services.AddScoped<IReturnService, ReturnService>();
+
+
+
             //cloudinary
             builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
