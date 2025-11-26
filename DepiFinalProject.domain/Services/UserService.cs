@@ -1,4 +1,5 @@
-﻿using DepiFinalProject.Core.DTOs;
+﻿using DepiFinalProject.core.DTOs;
+using DepiFinalProject.Core.DTOs;
 using DepiFinalProject.Core.Interfaces;
 using DepiFinalProject.Core.Models;
 using Microsoft.AspNetCore.Http;
@@ -33,19 +34,29 @@ namespace DepiFinalProject.Services
             return await _userRepository.ChangePasswordAsync(user);
         }
 
-        public async Task<User> CreateAsync(User user)
+        public async Task<User> CreateAsync(CreateUserDTO user)
         {
             if (!string.IsNullOrEmpty(user.UserPassword))
             {
                 user.UserPassword = _passwordService.HashPassword(user.UserPassword);
             }
-            user.CreatedAt = DateTime.UtcNow;
+
             if (!numberval(user.UserPhone))
             {
               throw new ArgumentException("User phone must be digits");
 
             }
-            return await _userRepository.CreateAsync(user);
+            User newUser = new User
+            {
+                UserEmail = user.UserEmail,
+                UserPassword = user.UserPassword,
+                UserFirstName = user.UserFirstName,
+                UserLastName = user.UserLastName,
+                UserPhone = user.UserPhone,
+                UserRole = user.UserRole.ToLower()
+            };
+
+            return await _userRepository.CreateAsync(newUser);
         }
 
         public async Task<bool> DeleteAsync(int userId)
@@ -66,7 +77,7 @@ namespace DepiFinalProject.Services
                 UserID = user.UserID,
                 UserEmail = user.UserEmail,
                 UserName = user.UserFirstName + " " + user.UserLastName,
-                UserRole = user.UserRole,
+                UserRole = user.UserRole.ToLower(),
                 AddressNumber = user.Addresses?.Count ?? 0,
                 CartsNumber = user.Carts?.Count ?? 0,
                 OrdersNumber = user.Orders?.Count ?? 0,
@@ -91,7 +102,7 @@ namespace DepiFinalProject.Services
                 UserID = user.UserID,
                 UserEmail= user.UserEmail,
                 UserName= user.UserFirstName +" "+ user.UserLastName,
-                UserRole = user.UserRole,
+                UserRole = user.UserRole.ToLower(),
                 AddressNumber = user.Addresses?.Count ?? 0,
                 CartsNumber = user.Carts?.Count ?? 0,
                 OrdersNumber = user.Orders?.Count ?? 0,
@@ -113,11 +124,12 @@ namespace DepiFinalProject.Services
             {
                 throw new ArgumentException("User phone must be digits");
             }
+
             existingUser.UserFirstName = user.UserFirstName;
             existingUser.UserLastName = user.UserLastName;
             existingUser.UserPhone = user.UserPhone;
             existingUser.UserEmail = user.UserEmail;
-            existingUser.UserRole = user.UserRole;
+            existingUser.UserRole = user.UserRole.ToLower();
             
 
             return await _userRepository.UpdateAsync(existingUser);
@@ -125,12 +137,17 @@ namespace DepiFinalProject.Services
         public async Task<string> UpdateUserImageAsync(int userId, IFormFile file)
         {
             var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null)
-                throw new KeyNotFoundException($"User with ID {user.UserID} not found");
 
-            if (!string.IsNullOrEmpty(user.ImagePublicId))
+            if (user == null)
+                throw new KeyNotFoundException($"User with ID {userId} not found");
+
+            bool isGoogleImage = !string.IsNullOrEmpty(user.ImageUrl) &&
+                                 user.ImageUrl.Contains("googleusercontent");
+
+            if (!string.IsNullOrEmpty(user.ImagePublicId) && !isGoogleImage)
+            {
                 await _cloudinary.DeleteImageAsync(user.ImagePublicId);
-            
+            }
 
             var (url, publicId) = await _cloudinary.UploadImageAsync(file);
 
@@ -145,23 +162,31 @@ namespace DepiFinalProject.Services
         public async Task<bool> DeleteUserImageAsync(int userId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null)
-                throw new KeyNotFoundException($"User with ID {user.UserID} not found");
 
-            if (string.IsNullOrEmpty(user.ImagePublicId))
+            if (user == null)
+                throw new KeyNotFoundException($"User with ID {userId} not found");
+
+            if (string.IsNullOrEmpty(user.ImagePublicId) && string.IsNullOrEmpty(user.ImageUrl))
                 return false;
 
-            var deleted = await _cloudinary.DeleteImageAsync(user.ImagePublicId);
+            bool deleted = false;
 
-            if (deleted)
+            if (!string.IsNullOrEmpty(user.ImagePublicId))
+            {
+                deleted = await _cloudinary.DeleteImageAsync(user.ImagePublicId);
+            }
+
+            bool isGoogleImage = !string.IsNullOrEmpty(user.ImageUrl) &&
+                                 user.ImageUrl.Contains("googleusercontent");
+
+            if (deleted || isGoogleImage)
             {
                 user.ImageUrl = null;
                 user.ImagePublicId = null;
                 await _userRepository.UpdateAsync(user);
             }
-            
 
-                return deleted;
+            return deleted || isGoogleImage;
         }
         private bool numberval(string num)
         {

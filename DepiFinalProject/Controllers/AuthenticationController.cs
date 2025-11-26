@@ -35,6 +35,7 @@ namespace DepiFinalProject.Controllers
         /// <response code="400">Invalid request (missing purpose or invalid data).</response>
         /// <response code="404">User not found.</response>
         /// <response code="500">Internal server error.</response>
+        
         [HttpPost("request-otp")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -74,6 +75,7 @@ namespace DepiFinalProject.Controllers
         /// <response code="400">Invalid or expired OTP code.</response>
         /// <response code="404">User not found.</response>
         /// <response code="500">Internal server error.</response>
+       
         [HttpPost("verify-otp")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -106,7 +108,9 @@ namespace DepiFinalProject.Controllers
             return Ok(new { message = "OTP verified" });
         }
 
-
+        /// <summary>
+        /// Registers a new user with the provided registration details.
+        /// </summary>
         [AllowAnonymous]
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -135,6 +139,9 @@ namespace DepiFinalProject.Controllers
             }
         }
 
+        /// <summary>
+        /// Authenticates a user with the provided login credentials. 
+        /// </summary>
         [AllowAnonymous]
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -163,6 +170,9 @@ namespace DepiFinalProject.Controllers
             }
         }
 
+        /// <summary>
+        /// Refreshes the JWT access token using a valid refresh token. 
+        /// </summary>
         [AllowAnonymous]
         [HttpPost("refresh-token")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -198,6 +208,10 @@ namespace DepiFinalProject.Controllers
                     new List<string> { ex.Message, ex.InnerException?.Message }));
             }
         }
+
+        /// <summary>
+        /// Revokes a refresh token, preventing its future use. 
+        /// </summary>
         [AllowAnonymous]
         [HttpPost("revoke-token")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -231,6 +245,7 @@ namespace DepiFinalProject.Controllers
                     new List<string> { ex.Message, ex.InnerException?.Message }));
             }
         }
+
         /// <summary>
         /// Authenticates a user using a Google ID Token.
         /// </summary>

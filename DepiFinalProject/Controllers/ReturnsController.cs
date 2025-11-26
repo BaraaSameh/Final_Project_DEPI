@@ -27,6 +27,9 @@ public class ReturnsController : ControllerBase
         return int.Parse(User.FindFirst("userId").Value);
     }
 
+    /// <summary>
+    /// Get all return requests (Admin and Seller only).
+    /// </summary>
     [HttpGet]
     [Authorize]
     [ProducesResponseType(typeof(IEnumerable<ReturnDto.ReturnResponseDto>), StatusCodes.Status200OK)]
@@ -57,7 +60,9 @@ public class ReturnsController : ControllerBase
         return Ok(result);
     }
 
-
+    /// <summary>
+    /// Get a specific return request by ID.
+    /// </summary>
     [HttpGet("{returnId}")]
     [Authorize]
     [ProducesResponseType(typeof(ReturnDto.ReturnResponseDto), StatusCodes.Status200OK)]
@@ -91,6 +96,9 @@ public class ReturnsController : ControllerBase
         });
     }
 
+    /// <summary>
+    /// Request a return for an order item (Client only).
+    /// </summary>
     [HttpPost]
     [Authorize]
     [ProducesResponseType(typeof(ReturnDto.ReturnResponseDto), StatusCodes.Status201Created)]
@@ -139,6 +147,9 @@ public class ReturnsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Update the status of a return request (Admin and Seller only).
+    /// </summary>
     [HttpPut("{returnId}")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -190,6 +201,9 @@ public class ReturnsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Process a refund for an approved return (Admin only).
+    /// </summary>
     [HttpPost("{returnId}/refund")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -235,6 +249,9 @@ public class ReturnsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Delete a return request (Admin only).
+    /// </summary>
     [HttpDelete("{returnId}")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -255,6 +272,9 @@ public class ReturnsController : ControllerBase
         return Ok(new { Message = "Return deleted successfully." });
     }
 
+    /// <summary>
+    /// Cancel a return request (Client only).
+    /// </summary>
     [HttpPut("{returnId}/cancel")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -306,6 +326,9 @@ public class ReturnsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Get return requests for the authenticated user (Client only).
+    /// </summary>
     [HttpGet("User")]
     [Authorize]
     [ProducesResponseType(typeof(IEnumerable<ReturnDto.ReturnResponseDto>), StatusCodes.Status200OK)]
@@ -336,6 +359,9 @@ public class ReturnsController : ControllerBase
         return Ok(result);
     }
 
+    /// <summary>
+    /// Get return configuration settings.
+    /// </summary>
     [HttpGet("config")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]

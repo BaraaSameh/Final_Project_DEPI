@@ -1,9 +1,10 @@
-﻿using System.Security.Claims;
+﻿using DepiFinalProject.core.DTOs;
 using DepiFinalProject.Core.DTOs;
 using DepiFinalProject.Core.Interfaces;
 using DepiFinalProject.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace DepiFinalProject.Controllers
 {
@@ -20,6 +21,9 @@ namespace DepiFinalProject.Controllers
             _addressService = addressService;
         }
 
+        /// <summary>
+        /// Get all users.
+        /// </summary>
         [HttpGet]
         [Authorize]
         [ProducesResponseType(typeof(ICollection<User>), StatusCodes.Status200OK)]
@@ -44,6 +48,9 @@ namespace DepiFinalProject.Controllers
             }
         }
 
+        /// <summary>
+        /// Get user by ID.
+        /// </summary>
         [HttpGet("{id}")]
         [Authorize(Roles = "admin,client,seller")]
         [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status200OK)]
@@ -68,7 +75,9 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(500, new { message = "An error occurred while retrieving the user", error = ex.Message });
             }
         }
-
+        /// <summary>
+        /// Get user by Email.
+        /// </summary>
         [HttpGet("email/{email}")]
         [Authorize]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
@@ -97,6 +106,7 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(500, new { message = "An error occurred while retrieving the user", error = ex.Message });
             }
         }
+
         /// <summary>
         /// Upload or update the user's profile image.
         /// </summary>
@@ -110,6 +120,9 @@ namespace DepiFinalProject.Controllers
         /// <response code="200">Image uploaded successfully</response>
         /// <response code="400">Invalid image or validation error</response>
         /// <response code="401">User not registerd error</response>
+        /// /// <summary>
+        /// Upload or update the user's profile image.
+        /// </summary>
         [HttpPost("/upload-image")]
         [Authorize]
         [ProducesResponseType(typeof(string), 200)]
@@ -137,6 +150,9 @@ namespace DepiFinalProject.Controllers
         /// <response code="404">User or image not found</response>
         /// <response code="401">User not registerd error</response>
         /// <reponse code="404">NO User Image Found</reponse>
+        /// /// <summary>
+        /// Delete user's profile image.
+        /// </summary>
         [HttpDelete("/delete-image")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -144,10 +160,9 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-
         public async Task<IActionResult> DeleteImage()
         {
-            if (!User.IsInRole("admin") && !User.IsInRole("client"))
+            if (!User.IsInRole("admin") && !User.IsInRole("client") && !User.IsInRole("seller"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
             }
@@ -161,14 +176,17 @@ namespace DepiFinalProject.Controllers
 
             return Ok(new { message = "Image deleted successfully" });
         }
-
+        
+        /// <summary>
+        /// Create a new user by admin.
+        /// </summary>
         [HttpPost]
         [Authorize]
         [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<User>> CreateUser([FromBody] User user)
+        public async Task<ActionResult<User>> CreateUser([FromBody] CreateUserDTO user)
         {
             if (!User.IsInRole("admin"))
             {
@@ -196,6 +214,9 @@ namespace DepiFinalProject.Controllers
             }
         }
 
+        /// <summary>
+        /// Update user details.
+        /// </summary>
         [HttpPut("{id}")]
         [Authorize]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
@@ -242,6 +263,10 @@ namespace DepiFinalProject.Controllers
                 });
             }
         }
+
+        /// <summary>
+        /// Update user role.
+        /// </summary>
         [HttpPut("updateRole/{id}")]
         [Authorize]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
@@ -264,6 +289,8 @@ namespace DepiFinalProject.Controllers
                 var userId = int.Parse(User.FindFirst("userId")!.Value);
                 var isAdmin = User.IsInRole("admin");
                 var userdata = await _userService.GetByIdAsync(id);
+                var roles = new List<string> { "admin", "seller" };
+
 
 
                 if (id != userId && !isAdmin)
@@ -271,8 +298,12 @@ namespace DepiFinalProject.Controllers
                     return Unauthorized(new { message = "User ID mismatch" });
                 }
                 var olduser = await _userService.GetByEmailAsync(userdata.UserEmail);
-                olduser.UserRole = user.UserRole;
 
+                if (user.UserRole == null || !roles.Contains(user.UserRole.ToLower()))
+                {
+                    return BadRequest(new { message = "Invalid Role" });
+                }
+                olduser.UserRole = user.UserRole.ToLower();
 
                 var updatedUser = await _userService.UpdateAsync(olduser);
                 return Ok(updatedUser);
@@ -286,6 +317,10 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(500, new { message = "An error occurred while updating the user", error = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Delete user by ID.
+        /// </summary>
         [HttpDelete("{id}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -314,6 +349,9 @@ namespace DepiFinalProject.Controllers
             }
         }
 
+        /// <summary>
+        /// Change user password.
+        /// </summary>
         [HttpPost("change-password")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -352,6 +390,9 @@ namespace DepiFinalProject.Controllers
             }
         }
 
+        /// <summary>
+        /// Check if an email already exists.
+        /// </summary>
         [HttpGet("check-email/{email}")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
