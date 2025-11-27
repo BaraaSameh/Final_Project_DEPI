@@ -71,10 +71,11 @@ namespace DepiFinalProject.Controllers
 
 
             }
-            catch (BadHttpRequestException ex)
+            catch (Exception ex)
             {
-                return BadRequest($"{ex.Message}");
+                return BadRequest(ex.Message);
             }
+           
 
         }
 

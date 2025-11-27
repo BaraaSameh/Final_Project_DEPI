@@ -21,6 +21,93 @@ namespace DepiFinalProject.Controllers
             _otpService = otpService;
             _userRepo = userRepo;
         }
+
+
+        /// <summary>
+        /// Initiates the password reset process by sending an OTP to the user's email.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint sends a One-Time Password (OTP) to the provided email address
+        /// if the user exists. For security reasons, it returns success even if the user
+        /// doesn't exist to prevent email enumeration attacks.
+        /// </remarks>
+        /// <param name="request">The email address for password reset</param>
+        /// <response code="200">OTP sent successfully (or user not found - same response for security)</response>
+        /// <response code="400">Invalid request data</response>
+        /// <response code="500">Internal server error</response>
+        [AllowAnonymous]
+        [HttpPost("forgot-password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ApiResponse<bool>>> ForgotPassword([FromBody] ForgotPasswordRequest request)
+        {
+            try
+            {
+                await _authService.ForgotPasswordAsync(request.Email);
+
+                return Ok(ApiResponse<bool>.SuccessResponse(
+                    true,
+                    "If an account exists with this email, a password reset code has been sent"));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ApiResponse<bool>.ErrorResponse(
+                    ex.Message, new List<string> { ex.Message }));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<bool>.ErrorResponse(
+                    "An error occurred while processing your request",
+                    new List<string> { ex.Message, ex.InnerException?.Message }));
+            }
+        }
+
+        /// <summary>
+        /// Resets the user's password using the OTP code sent to their email.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint verifies the OTP code and updates the user's password.
+        /// After successful password reset, all existing refresh tokens are revoked
+        /// for security purposes, requiring the user to log in again.
+        /// </remarks>
+        /// <param name="request">Contains email, OTP code, and new password</param>
+        /// <response code="200">Password reset successfully</response>
+        /// <response code="400">Invalid request data</response>
+        /// <response code="401">Invalid or expired OTP code</response>
+        /// <response code="500">Internal server error</response>
+        [AllowAnonymous]
+        [HttpPost("reset-password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ApiResponse<bool>>> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            try
+            {
+                await _authService.ResetPasswordAsync(
+                    request.Email,
+                    request.OtpCode,
+                    request.NewPassword);
+
+                return Ok(ApiResponse<bool>.SuccessResponse(
+                    true,
+                    "Password has been reset successfully. Please login with your new password"));
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ApiResponse<bool>.ErrorResponse(
+                    ex.Message, new List<string> { ex.Message }));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<bool>.ErrorResponse(
+                    "An error occurred while resetting your password",
+                    new List<string> { ex.Message, ex.InnerException?.Message }));
+            }
+        }
+
         /// <summary>
         /// Request a One-Time Password (OTP) for a specific purpose.
         /// </summary>
@@ -35,7 +122,7 @@ namespace DepiFinalProject.Controllers
         /// <response code="400">Invalid request (missing purpose or invalid data).</response>
         /// <response code="404">User not found.</response>
         /// <response code="500">Internal server error.</response>
-        
+
         [HttpPost("request-otp")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
