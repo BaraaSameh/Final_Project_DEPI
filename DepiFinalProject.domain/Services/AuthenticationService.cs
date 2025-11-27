@@ -13,20 +13,64 @@ namespace DepiFinalProject.Services
         private readonly ITokenService _tokenService;
         private readonly IPasswordService _passwordService;
         private readonly IConfiguration _configuration;
+        private readonly IOtpService _otpService; 
+
 
         public AuthenticationService(
             IUserRepository userRepository,
             IRefreshTokenRepository refreshTokenRepository,
             ITokenService tokenService,
             IPasswordService passwordService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IOtpService otpService)
         {
             _userRepository = userRepository;
             _refreshTokenRepository = refreshTokenRepository;
             _tokenService = tokenService;
             _passwordService = passwordService;
             _configuration = configuration;
+            _otpService = otpService;
         }
+
+        public async Task<bool> ForgotPasswordAsync(string email)
+        {
+            var user = await _userRepository.GetByEmailAsync(email);
+
+
+            if (string.IsNullOrEmpty(user.UserPassword))
+            {
+                throw new InvalidOperationException(
+                    "This account was created with Google. Please use Google Sign-In.");
+            }
+
+            await _otpService.RequestOtpAsync(user, "passwordreset", email);
+
+            return true;
+        }
+
+        public async Task<bool> ResetPasswordAsync(string email, string otpCode, string newPassword)
+        {
+            var user = await _userRepository.GetByEmailAsync(email);
+
+            if (user == null)
+            {
+                throw new UnauthorizedAccessException("Invalid reset request");
+            }
+            
+            var isValidOtp = await _otpService.VerifyOtpAsync(user, "passwordreset", otpCode);
+
+            if (!isValidOtp)
+            {
+                throw new UnauthorizedAccessException("Invalid or expired OTP code");
+            }
+
+            user.UserPassword = _passwordService.HashPassword(newPassword);
+            await _userRepository.UpdateAsync(user);
+
+            
+            return true;
+        }
+
         public async Task<AuthenticationResponse> GoogleLoginAsync(string idToken)
         {
             var settings = new GoogleJsonWebSignature.ValidationSettings()

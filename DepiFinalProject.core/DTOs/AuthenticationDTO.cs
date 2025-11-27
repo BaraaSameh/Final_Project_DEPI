@@ -71,6 +71,35 @@ namespace DepiFinalProject.Core.DTOs
             public string RefreshToken { get; set; }
         }
 
+        // forget password DTOs
+
+        public class ForgotPasswordRequest
+        {
+            [Required(ErrorMessage = "Email is required")]
+            [EmailAddress(ErrorMessage = "Invalid email format")]
+            [RegularExpression(@"^[A-Za-z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com|hotmail\.com|icloud\.com)$",
+                ErrorMessage = "Email must be from a known provider (gmail, yahoo, outlook, hotmail, icloud)")]
+            public string Email { get; set; }
+        }
+
+        public class ResetPasswordRequest
+        {
+            [Required(ErrorMessage = "Email is required")]
+            [EmailAddress(ErrorMessage = "Invalid email format")]
+            [RegularExpression(@"^[A-Za-z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com|hotmail\.com|icloud\.com)$",
+                ErrorMessage = "Email must be from a known provider (gmail, yahoo, outlook, hotmail, icloud)")]
+            public string Email { get; set; }
+
+            [Required(ErrorMessage = "OTP code is required")]
+            public string OtpCode { get; set; }
+
+            [Required(ErrorMessage = "New password is required")]
+            [MinLength(6, ErrorMessage = "Password must be at least 6 characters")]
+            [RegularExpression(@"^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};:'""\\|,.<>\/?]).{6,}$",
+                ErrorMessage = "Password must contain an uppercase letter, a number, and a special character")]
+            public string NewPassword { get; set; }
+        }
+
     }
 
     public class ApiResponse<T>

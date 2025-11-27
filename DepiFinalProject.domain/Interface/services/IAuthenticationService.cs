@@ -11,6 +11,8 @@ namespace DepiFinalProject.Core.Interfaces
         Task<AuthenticationResponse> GenerateJwtTokenAsync(User user);
         Task<bool> RevokeTokenAsync(string token);
         Task<AuthenticationResponse> GoogleLoginAsync(string idToken);
+        Task<bool> ForgotPasswordAsync(string email);
+        Task<bool> ResetPasswordAsync(string email, string otpCode, string newPassword);
 
     }
 }
