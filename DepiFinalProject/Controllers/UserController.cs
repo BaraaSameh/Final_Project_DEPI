@@ -409,6 +409,98 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(500, new { message = "An error occurred while checking email", error = ex.Message });
             }
         }
+        /// <summary>
+        /// Request an email verification OTP.
+        /// </summary>
+        /// <remarks>
+        /// Sends a verification OTP code to the user's email address.  
+        /// OTP purposes supported: <c>EmailVerification</c>.  
+        /// - Returns 400 if the email is missing or invalid.  
+        /// - An existing active OTP will be invalidated and replaced with a new one.
+        /// </remarks>
+        /// <param name="email">The email address to which the verification OTP will be sent.</param>
+        /// <response code="200">OTP sent successfully.</response>
+        /// <response code="400">Invalid request or missing email.</response>
+        /// <response code="404">User not found.</response>
+        /// <response code="500">Internal server error.</response>
+        [HttpPost("email/verification/request")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> RequestEmailVerification()
+        {
+            if(!TryGetUserId(out int userid))
+            {
+                return Unauthorized(new { message = "User ID is required." });
+            }
+            try
+            {
+                var user = await _userService.GetByIdAsync(userid);
+                await _userService.RequestEmailVerificationOtpAsync(user.UserEmail);
+                return Ok(new { message = "Verification OTP sent successfully." });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while requesting email verification.", error = ex.Message });
+            }
+        }
+        /// <summary>
+        /// Verify an email verification OTP.
+        /// </summary>
+        /// <remarks>
+        /// Confirms a previously requested email verification OTP.  
+        /// - Requires the OTP code and the user's email address.  
+        /// - Marks the user's email as verified upon success.  
+        /// - Returns 400 if the OTP is incorrect or expired.  
+        /// - Returns 404 if the user does not exist.
+        /// </remarks>
+        /// <param name="dto">DTO containing the email address and OTP code.</param>
+        /// <response code="200">Email verified successfully.</response>
+        /// <response code="400">Invalid or expired OTP code.</response>
+        /// <response code="404">User not found.</response>
+        /// <response code="500">Internal server error.</response>
+        [HttpPost("email/verification/verify/{UserOtp}")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> VerifyEmailVerificationOtp(string UserOtp)
+        {
+            try
+            {
+                if(!TryGetUserId(out int userid))
+                {
+                    return Unauthorized(new { message = "User ID is required." });
+                }   
+                var userd= await _userService.GetByIdAsync(userid);
+                var user=await _userService.GetByEmailAsync( userd.UserEmail);
+                if (user == null)
+                {
+                    return NotFound(new { message = "User not found." });
+                }
+                var isVerified = await _userService.VerifyEmailOtpAsync(user, UserOtp);
+                if (!isVerified)
+                {
+                    return BadRequest(new { message = "Invalid or expired OTP code." });
+                }
+                return Ok(new { message = "Email verified successfully." });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while verifying your email .", error = ex.Message });
+            }
+        }
         private bool TryGetUserId(out int userId)
         {
             userId = default;

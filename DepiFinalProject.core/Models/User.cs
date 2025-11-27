@@ -21,6 +21,7 @@ namespace DepiFinalProject.Core.Models
         public string? UserPhone { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string UserRole { get; set; } = "client"; // مثل "Admin" أو "Customer"
+        public bool EmailConfirmed { get; set; } = false;
 
         // Navigation Properties
         public virtual ICollection<Return> Returns { get; set; } = new List<Return>();

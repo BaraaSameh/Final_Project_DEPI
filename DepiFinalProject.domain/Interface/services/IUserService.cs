@@ -17,5 +17,7 @@ namespace DepiFinalProject.Core.Interfaces
         Task<bool> DeleteAsync(int userId);
         Task<string> UpdateUserImageAsync(int userId, IFormFile file);
         Task<bool> DeleteUserImageAsync(int userId);
+        Task RequestEmailVerificationOtpAsync(string userEmail);
+        Task<bool> VerifyEmailOtpAsync(User user, string otpCode);
     }
 }
