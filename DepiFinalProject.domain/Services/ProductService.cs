@@ -219,8 +219,14 @@ namespace DepiFinalProject.Services
                 CategoryID = product.CategoryID,
                 CategoryName = product.Category?.CategoryName ?? "Unknown",
                 UserId = product.userid,
-                SellerName = product.user?.UserFirstName + " " + product.user?.UserLastName ?? "Unknown",
-                SellerEmail = product.user?.UserEmail ?? "Unknown",
+                SellerName = product.user?.UserRole == "admin"
+                ? "zenon"
+                : (product.user?.UserFirstName + " " + product.user?.UserLastName ?? "Unknown"),
+
+                SellerEmail = product.user?.UserRole == "admin"
+                ? "zenon@gmail.com"
+                : (product.user?.UserEmail ?? "Unknown"),
+
                 ProductName = product.ProductName,
                 Description = product.Description,
                 Price = product.Price,
@@ -249,8 +255,13 @@ namespace DepiFinalProject.Services
                 CategoryID = product.CategoryID,
                 CategoryName = product.Category?.CategoryName ?? "Unknown",
                 UserId = product.userid,
-                SellerName = product.user?.UserFirstName + " " + product.user?.UserLastName ?? "Unknown",
-                SellerEmail = product.user?.UserEmail ?? "Unknown",
+                SellerName = product.user?.UserRole == "admin"
+                ? "zenon"
+                : (product.user?.UserFirstName + " " + product.user?.UserLastName ?? "Unknown"),
+
+                SellerEmail = product.user?.UserRole == "admin"
+                ? "zenon@gmail.com"
+                : (product.user?.UserEmail ?? "Unknown"),
                 ProductName = product.ProductName,
                 Description = product.Description,
                 Price = product.Price,

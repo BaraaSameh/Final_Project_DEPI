@@ -1,4 +1,5 @@
-﻿using DepiFinalProject.Core.DTOs;
+﻿using System.Security.Claims;
+using DepiFinalProject.Core.DTOs;
 using DepiFinalProject.Core.Interfaces;
 using DepiFinalProject.Core.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -206,17 +207,18 @@ namespace DepiFinalProject.Controllers
         /// Retrieves all payments made by a specific user.
         /// </summary>
         /// <remarks>Accessible by admin or the user themselves.</remarks>
-        /// <param name="userId">User ID.</param>
+        /// <param >User ID.</param>
         /// <response code="200">Payments retrieved successfully.</response>
         /// <response code="403">User not authorized to access these payments.</response>
         /// <response code="500">Internal server error.</response>
-        [HttpGet("user/{userId}")]
+        [HttpGet("user")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetUserPayments(int userId)
+        public async Task<IActionResult> GetUserPayments()
         {
+            if (!TryGetUserId(out int userId)) return Unauthorized("Allowed Only for authorized users");
             if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
@@ -323,6 +325,12 @@ namespace DepiFinalProject.Controllers
                         (string.IsNullOrEmpty(payment.PayPalOrderId) ? "" : _configuration["PayPal:SandboxApproveBase"] + payment.PayPalOrderId)
                 }
             };
+        }
+        private bool TryGetUserId(out int userId)
+        {
+            userId = default;
+            var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.TryParse(idClaim, out userId);
         }
     }
 }

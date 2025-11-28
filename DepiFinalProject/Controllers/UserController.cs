@@ -2,6 +2,7 @@
 using DepiFinalProject.Core.DTOs;
 using DepiFinalProject.Core.Interfaces;
 using DepiFinalProject.Core.Models;
+using DepiFinalProject.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -266,10 +267,8 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<User>> UpdateUser(int id, [FromBody] UpdateUserDTO user)
         {
-            if (!User.IsInRole("admin") && !User.IsInRole("client"))
-            {
-                return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
-            }
+            TryGetUserId(out var userid);
+           if (userid!=id && !User.IsInRole("admin")&&!User.IsInRole("super")) return StatusCode(403, new { Error = "Only Allowed To Admins And Owner" });
             try
             {
                 if (!ModelState.IsValid)
@@ -322,11 +321,16 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<User>> UpdateUserRole(int id, [FromBody] UpdateUserRoleDTO user) {
-            if (!User.IsInRole("admin"))
+            if (!User.IsInRole("admin")&&!User.IsInRole("super"))
             {
-                return StatusCode(403, new { Error = "Only Allowed To Admin " });
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Owner" });
             }
-
+            var userd= await _userService.GetByIdAsync(id);
+            var userr= await _userService.GetByEmailAsync( userd.UserEmail);
+            if(!User.IsInRole("super")&&userr.UserRole=="admin")
+                return StatusCode(403, new { Error = "Only Owener Allowed To Update Admins Roles" });
+            if(userr.UserRole=="super")
+                return StatusCode(403, new { Error = "Cannot Update Owner Role" });
             try
             {
                 if (!ModelState.IsValid)
@@ -386,6 +390,10 @@ namespace DepiFinalProject.Controllers
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin" });
             }
+            var userd= await _userService.GetByIdAsync(id);
+            var user = await _userService.GetByEmailAsync(userd.UserEmail);
+            if(!User.IsInRole("super")&&user.UserRole=="admin")
+                return StatusCode(403, new { Error = "Only Owener Allowed To Remove Admins" });
             try
             {
                 var result = await _userService.DeleteAsync(id);

@@ -24,22 +24,23 @@ namespace DepiFinalProject.Controllers
         /// <summary>
         /// Retrieves all saved addresses for a specific user.
         /// </summary>
-        /// <param name="userId">User ID.</param>
+        /// <param>User ID.</param>
         /// <returns>A list of addresses belonging to the user.</returns>
         /// <response code="200">Returns the list of addresses.</response>
         /// <response code="400">Invalid user ID.</response>
         /// <response code="404">User not found.</response>
         /// <response code="500">Internal error.</response>
-        [HttpGet("{userId}")]
+        [HttpGet("user")]
         [Authorize(Roles = "admin,client,seller")]
         [ProducesResponseType(typeof(IEnumerable<AddressDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<AddressDto>>> GetUserAddresses(int userId)
+        public async Task<ActionResult<IEnumerable<AddressDto>>> GetUserAddresses()
         {
             try
             {
+                if (!TryGetUserId(out int userId)) return Unauthorized("Allowed Only for authorized users");
                 if (userId <= 0)
                     return BadRequest(new { Message = "Invalid user ID." });
 
@@ -283,6 +284,12 @@ namespace DepiFinalProject.Controllers
                     InnerException = ex.InnerException?.Message
                 });
             }
+        }
+        private bool TryGetUserId(out int userId)
+        {
+            userId = default;
+            var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.TryParse(idClaim, out userId);
         }
     }
 }
