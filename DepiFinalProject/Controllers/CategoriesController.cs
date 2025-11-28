@@ -18,10 +18,17 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Get all categories.
+        /// Retrieves all categories.
         /// </summary>
-        /// <returns>List of categories.</returns>
-        ///
+        /// <remarks>
+        /// This endpoint returns a list of all categories, including:
+        /// - Name  
+        /// - Description  
+        /// - Icon URL  
+        /// - Product count  
+        /// </remarks>
+        /// <response code="200">Returns the list of categories.</response>
+        /// <response code="500">Internal server error.</response>
         [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -38,15 +45,25 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(500, $"Error deleting product.:{ex.Message} \n {ex.InnerException}");
             }
         }
+
         /// <summary>
-        /// Upload an icon for a category (Admin only).
+        /// Uploads an icon for a category.
         /// </summary>
-        /// <param name="categoryId">Category ID</param>
-        /// <param name="file">Image file</param>
+        /// <remarks>
+        /// Admin-only endpoint.  
+        /// Replaces the category's existing icon if one already exists.
+        /// </remarks>
+        /// <param name="categoryId">Category ID.</param>
+        /// <param name="file">Image file.</param>
+        /// <response code="200">Icon uploaded successfully.</response>
+        /// <response code="400">Invalid file.</response>
+        /// <response code="403">Unauthorized access.</response>
+        /// <response code="404">Category not found.</response>
         [HttpPost("{categoryId}/icon")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UploadIcon(int categoryId, IFormFile file)
         {
@@ -55,23 +72,44 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(403, new { Error = "Only Allowed To Admin" });
             }
 
-            if (file == null || file.Length == 0)
-                return BadRequest("File is empty.");
+            try
+            {
 
-            var result = await _categoryService.UploadCategoryIconAsync(categoryId, file);
+                if (file == null || file.Length == 0)
+                    return BadRequest(new { message = "File is empty." });
 
-            if (!result)
-                return NotFound(new { message = $"Category with ID {categoryId} not found" });
+                var result = await _categoryService.UploadCategoryIconAsync(categoryId, file);
 
-            return Ok("Icon uploaded successfully.");
+                if (!result)
+                    return NotFound(new { message = $"Category with ID {categoryId} not found" });
+
+                return Ok(new { message = "Icon uploaded successfully." });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { Error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Error = ex.Message });
+            }
         }
+
         /// <summary>
-        /// Delete the icon of a category (Admin only).
+        /// Deletes the icon of a category.
         /// </summary>
-        /// <param name="categoryId">Category ID</param>
+        /// <remarks>
+        /// Admin-only endpoint.  
+        /// Fails if the category has no icon.
+        /// </remarks>
+        /// <param name="categoryId">Category ID.</param>
+        /// <response code="200">Icon deleted successfully.</response>
+        /// <response code="403">Unauthorized access.</response>
+        /// <response code="404">Category not found or icon missing.</response>
         [HttpDelete("{categoryId}/icon")]
-        [Authorize]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteIcon(int categoryId)
         {
@@ -79,24 +117,39 @@ namespace DepiFinalProject.Controllers
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin" });
             }
+            try
+            {
+                var result = await _categoryService.DeleteCategoryIconAsync(categoryId);
 
-            var result = await _categoryService.DeleteCategoryIconAsync(categoryId);
+                if (!result)
+                    return NotFound(new { message = "Category not found or this category has no icon." });
 
-            if (!result)
-                return NotFound(new { message = "Category not found or this category has no icon." });
-
-            return Ok("Icon deleted successfully.");
+                return Ok(new { message = "Icon deleted successfully." });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { Error = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return NotFound(new { Error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Error = ex.Message });
+            }
         }
 
         /// <summary>
-        /// Get a specific category by ID.
+        /// Retrieves a specific category by ID.
         /// </summary>
-        /// <param name="id">Category ID</param>
-        /// <returns>Category data</returns>
-        /// 
+        /// <param name="id">Category ID.</param>
+        /// <returns>Category details.</returns>
+        /// <response code="200">Category found.</response>
+        /// <response code="404">Category not found.</response>
+        /// <response code="500">Internal server error.</response>
         [AllowAnonymous]
         [HttpGet("{id}")]
-       // [Authorize(Roles = "admin,client,seller")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -117,14 +170,18 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Create a new category.
+        /// Creates a new category.
         /// </summary>
-        /// <param name="inputDto">Category input data</param>
-        /// <returns>Created category</returns>
+        /// <param name="inputDto">Category input data.</param>
+        /// <response code="201">Category created successfully.</response>
+        /// <response code="400">Invalid data.</response>
+        /// <response code="403">Unauthorized.</response>
+        /// <response code="500">Internal error.</response>
         [HttpPost]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<CategoryDTO>> CreateCategory([FromBody] CategoryInputDTO inputDto)
         {
@@ -132,11 +189,13 @@ namespace DepiFinalProject.Controllers
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin" });
             }
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            
 
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 var categoryDto = await _categoryService.CreateCategoryAsync(inputDto);
                 return CreatedAtAction(nameof(GetCategory), new { id = categoryDto.CategoryID }, categoryDto);
             }
@@ -147,14 +206,20 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Update an existing category.
+        /// Updates a category.
         /// </summary>
-        /// <param name="id">Category ID</param>
-        /// <param name="inputDto">Updated category data</param>
+        /// <param name="id">Category ID.</param>
+        /// <param name="inputDto">Updated data.</param>
+        /// <response code="204">Category updated.</response>
+        /// <response code="400">Invalid data.</response>
+        /// <response code="403">Unauthorized.</response>
+        /// <response code="404">Category not found.</response>
+        /// <response code="500">Internal error.</response>
         [HttpPut("{id}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateCategory(int id, [FromBody] CategoryInputDTO inputDto)
@@ -163,11 +228,11 @@ namespace DepiFinalProject.Controllers
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin " });
             }
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
 
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
                 var updated = await _categoryService.UpdateCategoryAsync(id, inputDto);
                 if (!updated)
                     return NotFound(new { message = $"Category with ID {id} not found" });
@@ -181,12 +246,17 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Delete a category.
+        /// Deletes a category.
         /// </summary>
-        /// <param name="id">Category ID</param>
+        /// <param name="id">Category ID.</param>
+        /// <response code="204">Category deleted.</response>
+        /// <response code="403">Unauthorized.</response>
+        /// <response code="404">Category not found or has products.</response>
+        /// <response code="500">Internal error.</response>
         [HttpDelete("{id}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteCategory(int id)
@@ -203,6 +273,10 @@ namespace DepiFinalProject.Controllers
                     return NotFound(new { message = $"Cannot delete category with ID {id} because it has associated products." });
 
                 return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return NotFound(new { Error = ex.Message });
             }
             catch (System.Exception ex)
             {

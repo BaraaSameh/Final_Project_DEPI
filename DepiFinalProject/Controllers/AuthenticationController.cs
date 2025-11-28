@@ -147,6 +147,7 @@ namespace DepiFinalProject.Controllers
 
             return Ok(new { message = "OTP sent" });
         }
+
         /// <summary>
         /// Verify a previously requested OTP.
         /// </summary>
@@ -196,11 +197,19 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Registers a new user with the provided registration details.
+        /// Registers a new user using email and password.
         /// </summary>
+        /// <remarks>
+        /// Creates a new account and returns authentication tokens.
+        /// The email must not already be registered.
+        /// </remarks>
+        /// <param name="request">Registration details including name, email, and password.</param>
+        /// <response code="200">Registration successful.</response>
+        /// <response code="400">Email already exists or invalid data.</response>
+        /// <response code="500">Internal server error.</response>
         [AllowAnonymous]
         [HttpPost("register")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthenticationResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ApiResponse<AuthenticationResponse>>> Register([FromBody] RegisterRequest request)
@@ -227,11 +236,18 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Authenticates a user with the provided login credentials. 
+        /// Authenticates a user using email and password.
         /// </summary>
+        /// <remarks>
+        /// Returns JWT access and refresh tokens if credentials are valid.
+        /// </remarks>
+        /// <param name="request">Contains email and password.</param>
+        /// <response code="200">Login successful.</response>
+        /// <response code="401">Invalid email or password.</response>
+        /// <response code="500">Internal server error.</response>
         [AllowAnonymous]
         [HttpPost("login")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthenticationResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ApiResponse<AuthenticationResponse>>> Login([FromBody] LoginRequest request)
@@ -258,11 +274,19 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Refreshes the JWT access token using a valid refresh token. 
+        /// Generates a new access token using a valid refresh token.
         /// </summary>
+        /// <remarks>
+        /// This endpoint allows users to stay authenticated without re-entering credentials.
+        /// The refresh token must not be expired or revoked.
+        /// </remarks>
+        /// <param name="request">Contains a refresh token.</param>
+        /// <response code="200">Token refreshed successfully.</response>
+        /// <response code="401">Refresh token invalid or expired.</response>
+        /// <response code="500">Internal server error.</response>
         [AllowAnonymous]
         [HttpPost("refresh-token")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthenticationResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -297,8 +321,16 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Revokes a refresh token, preventing its future use. 
+        /// Revokes a refresh token (logs the user out).
         /// </summary>
+        /// <remarks>
+        /// This endpoint removes the refresh token from the database,
+        /// preventing it from being used again.
+        /// </remarks>
+        /// <param name="request">Refresh token to revoke.</param>
+        /// <response code="200">Token revoked successfully.</response>
+        /// <response code="401">User not authenticated.</response>
+        /// <response code="500">Internal server error.</response>
         [AllowAnonymous]
         [HttpPost("revoke-token")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -334,16 +366,20 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Authenticates a user using a Google ID Token.
+        /// Authenticates a user using Google Sign-In.
         /// </summary>
-        /// <response code="200">
-        /// Returns an <see cref="AuthenticationResponse"/> containing JWT access token and refresh token.
-        /// </response>
-        /// <response code="401">
-        /// Returned when the Google ID Token is invalid or authentication fails.
-        /// </response>
+        /// <remarks>
+        /// If the email does not exist, a new account is automatically created.
+        /// </remarks>
+        /// <param name="request">Contains the Google ID token.</param>
+        /// <response code="200">Google login successful.</response>
+        /// <response code="401">Invalid Google ID token.</response>
+        /// <response code="500">Internal server error.</response>
         [AllowAnonymous]
         [HttpPost("google-login")]
+        [ProducesResponseType(typeof(AuthenticationResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginDto dto)
         {
             try

@@ -43,17 +43,24 @@ namespace DepiFinalProject.Controllers
             {
                 return StatusCode(403, new { Error = "only Allowed To Admin And Client" });
             }
-
-            if (!TryGetUserId(out var userId))
-                return Unauthorized();
-
-            var items = await _wishlistService.GetAllAsync(userId);
-
-            return Ok(new WishlistResponseDto
+            try
             {
-                UserId = userId,
-                Items = items
-            });
+                if (!TryGetUserId(out var userId))
+                    return Unauthorized();
+
+                var items = await _wishlistService.GetAllAsync(userId);
+
+                return Ok(new WishlistResponseDto
+                {
+                    UserId = userId,
+                    Items = items
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving the wishlist for user {UserId}", User.FindFirstValue(ClaimTypes.NameIdentifier));
+                return StatusCode(500, new { Error = "An unexpected error occurred. Please try again later." });
+            }
         }
 
         /// <summary>
@@ -73,14 +80,22 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(403, new { Error = "only Allowed To Admin And Client" });
             }
 
-            if (!TryGetUserId(out var userId))
-                return Unauthorized();
+            try
+            {
+                if (!TryGetUserId(out var userId))
+                    return Unauthorized();
 
-            var item = await _wishlistService.GetByProductIdAsync(userId, productId);
+                var item = await _wishlistService.GetByProductIdAsync(userId, productId);
 
-            return item is null
-                ? NotFound(new { Message = $"Product {productId} not found in wishlist." })
-                : Ok(item);
+                return item is null
+                    ? NotFound(new { Message = $"Product {productId} not found in wishlist." })
+                    : Ok(item);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving the wishlist item for user {UserId} and product {ProductId}", User.FindFirstValue(ClaimTypes.NameIdentifier), productId);
+                return StatusCode(500, new { Error = "An unexpected error occurred. Please try again later." });
+            }
         }
 
         /// <summary>
@@ -101,14 +116,32 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(403, new { Error = "only Allowed To Admin And Client" });
             }
 
-            if (!TryGetUserId(out var userId))
-                return Unauthorized();
+            try
+            {
+                if (!TryGetUserId(out var userId))
+                    return Unauthorized();
 
-            var item = await _wishlistService.AddAsync(userId, productId);
+                var item = await _wishlistService.AddAsync(userId, productId);
 
-            return CreatedAtAction(nameof(GetWishlistItem),
-                new { productId },
-                item);
+                return CreatedAtAction(nameof(GetWishlistItem),
+                    new { productId },
+                    item);
+            }
+            catch (ArgumentException argEx)
+            {
+                _logger.LogWarning(argEx, "Invalid input while adding product {ProductId} to wishlist for user {UserId}", productId, User.FindFirstValue(ClaimTypes.NameIdentifier));
+                return BadRequest(new { Error = argEx.Message });
+            }
+            catch (KeyNotFoundException notFoundEx)
+            {
+                _logger.LogWarning(notFoundEx, "Product {ProductId} not found while adding to wishlist for user {UserId}", productId, User.FindFirstValue(ClaimTypes.NameIdentifier));
+                return NotFound(new { Error = notFoundEx.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while adding product {ProductId} to wishlist for user {UserId}", productId, User.FindFirstValue(ClaimTypes.NameIdentifier));
+                return StatusCode(500, new { Error = "An unexpected error occurred. Please try again later." });
+            }
         }
 
         /// <summary>
@@ -128,14 +161,24 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(403, new { Error = "only Allowed To Admin And Client" });
             }
 
-            if (!TryGetUserId(out var userId))
-                return Unauthorized();
+            try
+            {
+                if (!TryGetUserId(out var userId))
+                    return Unauthorized();
 
-            var removed = await _wishlistService.RemoveAsync(userId, productId);
+                var removed = await _wishlistService.RemoveAsync(userId, productId);
 
-            return removed
-                ? NoContent()
-                : NotFound(new { Message = $"Product {productId} not found in wishlist." });
+                return removed
+                    ? NoContent()
+                    : NotFound(new { Message = $"Product {productId} not found in wishlist." });
+                {
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while removing product {ProductId} from wishlist for user {UserId}", productId, User.FindFirstValue(ClaimTypes.NameIdentifier));
+                return StatusCode(500, new { Error = "An unexpected error occurred. Please try again later." });
+            }
         }
 
         /// <summary>
@@ -150,19 +193,27 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ClearWishlist()
         {
-            if (!User.IsInRole("admin") &&   !User.IsInRole("client"))
+            if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "only Allowed To Admin And Client" });
             }
 
-            if (!TryGetUserId(out var userId))
-                return Unauthorized();
+            try
+            {
+                if (!TryGetUserId(out var userId))
+                    return Unauthorized();
 
-            var cleared = await _wishlistService.ClearAsync(userId);
+                var cleared = await _wishlistService.ClearAsync(userId);
 
-            return cleared
-                ? NoContent()
-                : BadRequest(new { Message = "Wishlist is already empty." });
+                return cleared
+                    ? NoContent()
+                    : BadRequest(new { Message = "Wishlist is already empty." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while clearing the wishlist for user {UserId}", User.FindFirstValue(ClaimTypes.NameIdentifier));
+                return StatusCode(500, new { Error = "An unexpected error occurred. Please try again later." });
+            }
         }
     }
 }

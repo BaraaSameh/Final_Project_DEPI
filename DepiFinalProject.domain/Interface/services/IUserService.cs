@@ -11,6 +11,7 @@ namespace DepiFinalProject.Core.Interfaces
         Task<bool> ChangePasswordAsync(int userId, string currentPassword, string newPassword);//new
         Task<UserResponseDTO> GetByIdAsync(int userId);
         Task<User> GetByEmailAsync(string email);
+        Task<UserResponseDTO> GetByEmailForApiAsync(string email); // Add this for API endpoints
         Task<bool> EmailExistsAsync(string email);
         Task<User> CreateAsync(CreateUserDTO user);
         Task<User> UpdateAsync(User user);

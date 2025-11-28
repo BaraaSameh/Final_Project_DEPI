@@ -26,15 +26,24 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Create a new PayPal payment for an order
-        /// Amount is automatically retrieved from the order
+        /// Creates a new PayPal payment for an order.
         /// </summary>
-        /// <param name="dto">Only OrderId is required</param>
-        /// <returns>Payment details + PayPal approval URL</returns>
+        /// <remarks>
+        /// The order amount is automatically retrieved based on the OrderID.
+        /// Only admins and clients can create payments.
+        /// </remarks>
+        /// <param name="dto">Object containing only the OrderID.</param>
+        /// <response code="200">Payment created successfully.</response>
+        /// <response code="400">Invalid request or order not eligible for payment.</response>
+        /// <response code="403">Unauthorized to create payment.</response>
+        /// <response code="404">Order not found.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpPost]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreatePayment([FromBody] CreatePaymentRequestDto dto)
         {
@@ -120,11 +129,16 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Get all payments (admin only)
+        /// Retrieves all payments in the system.
         /// </summary>
+        /// <remarks>Only admins can view all payments.</remarks>
+        /// <response code="200">Returns all payments.</response>
+        /// <response code="403">User is not admin.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpGet]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllPayments()
         {
@@ -146,13 +160,21 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Get payment by ID (admin or the payment owner)
+        /// Retrieves a specific payment by its ID.
         /// </summary>
+        /// <remarks>
+        /// Only admins or the payment's owner can access this.
+        /// </remarks>
+        /// <param name="id">Payment ID.</param>
+        /// <response code="200">Payment returned successfully.</response>
+        /// <response code="403">Not authorized to access this payment.</response>
+        /// <response code="404">Payment not found.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpGet("{id}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetPaymentById(string id)
         {
@@ -181,8 +203,13 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Get all payments for a specific user (admin or the user themselves)
+        /// Retrieves all payments made by a specific user.
         /// </summary>
+        /// <remarks>Accessible by admin or the user themselves.</remarks>
+        /// <param name="userId">User ID.</param>
+        /// <response code="200">Payments retrieved successfully.</response>
+        /// <response code="403">User not authorized to access these payments.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpGet("user/{userId}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -213,11 +240,19 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Update payment status (admin only)
+        /// Updates the status or method of a payment.
         /// </summary>
+        /// <remarks>Only admins can update payment status.</remarks>
+        /// <param name="id">Payment ID.</param>
+        /// <param name="dto">New payment status or method.</param>
+        /// <response code="200">Payment updated successfully.</response>
+        /// <response code="403">Unauthorized access.</response>
+        /// <response code="404">Payment not found.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpPut("{id}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdatePaymentStatus(string id, [FromBody] UpdatePaymentDto dto)

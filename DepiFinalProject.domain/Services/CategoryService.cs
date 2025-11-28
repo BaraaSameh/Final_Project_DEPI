@@ -18,7 +18,7 @@ namespace DepiFinalProject.Services
         {
             var category = await _categoryRepository.GetByIdAsync(categoryId);
             if (category == null)
-                return false;
+                throw new KeyNotFoundException("Category not found.");
 
             if (!string.IsNullOrEmpty(category.IconPublicId))
                 await _cloudinary.DeleteImageAsync(category.IconPublicId);
@@ -35,10 +35,10 @@ namespace DepiFinalProject.Services
         {
             var category = await _categoryRepository.GetByIdAsync(categoryId);
             if (category == null)
-                return false;
+                throw new KeyNotFoundException("Category not found.");
 
             if (string.IsNullOrEmpty(category.IconPublicId))
-                return false; 
+                throw new InvalidOperationException("Category has no icon to delete.");
 
             await _cloudinary.DeleteImageAsync(category.IconPublicId);
 
@@ -132,7 +132,7 @@ namespace DepiFinalProject.Services
             if (category.Products != null && category.Products.Any())
             {
                 // لا يمكن الحذف لأن هناك منتجات مرتبطة.
-                return false;
+                throw new InvalidOperationException("Category cannot be deleted because it has associated products.");
             }
 
             await _categoryRepository.DeleteAsync(category);

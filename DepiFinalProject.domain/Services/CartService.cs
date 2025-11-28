@@ -27,6 +27,10 @@ namespace DepiFinalProject.Services
         public async Task AddAsync(int userId, AddToCartRequestDto request)
         {
             if (request.Quantity <= 0)
+                throw new ArgumentException("Quantity must be at least 1.");
+
+
+            if (request.Quantity <= 0)
                 request.Quantity = 1;
 
             var product = await _productRepository.GetByIdAsync(request.ProductId);
@@ -47,6 +51,9 @@ namespace DepiFinalProject.Services
 
         public async Task UpdateQuantityAsync(int userId, int productId, int quantity)
         {
+            if (quantity <= 0)
+                throw new ArgumentException("Quantity must be at least 1.");
+
             if (quantity < 0)
                 quantity = 1; 
 

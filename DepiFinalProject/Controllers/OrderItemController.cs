@@ -17,6 +17,16 @@ namespace DepiFinalProject.Controllers
             _orderService = orderService;
         }
 
+        /// <summary>
+        /// Retrieves all items belonging to an order.
+        /// </summary>
+        /// <param name="orderId">Order ID.</param>
+        /// <response code="200">Items retrieved successfully.</response>
+        /// <response code="400">Invalid order ID.</response>
+        /// <response code="401">Unauthorized.</response>
+        /// <response code="403">Forbidden.</response>
+        /// <response code="404">Order not found.</response>
+        /// <response code="500">Internal error.</response>
         [HttpGet]
         [Authorize(Roles = "admin,client,seller")]
         [ProducesResponseType(typeof(IEnumerable<OrderItemResponseDTO>), StatusCodes.Status200OK)]
@@ -24,6 +34,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<OrderItemResponseDTO>>> GetOrderItems(int orderId)
         {
             if (orderId <= 0)
@@ -44,6 +55,17 @@ namespace DepiFinalProject.Controllers
             }
         }
 
+        /// <summary>
+        /// Adds a new item to an order.
+        /// </summary>
+        /// <param name="orderId">Order ID.</param>
+        /// <param name="dto">Order item details.</param>
+        /// <response code="201">Item added to order.</response>
+        /// <response code="400">Invalid input.</response>
+        /// <response code="401">Unauthorized.</response>
+        /// <response code="403">Only Admin and Client can add items.</response>
+        /// <response code="404">Order not found.</response>
+        /// <response code="500">Internal error.</response>
         [HttpPost]
         [Authorize]
         [ProducesResponseType(typeof(OrderItemResponseDTO), StatusCodes.Status201Created)]
@@ -51,6 +73,7 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<OrderItemResponseDTO>> AddOrderItem(int orderId, AddOrderItemDTO dto)
         {
             if (!User.IsInRole("admin") && !User.IsInRole("client"))

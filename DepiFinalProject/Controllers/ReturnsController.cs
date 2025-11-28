@@ -28,8 +28,15 @@ public class ReturnsController : ControllerBase
     }
 
     /// <summary>
-    /// Get all return requests (Admin and Seller only).
+    /// Retrieves all return requests.
     /// </summary>
+    /// <remarks>
+    /// This endpoint can be accessed only by admin and seller roles.
+    /// </remarks>
+    /// <response code="200">Returns a list of return requests.</response>
+    /// <response code="401">Unauthorized access.</response>
+    /// <response code="403">Forbidden – insufficient permissions.</response>
+    /// <response code="500">Internal server error.</response>
     [HttpGet]
     [Authorize]
     [ProducesResponseType(typeof(IEnumerable<ReturnDto.ReturnResponseDto>), StatusCodes.Status200OK)]
@@ -61,8 +68,13 @@ public class ReturnsController : ControllerBase
     }
 
     /// <summary>
-    /// Get a specific return request by ID.
+    /// Retrieves a specific return request by ID.
     /// </summary>
+    /// <param name="returnId">The Return ID.</param>
+    /// <response code="200">Return found.</response>
+    /// <response code="401">Unauthorized request.</response>
+    /// <response code="403">Forbidden – insufficient permissions.</response>
+    /// <response code="404">Return not found.</response>
     [HttpGet("{returnId}")]
     [Authorize]
     [ProducesResponseType(typeof(ReturnDto.ReturnResponseDto), StatusCodes.Status200OK)]
@@ -97,8 +109,16 @@ public class ReturnsController : ControllerBase
     }
 
     /// <summary>
-    /// Request a return for an order item (Client only).
+    /// Creates a return request for an order item.
     /// </summary>
+    /// <remarks>
+    /// Only admin and client roles can request returns.
+    /// </remarks>
+    /// <response code="201">Return request created successfully.</response>
+    /// <response code="400">Invalid data provided.</response>
+    /// <response code="401">Unauthorized request.</response>
+    /// <response code="403">Forbidden – insufficient permissions.</response>
+    /// <response code="409">A return request already exists for this order item.</response>
     [HttpPost]
     [Authorize]
     [ProducesResponseType(typeof(ReturnDto.ReturnResponseDto), StatusCodes.Status201Created)]
@@ -148,8 +168,15 @@ public class ReturnsController : ControllerBase
     }
 
     /// <summary>
-    /// Update the status of a return request (Admin and Seller only).
+    /// Updates the status of a return request.
     /// </summary>
+    /// <param name="returnId">Return ID.</param>
+    /// <param name="dto">Updated return status DTO.</param>
+    /// <response code="200">Return status updated.</response>
+    /// <response code="400">Invalid input data.</response>
+    /// <response code="401">Unauthorized request.</response>
+    /// <response code="403">Forbidden – insufficient permissions.</response>
+    /// <response code="404">Return not found.</response>
     [HttpPut("{returnId}")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -202,8 +229,16 @@ public class ReturnsController : ControllerBase
     }
 
     /// <summary>
-    /// Process a refund for an approved return (Admin only).
+    /// Processes a refund for an approved return.
     /// </summary>
+    /// <remarks>Only admins can process refunds.</remarks>
+    /// <param name="returnId">Return ID.</param>
+    /// <response code="200">Refund processed successfully.</response>
+    /// <response code="400">Invalid operation.</response>
+    /// <response code="401">Unauthorized request.</response>
+    /// <response code="403">Forbidden – insufficient permissions.</response>
+    /// <response code="404">Return not found.</response>
+    /// <response code="500">Internal server error.</response>
     [HttpPost("{returnId}/refund")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -250,8 +285,13 @@ public class ReturnsController : ControllerBase
     }
 
     /// <summary>
-    /// Delete a return request (Admin only).
+    /// Deletes a return request.
     /// </summary>
+    /// <param name="returnId">Return ID.</param>
+    /// <response code="200">Return deleted successfully.</response>
+    /// <response code="401">Unauthorized.</response>
+    /// <response code="403">Forbidden – insufficient permissions.</response>
+    /// <response code="404">Return not found.</response>
     [HttpDelete("{returnId}")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -273,8 +313,15 @@ public class ReturnsController : ControllerBase
     }
 
     /// <summary>
-    /// Cancel a return request (Client only).
+    /// Cancels a return request.
     /// </summary>
+    /// <param name="returnId">Return ID.</param>
+    /// <response code="200">Return cancelled successfully.</response>
+    /// <response code="400">Invalid operation.</response>
+    /// <response code="401">Unauthorized.</response>
+    /// <response code="403">Forbidden – insufficient permissions.</response>
+    /// <response code="404">Return not found.</response>
+    /// <response code="500">Internal server error.</response>
     [HttpPut("{returnId}/cancel")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -327,8 +374,11 @@ public class ReturnsController : ControllerBase
     }
 
     /// <summary>
-    /// Get return requests for the authenticated user (Client only).
+    /// Retrieves return requests for the authenticated user.
     /// </summary>
+    /// <response code="200">Returns list of user's return requests.</response>
+    /// <response code="401">Unauthorized access.</response>
+    /// <response code="500">Internal server error.</response>
     [HttpGet("User")]
     [Authorize]
     [ProducesResponseType(typeof(IEnumerable<ReturnDto.ReturnResponseDto>), StatusCodes.Status200OK)]
@@ -360,8 +410,9 @@ public class ReturnsController : ControllerBase
     }
 
     /// <summary>
-    /// Get return configuration settings.
+    /// Retrieves the return configuration settings.
     /// </summary>
+    /// <response code="200">Returns return configuration.</response>
     [HttpGet("config")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]

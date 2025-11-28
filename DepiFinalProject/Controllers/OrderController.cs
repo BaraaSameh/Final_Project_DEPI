@@ -19,12 +19,20 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Get all orders (admin)
+        /// Retrieves all orders in the system.
         /// </summary>
-        /// <returns>List of orders</returns>
+        /// <remarks>
+        /// Only admin and seller roles are allowed to access this endpoint.
+        /// Returns 404 if no orders exist.
+        /// </remarks>
+        /// <response code="200">List of orders returned successfully.</response>
+        /// <response code="403">User not authorized.</response>
+        /// <response code="404">No orders found.</response>
+        /// <response code="500">Internal server error occurred.</response>
         [HttpGet]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<OrderResponseDTO>>> GetAllOrders()
@@ -49,8 +57,16 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Get a single order by its ID
+        /// Retrieves a specific order by its ID.
         /// </summary>
+        /// <remarks>
+        /// Accessible by admin, client, and seller roles.
+        /// Throws 404 if the order does not exist.
+        /// </remarks>
+        /// <param name="id">Order ID to retrieve.</param>
+        /// <response code="200">Order returned successfully.</response>
+        /// <response code="404">Order not found.</response>
+        /// <response code="500">Internal server error occurred.</response>
         [HttpGet("{id:int}")]
         [Authorize(Roles = "admin,client,seller")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -74,11 +90,21 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Get all orders belonging to a specific user
+        /// Retrieves all orders belonging to a specific user.
         /// </summary>
+        /// <remarks>
+        /// Admins can get any user's orders.
+        /// Clients can only access their own orders.
+        /// </remarks>
+        /// <param name="userId">User ID to fetch orders for.</param>
+        /// <response code="200">Orders returned successfully.</response>
+        /// <response code="403">User not authorized.</response>
+        /// <response code="404">No orders found for this user.</response>
+        /// <response code="500">Internal server error occurred.</response>
         [HttpGet("user/{userId:int}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<OrderResponseDTO>>> GetUserOrders(int userId)
@@ -101,16 +127,24 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(500, $"Failed to fetch user orders.:{ex.Message} \n {ex.InnerException}");
             }
         }
-        // ========== NEW ENDPOINT - Add this ==========
         /// <summary>
-        /// Create an order from the current user's cart (Checkout)
+        /// Creates an order from the authenticated user's cart (Checkout).
         /// </summary>
-        /// <returns>Created order details</returns>
+        /// <remarks>
+        /// Validates current user from JWT.
+        /// Places an order and clears the cart.
+        /// </remarks>
+        /// <response code="201">Order created successfully.</response>
+        /// <response code="400">Invalid operation or cart empty.</response>
+        /// <response code="401">User unauthorized or invalid token.</response>
+        /// <response code="404">Cart or required items not found.</response>
+        /// <response code="500">Internal server error occurred.</response>
         [HttpPost("checkout")]
         [Authorize]
         [ProducesResponseType(typeof(OrderResponseDTO), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<OrderResponseDTO>> CheckoutFromCart()
         {
@@ -118,6 +152,7 @@ namespace DepiFinalProject.Controllers
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And client" });
             }
+
             try
             {
                 // Get current user ID from JWT token
@@ -189,8 +224,17 @@ namespace DepiFinalProject.Controllers
         //}
 
         /// <summary>
-        /// Update an order’s status
+        /// Updates the status of an order.
         /// </summary>
+        /// <remarks>
+        /// Only admins and sellers may update order statuses.
+        /// </remarks>
+        /// <param name="id">Order ID.</param>
+        /// <param name="dto">Status update data.</param>
+        /// <response code="200">Order status updated successfully.</response>
+        /// <response code="400">Invalid status or request body.</response>
+        /// <response code="404">Order not found.</response>
+        /// <response code="500">Internal server error occurred.</response>
         [HttpPut("{id:int}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -222,9 +266,18 @@ namespace DepiFinalProject.Controllers
             }
         }
 
+
         /// <summary>
-        /// Cancel an order
+        /// Cancels an order by ID.
         /// </summary>
+        /// <remarks>
+        /// Accessible by admin, client, and seller.
+        /// </remarks>
+        /// <param name="id">Order ID.</param>
+        /// <response code="200">Order cancelled successfully.</response>
+        /// <response code="400">Order cannot be cancelled.</response>
+        /// <response code="404">Order not found.</response>
+        /// <response code="500">Internal server error occurred.</response>
         [HttpDelete("{id:int}")]
         [Authorize(Roles = "admin,client,seller")]
         [ProducesResponseType(StatusCodes.Status200OK)]

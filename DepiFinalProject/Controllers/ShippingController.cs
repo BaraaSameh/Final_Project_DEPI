@@ -26,8 +26,11 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Get All Shippings
+        /// Get all shippings.
         /// </summary>
+        /// <response code="200">Shippings retrieved.</response>
+        /// <response code="403">Unauthorized.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpGet]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -74,16 +77,21 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Get Shipping By ID
+        /// Get a shipping by ID.
         /// </summary>
+        /// <param name="id">Shipping ID.</param>
+        /// <response code="200">Shipping retrieved.</response>
+        /// <response code="400">Invalid ID.</response>
+        /// <response code="403">Unauthorized.</response>
+        /// <response code="404">Shipping not found.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpGet("{id}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ShippingDto>> GetShippingById(int id)
         {
             if (!User.IsInRole("admin"))
@@ -133,15 +141,19 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Create Shipping
+        /// Create a new shipping.
         /// </summary>
+        /// <param name="createDto">Shipping creation DTO.</param>
+        /// <response code="201">Shipping created.</response>
+        /// <response code="400">Invalid data.</response>
+        /// <response code="403">Unauthorized.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpPost]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ShippingDto>> CreateShipping([FromBody] CreateShippingDto createDto)
         {
             if (!User.IsInRole("admin"))
@@ -207,16 +219,22 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Update Shipping
+        /// Update an existing shipping.
         /// </summary>
+        /// <param name="id">Shipping ID.</param>
+        /// <param name="updateDto">Shipping update DTO.</param>
+        /// <response code="200">Shipping updated.</response>
+        /// <response code="400">Invalid data or ID mismatch.</response>
+        /// <response code="403">Unauthorized.</response>
+        /// <response code="404">Shipping not found.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpPut("{id}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ShippingDto>> UpdateShipping(int id, [FromBody] UpdateShippingDto updateDto)
         {
             if (!User.IsInRole("admin"))
@@ -308,16 +326,22 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Update Shipping Status
+        /// Update shipping status (patch).
         /// </summary>
+        /// <param name="id">Shipping ID.</param>
+        /// <param name="statusDto">Status update DTO.</param>
+        /// <response code="204">Status updated.</response>
+        /// <response code="400">Invalid data.</response>
+        /// <response code="403">Unauthorized.</response>
+        /// <response code="404">Shipping not found.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpPatch("{id}/status")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> UpdateShippingStatus(int id, [FromBody] UpdateShippingStatusDto statusDto)
         {
             if (!User.IsInRole("admin"))
