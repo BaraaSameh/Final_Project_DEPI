@@ -11,11 +11,13 @@ namespace DepiFinalProject.Services
         private readonly IUserRepository _userRepository;
         private readonly IPasswordService _passwordService;
         private readonly ICloudinaryService _cloudinary;
-        public UserService(IUserRepository userRepository, IPasswordService passwordService, ICloudinaryService cloudinary)
+        private readonly IOtpService _otpService;
+        public UserService(IUserRepository userRepository, IPasswordService passwordService, ICloudinaryService cloudinary, IOtpService otpService)
         {
             _userRepository = userRepository;
             _passwordService = passwordService;
             _cloudinary = cloudinary;
+            _otpService = otpService;
         }
         public async Task<bool> ChangePasswordAsync(int userId, string currentPassword, string newPassword)
         {
@@ -187,6 +189,26 @@ namespace DepiFinalProject.Services
             }
 
             return deleted || isGoogleImage;
+        }
+        public async Task RequestEmailVerificationOtpAsync(string userEmail)
+        {
+            var user =await _userRepository.GetByEmailAsync(userEmail);
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"User with email {userEmail} not found");
+            }
+            await _otpService.RequestOtpAsync(user, "EmailVerification", userEmail);
+        }
+        public async Task<bool> VerifyEmailOtpAsync(User user, string otpCode)
+        {
+            if (user.EmailConfirmed) throw new InvalidOperationException("Email is already verified.");
+            bool isValid = await _otpService.VerifyOtpAsync(user, "EmailVerification", otpCode);
+            if (isValid)
+            {
+                user.EmailConfirmed = true;
+                await _userRepository.UpdateAsync(user);
+            }
+            return isValid;
         }
         private bool numberval(string num)
         {
