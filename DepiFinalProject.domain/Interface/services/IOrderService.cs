@@ -8,7 +8,7 @@ namespace DepiFinalProject.Core.Interfaces
     {
         Task<IEnumerable<OrderResponseDTO>> GetAllAsync();
         Task<OrderDetailsDTO?> GetById(int orderId);
-        Task<IEnumerable<OrderResponseDTO>> GetByUserAsync(int userId);
+        Task<IEnumerable<OrderResponseDTO>> GetByUserAsync();
         //Task<OrderResponseDTO?> CreateAsync(CreateOrderDTO dto);
         Task<OrderResponseDTO> CreateOrderFromCartAsync(int userId);
         Task<OrderResponseDTO?> UpdateStatusAsync(int orderId, UpdateOrderStatusDTO dto);
