@@ -439,7 +439,7 @@ public async Task<ActionResult<PagedResult<ProductResponseDTO>>> GetProductsPagi
 
             try
             {
-                var product = await _productService.CreateAsync(dto);
+                 var product = await _productService.CreateAsync(dto);
 
                 return CreatedAtAction(
                     nameof(GetById),

@@ -6,7 +6,7 @@ namespace DepiFinalProject.Services
     {
         public string HashPassword(string password)
         {
-            return BCrypt.Net.BCrypt.HashPassword(password);
+            return BCrypt.Net.BCrypt.HashPassword(password,15);
         }
 
         public bool VerifyPassword(string password, string hashedPassword)
