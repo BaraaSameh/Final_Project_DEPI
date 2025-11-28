@@ -22,13 +22,6 @@ namespace DepiFinalProject.Infrastructure.Repositories
         public async Task<User> GetByPhoneAsync(string phone)
         {
                     return await _context.Users
-                            .Include(u => u.Addresses)
-                            .Include(u => u.Carts)
-                            .Include(u => u.Orders)
-                            .Include(u => u.Reviews)
-                            .Include(u => u.Wishlists)
-                            .Include(u => u.RefreshTokens)
-                            .Include(u => u.Products)
                             .FirstOrDefaultAsync(u => u.UserPhone == phone);
         }
         public async Task<bool> DeleteAsync(int userId)
@@ -50,14 +43,12 @@ namespace DepiFinalProject.Infrastructure.Repositories
         {
 
             return await _context.Users
-                          .Include(u => u.Addresses)
-                          .Include(u => u.Carts)
-                          .Include(u => u.Orders)
-                          .Include(u => u.Reviews)
-                          .Include(u => u.Wishlists)
-                          .Include(u => u.RefreshTokens)
-                          .Include(u => u.Products)
-                          .FirstOrDefaultAsync(u => u.UserEmail == email);
+                        .Include(u => u.Addresses)
+                        .Include(u => u.Carts)
+                        .Include(u => u.Orders)
+                        .Include(u => u.Reviews)
+                        .Include(u => u.Wishlists)
+                        .FirstOrDefaultAsync(u => u.UserEmail == email);
         }
 
         public async Task<User> GetByIdAsync(int userId)
@@ -68,8 +59,6 @@ namespace DepiFinalProject.Infrastructure.Repositories
                 .Include(u => u.Orders)
                 .Include(u => u.Reviews)
                 .Include(u => u.Wishlists)
-                .Include(u => u.RefreshTokens)
-                .Include(u => u.Products)
                 .FirstOrDefaultAsync(u => u.UserID == userId);
         }
 
@@ -94,8 +83,6 @@ namespace DepiFinalProject.Infrastructure.Repositories
                         .Include(u => u.Orders)
                         .Include(u => u.Reviews)
                         .Include(u => u.Wishlists)
-                        .Include(u => u.RefreshTokens)
-                        .Include(u => u.Products)
                         .ToListAsync();
             return users;
         }

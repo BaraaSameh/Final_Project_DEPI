@@ -95,7 +95,29 @@ namespace DepiFinalProject.Services
         {
             return await _userRepository.GetByEmailAsync(email);
         }
+        public async Task<UserResponseDTO> GetByEmailForApiAsync(string email)
+        {
+            var user = await _userRepository.GetByEmailAsync(email);
+            if (user == null)
+            {
+                return null;
+            }
 
+            return new UserResponseDTO
+            {
+                UserID = user.UserID,
+                UserEmail = user.UserEmail,
+                UserName = user.UserFirstName + " " + user.UserLastName,
+                UserRole = user.UserRole.ToLower(),
+                AddressNumber = user.Addresses?.Count ?? 0,
+                CartsNumber = user.Carts?.Count ?? 0,
+                OrdersNumber = user.Orders?.Count ?? 0,
+                ReviewsNumber = user.Reviews?.Count ?? 0,
+                WishListNumber = user.Wishlists?.Count ?? 0,
+                imgeurl = user.ImageUrl ?? string.Empty,
+                imageid = user.ImagePublicId ?? string.Empty,
+            };
+        }
         public async Task<UserResponseDTO> GetByIdAsync(int userId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
@@ -212,6 +234,11 @@ namespace DepiFinalProject.Services
         }
         private bool numberval(string num)
         {
+            if (string.IsNullOrEmpty(num))
+            {
+                return false;
+            }
+
             foreach (char x in num)
             {
                 if (x < '0' || x > '9')
@@ -220,7 +247,7 @@ namespace DepiFinalProject.Services
                 }
             }
             return true;
-        }
+            }
     }
 
 }

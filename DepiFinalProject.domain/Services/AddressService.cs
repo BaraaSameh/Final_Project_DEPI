@@ -17,6 +17,8 @@ namespace DepiFinalProject.Services
 
         public async Task<IEnumerable<Address>> GetUserAddressesAsync(int userId)
         {
+            if (userId <= 0)
+                throw new ArgumentException("Invalid user ID.", nameof(userId));
             // التحقق من وجود اليوزر باستخدام DbContext مباشرة
             await CheckUserExistsAsync(userId);
 
@@ -25,6 +27,9 @@ namespace DepiFinalProject.Services
 
         public async Task<Address> GetAddressByIdAsync(int addressId)
         {
+            if (addressId <= 0)
+                throw new ArgumentException("Invalid address ID.", nameof(addressId));
+
             return await _addressRepository.GetAddressByIdAsync(addressId);
         }
 
@@ -33,14 +38,17 @@ namespace DepiFinalProject.Services
             if (address == null)
                 throw new ArgumentNullException(nameof(address));
 
+            if (address.UserID <= 0)
+                throw new ArgumentException("Invalid user ID.", nameof(address.UserID));
+
             if (string.IsNullOrWhiteSpace(address.FullAddress))
-                throw new ArgumentException("Full address is required", nameof(address));
+                throw new ArgumentException("Full address is required.", nameof(address.FullAddress));
 
             if (string.IsNullOrWhiteSpace(address.City))
-                throw new ArgumentException("City is required", nameof(address));
+                throw new ArgumentException("City is required.", nameof(address.City));
 
             if (string.IsNullOrWhiteSpace(address.Country))
-                throw new ArgumentException("Country is required", nameof(address));
+                throw new ArgumentException("Country is required.", nameof(address.Country));
 
             // التحقق من وجود اليوزر قبل إنشاء العنوان
             await CheckUserExistsAsync(address.UserID);
@@ -50,12 +58,18 @@ namespace DepiFinalProject.Services
 
         public async Task<Address> UpdateAddressAsync(int addressId, Address address)
         {
+            if (addressId <= 0)
+                throw new ArgumentException("Invalid address ID.", nameof(addressId));
+
             if (address == null)
                 throw new ArgumentNullException(nameof(address));
 
             var existingAddress = await _addressRepository.GetAddressByIdAsync(addressId);
             if (existingAddress == null)
-                throw new KeyNotFoundException($"Address with ID {addressId} not found");
+                throw new KeyNotFoundException($"Address with ID {addressId} not found.");
+
+            if (address.UserID <= 0)
+                throw new ArgumentException("Invalid user ID.", nameof(address.UserID));
 
             // التحقق من وجود اليوزر الجديد قبل التحديث
             await CheckUserExistsAsync(address.UserID);
@@ -70,6 +84,9 @@ namespace DepiFinalProject.Services
 
         public async Task<bool> DeleteAddressAsync(int addressId)
         {
+            if (addressId <= 0)
+                throw new ArgumentException("Invalid address ID.", nameof(addressId));
+
             var exists = await _addressRepository.AddressExistsAsync(addressId);
             if (!exists)
                 throw new KeyNotFoundException($"Address with ID {addressId} not found");

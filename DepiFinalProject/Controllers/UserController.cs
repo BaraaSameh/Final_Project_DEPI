@@ -22,8 +22,11 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Get all users.
+        /// Retrieves all users.
         /// </summary>
+        /// <response code="200">Users retrieved successfully.</response>
+        /// <response code="403">Only admin is allowed.</response>
+        /// <response code="500">Internal error.</response>
         [HttpGet]
         [Authorize]
         [ProducesResponseType(typeof(ICollection<User>), StatusCodes.Status200OK)]
@@ -49,8 +52,12 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Get user by ID.
+        /// Retrieves a user by ID.
         /// </summary>
+        /// <param name="id">User ID.</param>
+        /// <response code="200">User retrieved successfully.</response>
+        /// <response code="404">User not found.</response>
+        /// <response code="500">Internal error.</response>
         [HttpGet("{id}")]
         [Authorize(Roles = "admin,client,seller")]
         [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status200OK)]
@@ -75,9 +82,15 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(500, new { message = "An error occurred while retrieving the user", error = ex.Message });
             }
         }
+
         /// <summary>
-        /// Get user by Email.
+        /// Retrieves a user by email.
         /// </summary>
+        /// <param name="email">User email.</param>
+        /// <response code="200">User retrieved successfully.</response>
+        /// <response code="404">User not found.</response>
+        /// <response code="403">Only admin is allowed.</response>
+        /// <response code="500">Internal error.</response>
         [HttpGet("email/{email}")]
         [Authorize]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
@@ -99,7 +112,22 @@ namespace DepiFinalProject.Controllers
                 {
                     return NotFound(new { message = $"User with email {email} not found" });
                 }
-                return Ok(user);
+                var userResponse = new UserResponseDTO
+                {
+                    UserID = user.UserID,
+                    UserEmail = user.UserEmail,
+                    UserName = user.UserFirstName + " " + user.UserLastName,
+                    UserRole = user.UserRole.ToLower(),
+                    AddressNumber = user.Addresses?.Count ?? 0,
+                    CartsNumber = user.Carts?.Count ?? 0,
+                    OrdersNumber = user.Orders?.Count ?? 0,
+                    ReviewsNumber = user.Reviews?.Count ?? 0,
+                    WishListNumber = user.Wishlists?.Count ?? 0,
+                    imgeurl = user.ImageUrl ?? string.Empty,
+                    imageid = user.ImagePublicId ?? string.Empty,
+                };
+
+                return Ok(userResponse);
             }
             catch (Exception ex)
             {
@@ -176,14 +204,20 @@ namespace DepiFinalProject.Controllers
 
             return Ok(new { message = "Image deleted successfully" });
         }
-        
+
         /// <summary>
-        /// Create a new user by admin.
+        /// Creates a new user (Admin only).
         /// </summary>
+        /// <param name="user">New user data.</param>
+        /// <response code="201">User created successfully.</response>
+        /// <response code="400">Validation error.</response>
+        /// <response code="409">Email already exists.</response>
+        /// <response code="500">Internal error.</response>
         [HttpPost]
         [Authorize]
         [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<User>> CreateUser([FromBody] CreateUserDTO user)
@@ -215,8 +249,14 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Update user details.
+        /// Updates user details.
         /// </summary>
+        /// <param name="id">User ID.</param>
+        /// <param name="user">Updated values.</param>
+        /// <response code="200">User updated successfully.</response>
+        /// <response code="404">User not found.</response>
+        /// <response code="403">Unauthorized role.</response>
+        /// <response code="500">Internal error.</response>
         [HttpPut("{id}")]
         [Authorize]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
@@ -246,6 +286,7 @@ namespace DepiFinalProject.Controllers
                 if (userdata == null)
                     return NotFound();
 
+
                 userdata.UserEmail = user.UserEmail;
                 userdata.UserPhone = user.UserPhone;
                 userdata.UserFirstName = user.UserFirstName;
@@ -265,8 +306,14 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Update user role.
+        /// Updates a user's role.
         /// </summary>
+        /// <param name="id">User ID.</param>
+        /// <param name="user">Role DTO.</param>
+        /// <response code="200">Role updated successfully.</response>
+        /// <response code="404">User not found.</response>
+        /// <response code="403">Only admin is allowed.</response>
+        /// <response code="500">Internal error.</response>
         [HttpPut("updateRole/{id}")]
         [Authorize]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
@@ -319,8 +366,13 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Delete user by ID.
+        /// Deletes a user by ID.
         /// </summary>
+        /// <param name="id">User ID.</param>
+        /// <response code="204">User deleted successfully.</response>
+        /// <response code="404">User not found.</response>
+        /// <response code="403">Only admin allowed.</response>
+        /// <response code="500">Internal error.</response>
         [HttpDelete("{id}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -350,8 +402,13 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Change user password.
+        /// Changes the user's password.
         /// </summary>
+        /// <param name="request">Password change request.</param>
+        /// <response code="200">Password changed successfully.</response>
+        /// <response code="400">Invalid request.</response>
+        /// <response code="404">User not found.</response>
+        /// <response code="500">Internal error.</response>
         [HttpPost("change-password")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -391,8 +448,11 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Check if an email already exists.
+        /// Checks if an email already exists.
         /// </summary>
+        /// <param name="email">Email to check.</param>
+        /// <response code="200">Email check performed.</response>
+        /// <response code="500">Internal error.</response>
         [HttpGet("check-email/{email}")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]

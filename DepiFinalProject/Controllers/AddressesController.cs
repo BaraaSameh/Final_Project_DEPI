@@ -22,17 +22,27 @@ namespace DepiFinalProject.Controllers
         private int GetUserId() => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
         /// <summary>
-        /// Get all addresses for a user
+        /// Retrieves all saved addresses for a specific user.
         /// </summary>
+        /// <param name="userId">User ID.</param>
+        /// <returns>A list of addresses belonging to the user.</returns>
+        /// <response code="200">Returns the list of addresses.</response>
+        /// <response code="400">Invalid user ID.</response>
+        /// <response code="404">User not found.</response>
+        /// <response code="500">Internal error.</response>
         [HttpGet("{userId}")]
         [Authorize(Roles = "admin,client,seller")]
-        [ProducesResponseType(typeof(IEnumerable<AddressDto>), 200)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(IEnumerable<AddressDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<AddressDto>>> GetUserAddresses(int userId)
         {
             try
             {
+                if (userId <= 0)
+                    return BadRequest(new { Message = "Invalid user ID." });
+
                 var addresses = await _addressService.GetUserAddressesAsync(userId);
 
                 if (addresses == null || !addresses.Any())
@@ -69,14 +79,22 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Add a new address
+        /// Creates a new address for a user.
         /// </summary>
+        /// <param name="addressDto">Address details.</param>
+        /// <returns>The created address object.</returns>
+        /// <response code="201">Address successfully created.</response>
+        /// <response code="400">Invalid input.</response>
+        /// <response code="403">Not authorized.</response>
+        /// <response code="404">User not found.</response>
+        /// <response code="500">Internal error.</response>
         [HttpPost]
         [Authorize]
-        [ProducesResponseType(typeof(AddressDto), 201)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(AddressDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<AddressDto>> AddAddress([FromBody] AddressCreateUpdateDto addressDto)
         {
             if (!User.IsInRole("admin") && !User.IsInRole("client"))
@@ -87,6 +105,9 @@ namespace DepiFinalProject.Controllers
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
+
+                if (addressDto == null)
+                    return BadRequest(new { Message = "Address data is required." });
 
                 var currentUserId = GetUserId();
                 if (User.IsInRole("client") && currentUserId != addressDto.UserID)
@@ -133,14 +154,23 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Update an existing address
+        /// Updates an existing address.
         /// </summary>
+        /// <param name="id">Address ID.</param>
+        /// <param name="addressDto">Address details to update.</param>
+        /// <returns>The updated address information.</returns>
+        /// <response code="200">Address updated successfully.</response>
+        /// <response code="400">Invalid input.</response>
+        /// <response code="403">Not authorized.</response>
+        /// <response code="404">Address not found.</response>
+        /// <response code="500">Internal error.</response>
         [HttpPut("{id}")]
         [Authorize]
-        [ProducesResponseType(typeof(AddressDto), 200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(AddressDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<AddressDto>> UpdateAddress(int id, [FromBody] AddressCreateUpdateDto addressDto)
         {
             if (!User.IsInRole("admin") && !User.IsInRole("client"))
@@ -149,6 +179,9 @@ namespace DepiFinalProject.Controllers
             }
             try
             {
+                if (id <= 0)
+                    return BadRequest(new { Message = "Invalid address ID." });
+
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
@@ -197,22 +230,34 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Delete an address
+        /// Deletes an address by ID.
         /// </summary>
+        /// <param name="id">Address ID.</param>
+        /// <returns>No content.</returns>
+        /// <response code="204">Address deleted successfully.</response>
+        /// <response code="400">Invalid address ID.</response>
+        /// <response code="403">Not authorized.</response>
+        /// <response code="404">Address not found.</response>
+        /// <response code="500">Internal error.</response>
         [HttpDelete("{id}")]
         [Authorize]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(403)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> DeleteAddress(int id)
         {
             if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
                 return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
             }
+
             try
             {
+                if (id <= 0)
+                    return BadRequest(new { Message = "Invalid address ID." });
+               
                 var currentUserId = GetUserId();
                 var address = await _addressService.GetAddressByIdAsync(id);
 

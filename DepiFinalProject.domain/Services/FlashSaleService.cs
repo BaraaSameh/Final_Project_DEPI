@@ -17,6 +17,9 @@ namespace DepiFinalProject.Services
         {
             var flashSales = await _repository.GetAllAsync();
 
+            if (flashSales == null)
+                throw new Exception("Failed to retrieve flash sale.");
+
             return flashSales.Select(fs => new FlashSaleDto
             {
                 FlashSaleID = fs.FlashSaleID,
@@ -35,7 +38,7 @@ namespace DepiFinalProject.Services
             var flashSale = await _repository.GetByIdAsync(id);
 
             if (flashSale == null)
-                return null;
+                throw new Exception("Failed to retrieve flash sale.");
 
             return new FlashSaleDto
             {

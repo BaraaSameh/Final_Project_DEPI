@@ -24,11 +24,18 @@ namespace DepiFinalProject.Controllers
         private int GetUserId() => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
         /// <summary>
-        /// Get the current user's cart with all items.
+        /// Retrieves all items in the current user's cart.
         /// </summary>
+        /// <remarks>
+        /// This endpoint returns the cart items along with total quantity and price.
+        /// Only users with roles "admin" or "client" can access it.
+        /// </remarks>
+        /// <response code="200">Cart retrieved successfully.</response>
+        /// <response code="403">Forbidden — user does not have required roles.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpGet]
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CartResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<CartResponseDto>> GetCart()
         {
@@ -59,12 +66,20 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Get a specific item in the current user's cart.
+        /// Retrieves a single specific item in the user's cart.
         /// </summary>
+        /// <remarks>
+        /// If the product is not found in the cart, a 404 response is returned.
+        /// </remarks>
+        /// <param name="productId">ID of the product to retrieve.</param>
+        /// <response code="200">Item retrieved successfully.</response>
+        /// <response code="404">Item not found in the cart.</response>
+        /// <response code="403">Forbidden.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpGet("{productId}")]
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CartItemDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<CartItemDto>> GetCartItem(int productId)
         {
@@ -90,12 +105,21 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Add a product to the current user's cart.
+        /// Adds a product to the current user's cart.
         /// </summary>
+        /// <remarks>
+        /// If the product does not exist, a 404 response is returned.
+        /// </remarks>
+        /// <param name="productId">Product ID to add.</param>
+        /// <param name="quantity">Quantity to add (defaults to 1).</param>
+        /// <response code="200">Item added successfully.</response>
+        /// <response code="404">Product not found.</response>
+        /// <response code="403">Forbidden.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpPost("{productId}")]
-        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> AddToCart(int productId, int quantity = 1)
         {
@@ -126,6 +150,10 @@ namespace DepiFinalProject.Controllers
                     TotalPrice = cartItem.Quantity * cartItem.Price
                 });
             }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch (System.Exception ex)
             {
                 return StatusCode(500, $"An error occurred while adding the item to the cart.:{ex.Message} \n {ex.InnerException}");
@@ -133,11 +161,19 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Update the quantity of a specific product in the cart.
+        /// Updates the quantity of a specific item in the user's cart.
         /// </summary>
+        /// <remarks>
+        /// Quantity must be greater than zero.
+        /// </remarks>
+        /// <param name="productId">Product ID to update.</param>
+        /// <param name="dto">New quantity value.</param>
+        /// <response code="200">Quantity updated successfully.</response>
+        /// <response code="403">Forbidden.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpPut("{productId}")]
-        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateQuantity(int productId, [FromBody] UpdateQuantityDto dto)
         {
@@ -155,6 +191,10 @@ namespace DepiFinalProject.Controllers
                     Message = $"Quantity updated to {dto.Quantity} for product {productId}"
                 });
             }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch (System.Exception ex)
             {
                 return StatusCode(500, $"An error occurred while updating the item quantity.:{ex.Message} \n {ex.InnerException}");
@@ -162,11 +202,17 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Remove all items from the current user's cart.
+        /// Removes all items from the user's cart.
         /// </summary>
+        /// <remarks>
+        /// This action deletes all cart entries for the authenticated user.
+        /// </remarks>
+        /// <response code="200">Cart cleared successfully.</response>
+        /// <response code="403">Forbidden.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpDelete]
-        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ClearCart()
         {
@@ -187,11 +233,18 @@ namespace DepiFinalProject.Controllers
         }
 
         /// <summary>
-        /// Remove a specific item from the current user's cart.
+        /// Removes a single specific item from the user's cart.
         /// </summary>
+        /// <remarks>
+        /// If the product is not in the cart, removal still succeeds (idempotent).
+        /// </remarks>
+        /// <param name="productId">Product ID to remove.</param>
+        /// <response code="200">Item removed successfully.</response>
+        /// <response code="403">Forbidden.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpDelete("{productId}")]
-        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RemoveItem(int productId)
         {

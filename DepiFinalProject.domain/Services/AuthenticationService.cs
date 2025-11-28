@@ -36,6 +36,10 @@ namespace DepiFinalProject.Services
         {
             var user = await _userRepository.GetByEmailAsync(email);
 
+            if (user == null)
+            {
+                throw new UnauthorizedAccessException("Invalid reset request");
+            }
 
             if (string.IsNullOrEmpty(user.UserPassword))
             {
