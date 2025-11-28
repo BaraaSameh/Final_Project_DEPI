@@ -52,7 +52,7 @@ namespace DepiFinalProject.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500,$"An error occurred while fetching orders.:{ex.Message} \n {ex.InnerException}");
+                return StatusCode(500, $"An error occurred while fetching orders.:{ex.Message} \n {ex.InnerException}");
             }
         }
 
@@ -101,13 +101,13 @@ namespace DepiFinalProject.Controllers
         /// <response code="403">User not authorized.</response>
         /// <response code="404">No orders found for this user.</response>
         /// <response code="500">Internal server error occurred.</response>
-        [HttpGet("user/{userId:int}")]
+        [HttpGet("user/orders")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<OrderResponseDTO>>> GetUserOrders(int userId)
+        public async Task<ActionResult<IEnumerable<OrderResponseDTO>>> GetUserOrders()
         {
             if (!User.IsInRole("admin") && !User.IsInRole("client"))
             {
@@ -116,9 +116,9 @@ namespace DepiFinalProject.Controllers
 
             try
             {
-                var orders = await _orderService.GetByUserAsync(userId);
+                var orders = await _orderService.GetByUserAsync();
                 if (!orders.Any())
-                    return NotFound(new { message = $"No orders found for user ID {userId}." });
+                    return NotFound(new { message = $"No orders found for current user" });
 
                 return Ok(orders);
             }

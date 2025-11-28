@@ -1,5 +1,7 @@
 ﻿using DepiFinalProject.Core.Interfaces;
 using DepiFinalProject.Core.Models;
+using DepiFinalProject.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Http;
 using static DepiFinalProject.Core.DTOs.OrderDto;
 
 namespace DepiFinalProject.Services
@@ -8,15 +10,21 @@ namespace DepiFinalProject.Services
     {
         protected readonly IOrderRepository _orderRepository;
         protected readonly IProductRepository _productRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserRepository _userRepository;
         private readonly ICartRepository _cartRepository;
 
         public OrderService(IOrderRepository orderRepository,
                             IProductRepository productRepository,
+                            IHttpContextAccessor httpContextAccessor,
+                            IUserRepository userRepository,
                             ICartRepository cartRepository)
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;
             _cartRepository = cartRepository;
+            _httpContextAccessor = httpContextAccessor;
+            _userRepository = userRepository;
         }
         public async Task<OrderResponseDTO?> CreateAsync(CreateOrderDTO dto)
         {
@@ -97,8 +105,9 @@ namespace DepiFinalProject.Services
             return MapToDetailDto(order);
         }
 
-        public async Task<IEnumerable<OrderResponseDTO>> GetByUserAsync(int userId)
+        public async Task<IEnumerable<OrderResponseDTO>> GetByUserAsync()
         {
+            var userId = await GetCurrentUserIdAsync();
             var orders = await _orderRepository.GetByUserAsync(userId);
             return orders.Select(MapToResponseDto);
         }
@@ -182,7 +191,7 @@ namespace DepiFinalProject.Services
             return MapToOrderItemResponseDto(createdOrderItem);
         }
 
-       
+
 
 
         private OrderResponseDTO MapToResponseDto(Order order)
@@ -305,6 +314,19 @@ namespace DepiFinalProject.Services
 
             return MapToResponseDto(createdOrder);
         }
+
+        private async Task<int> GetCurrentUserIdAsync()
+        {
+            var userClaim = _httpContextAccessor.HttpContext?.User.FindFirst("userId");
+            if (userClaim == null)
+                throw new Exception("User ID claim not found");
+
+            var userId = int.Parse(userClaim.Value);
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+                throw new Exception($"User with ID {userId} not found");
+
+            return userId;
+        }
     }
-    
 }
