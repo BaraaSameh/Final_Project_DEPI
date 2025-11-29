@@ -126,6 +126,8 @@ namespace DepiFinalProject
             builder.Services.AddScoped<IOtpRepository, OtpRepository>();
             builder.Services.AddScoped<IEmailService, SmtpEmailService>();
             builder.Services.AddScoped<IOtpService, OtpService>();
+            builder.Services.AddScoped<IInvoiceTokenService, InvoiceTokenService>();
+
             // Add Swagger with JWT support
             builder.Services.AddCors(options =>
             {
@@ -230,7 +232,7 @@ namespace DepiFinalProject
                 app.UseSwagger();
                 app.UseSwaggerUI();
             //}
-
+            app.UseStaticFiles();
             app.UseCors("AllowAll");
 
             app.UseAuthentication();

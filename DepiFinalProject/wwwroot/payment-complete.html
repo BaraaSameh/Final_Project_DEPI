@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Completed</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background: #f2f6f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #0a6ef0;
+        }
+
+        .loading {
+            color: #555;
+            font-size: 18px;
+        }
+
+        .success {
+            color: #0c8f45;
+            font-size: 18px;
+        }
+
+        .error {
+            color: #c62828;
+            font-size: 18px;
+        }
+
+        .loader {
+            border: 6px solid #ddd;
+            border-top: 6px solid #0a6ef0;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Payment Processing...</h2>
+
+        <div id="status" class="loading">
+            Please wait while we confirm your payment.
+        </div>
+
+        <div class="loader"></div>
+    </div>
+
+    <script>
+        async function capturePayment() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get("token");  // PayPal sends token = OrderID
+
+            if (!orderId) {
+                document.getElementById("status").innerHTML =
+                    "<div class='error'>❌ No orderId found in URL.</div>";
+                return;
+            }
+
+            // ✔ FIXED THIS LINE → your backend expects "orderId", not "paypalOrderId"
+            const backendUrl =
+                "https://syntactically-unsarcastic-tomas.ngrok-free.dev/api/payments/capture?orderId="
+                + orderId;
+
+            try {
+                const response = await fetch(backendUrl, {
+                    method: "POST"
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    document.getElementById("status").innerHTML =
+                        `<div class='error'>❌ Capture Failed:<br>${errorText}</div>`;
+                    return;
+                }
+
+                const data = await response.json();
+
+                document.getElementById("status").innerHTML =
+                    `<div class='success'>✔ Payment Captured Successfully!<br><br>
+                        Order ID: <b>${data.paypalOrderId}</b><br>
+                        Status: <b>${data.status}</b></div>`;
+            } catch (err) {
+                document.getElementById("status").innerHTML =
+                    `<div class='error'>❌ Error: ${err.message}</div>`;
+            }
+        }
+
+        capturePayment();
+    </script>
+</body>
+</html>

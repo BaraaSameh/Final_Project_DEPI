@@ -6,7 +6,6 @@ using PaypalServerSdk.Standard.Authentication;
 using PaypalServerSdk.Standard.Controllers;
 using PaypalServerSdk.Standard.Models;
 using static DepiFinalProject.Core.DTOs.OrderDto;
-
 namespace PayPalAdvancedIntegration.Services
 {
     public class PayPalService : IPaymentService
@@ -15,47 +14,45 @@ namespace PayPalAdvancedIntegration.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IPaymentRepository _paymentRepository;
         private readonly IUserRepository _userRepository;
-        protected readonly IOrderService _orderService;
+        private readonly IOrderService _orderService;
+        private readonly IOtpService _otpService;
+
 
         public PayPalService(
             Microsoft.Extensions.Configuration.IConfiguration config,
             IHttpContextAccessor httpContextAccessor,
             IPaymentRepository paymentRepository,
             IUserRepository userRepository,
-            IOrderService orderService) 
+            IOrderService orderService,
+            IOtpService otpService)
         {
             _httpContextAccessor = httpContextAccessor;
             _paymentRepository = paymentRepository;
-            _userRepository = userRepository; 
-            _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
-
-            var clientId = config["PayPal:ClientId"];
-            var secret = config["PayPal:ClientSecret"];
+            _userRepository = userRepository;
+            _orderService = orderService;
 
             var client = new PaypalServerSdkClient.Builder()
                 .Environment(PaypalServerSdk.Standard.Environment.Sandbox)
-                .ClientCredentialsAuth(new ClientCredentialsAuthModel.Builder(clientId, secret).Build())
+                .ClientCredentialsAuth(
+                    new ClientCredentialsAuthModel.Builder(
+                        config["PayPal:ClientId"],
+                        config["PayPal:ClientSecret"]
+                    ).Build()
+                )
                 .Build();
 
             _ordersController = client.OrdersController;
+            _otpService = otpService;
         }
+
 
         public async Task<(string paymentid, string approveUrl)> CreateOrderAsync(decimal amount, int orderid)
         {
-            // Get current user ID from JWT
-            var userClaim = _httpContextAccessor.HttpContext?.User.FindFirst("userId");
-            if (userClaim == null)
-                throw new Exception("User ID claim not found");
+            var userId = int.Parse(_httpContextAccessor.HttpContext!.User.FindFirst("userId")!.Value);
+            var user = await _userRepository.GetByIdAsync(userId) ?? throw new Exception("User not found");
+            var order = await _orderService.GetByIdAsync(orderid) ?? throw new Exception("Order not found");
 
-            var userId = int.Parse(userClaim.Value);
-
-            var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null)
-                throw new Exception($"User with ID {userId} not found");
-
-            var order = await _orderService.GetByIdAsync(orderid);
-            if (order == null)
-                throw new Exception($"Order with ID {orderid} not found");
+            var createRequestId = "ORDER-" + Guid.NewGuid().ToString("N").ToUpper();
 
             var createOrderInput = new CreateOrderInput
             {
@@ -63,83 +60,119 @@ namespace PayPalAdvancedIntegration.Services
                 {
                     Intent = CheckoutPaymentIntent.Capture,
                     PurchaseUnits = new List<PurchaseUnitRequest>
+            {
+                new PurchaseUnitRequest
+                {
+                    Amount = new AmountWithBreakdown
                     {
-                        new() { Amount = new AmountWithBreakdown { CurrencyCode = "USD", MValue = amount.ToString("0.00") } }
-                    }
+                        CurrencyCode = "USD",
+                        MValue = amount.ToString("0.00")
+                    },
+                    ReferenceId = orderid.ToString()
                 }
+            },
+                    ApplicationContext = new OrderApplicationContext
+                    {
+                        BrandName = "Zenon Market",
+                        ReturnUrl = "https://syntactically-unsarcastic-tomas.ngrok-free.dev/payment-complete.html",
+                        CancelUrl = "https://syntactically-unsarcastic-tomas.ngrok-free.dev/payment-cancelled.html"
+                    }
+                },
+                PaypalRequestId = createRequestId
             };
 
             var result = await _ordersController.CreateOrderAsync(createOrderInput);
-            var orderId = result.Data.Id;
-            var approveUrl = result.Data.Links.FirstOrDefault(l => l.Rel == "approve")?.Href;
 
-            // Save Payment
+
+            var paypalOrderId = result.Data.Id;
+            var approveUrl = result.Data.Links.First(l => l.Rel == "approve").Href;
+
+            // Save local payment
             var payment = new Payment
             {
                 UserId = userId,
                 User = user,
                 OrderID = orderid,
                 Order = order,
-                PayPalOrderId = orderId,
+                PayPalOrderId = paypalOrderId,
                 Amount = amount,
                 Status = "Pending",
                 PaymentMethod = "PayPal",
-                PaidAt = DateTime.UtcNow,
-                PayPalCaptureId = null, // Will be set during capture
-
+                PaidAt = DateTime.Now,
+                PayPalCaptureId = null
             };
 
             await _paymentRepository.CreateAsync(payment);
 
-            return (orderId, approveUrl);
+            return (paypalOrderId, approveUrl);
         }
 
-        public async Task< PaypalServerSdk.Standard.Models.Order> CaptureOrderAsync(string paymentid)
-        {
-            var result = await _ordersController.CaptureOrderAsync(new CaptureOrderInput { Id = paymentid });
-
-            var status = result.Data.Status.HasValue ? result.Data.Status.Value.ToString() : "Unknown";
-            var amount = result.Data.PurchaseUnits.First().Amount.MValue != null
-                ? decimal.Parse(result.Data.PurchaseUnits.First().Amount.MValue)
-                : 0;
-
-            // CRITICAL: Extract the Capture ID from the response
-            string captureId = null;
-            var purchaseUnit = result.Data.PurchaseUnits?.FirstOrDefault();
-            if (purchaseUnit != null)
-            {
-                var capture = purchaseUnit.Payments?.Captures?.FirstOrDefault();
-                if (capture != null)
-                {
-                    captureId = capture.Id;
-                }
-            }
-
-            // Find existing payment record
-            var payments = await _paymentRepository.GetAllAsync();
-            var payment = payments.FirstOrDefault(p => p.PayPalOrderId == paymentid);
-
-            if (payment != null)
-            {
-                payment.Status = status;
-                payment.Amount = amount;
-                payment.PaidAt = DateTime.UtcNow;
-                // IMPORTANT: Store the capture ID for future refunds
-                if (!string.IsNullOrEmpty(captureId))
-                {
-                    payment.PayPalCaptureId = captureId;
-                }
-                await _paymentRepository.UpdateAsync(payment);
-            }
-            if (status == "COMPLETED" && payment.OrderID.HasValue)
-            {
-                await _orderService.UpdateStatusAsync(payment.OrderID.Value, new UpdateOrderStatusDTO
-                {
-                    OrderStatus = "Paid"
-                });
-            }
         
-            return result.Data;
+        public async Task<PaypalServerSdk.Standard.Models.Order> CaptureOrderAsync(string paypalOrderId)
+        {
+            if (string.IsNullOrWhiteSpace(paypalOrderId))
+                throw new ArgumentException("PayPal Order ID is required.", nameof(paypalOrderId));
+
+     
+            var paypalRequestId = "CAPTURE-" + Guid.NewGuid().ToString("N").ToUpper();
+
+            try
+            {
+                var result = await _ordersController.CaptureOrderAsync(
+                    new CaptureOrderInput
+                    {
+                        Id = paypalOrderId,
+                        Body = new OrderCaptureRequest(),  
+                        PaypalRequestId = paypalRequestId    
+                    });
+
+                var capturedOrder = result.Data;
+                var status = capturedOrder.Status?.ToString() ?? "UNKNOWN";
+                var purchaseUnit = capturedOrder.PurchaseUnits?.FirstOrDefault();
+                var capture = purchaseUnit?.Payments?.Captures?.FirstOrDefault();
+
+                string? captureId = capture?.Id;
+                decimal amount = 0;
+                if (purchaseUnit?.Amount?.MValue != null)
+                    decimal.TryParse(purchaseUnit.Amount.MValue, out amount);
+
+                 var payment = await _paymentRepository.GetByPayPalOrderIdAsync(paypalOrderId);
+                if (payment != null)
+                {
+                    payment.Status = status;
+                    payment.PayPalCaptureId = captureId;
+
+                    if (string.Equals(status, "COMPLETED", StringComparison.OrdinalIgnoreCase))
+                    {
+                        payment.PaidAt = DateTime.UtcNow;
+                        await _otpService.SendPaymentInvoiceAsync(payment);
+                    }
+
+
+                    await _paymentRepository.UpdateAsync(payment);
+
+                    if (status.ToLower() == "completed" && payment.OrderID.HasValue)
+                    {
+                        await _orderService.UpdateStatusAsync(payment.OrderID.Value, new UpdateOrderStatusDTO
+                        {
+                            OrderStatus = "Paid"
+                        });
+                    }
+                }
+
+                return capturedOrder;
+            }
+            catch (PaypalServerSdk.Standard.Exceptions.ApiException apiEx)
+            {
+                 throw new Exception($"PayPal Capture Failed (Request-Id: {paypalRequestId})", apiEx);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Unexpected error during PayPal capture (Request-Id: {paypalRequestId})", ex);
+            }
         }
+
     }
+
 }
+

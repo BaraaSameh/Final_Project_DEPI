@@ -6,7 +6,7 @@ namespace DepiFinalProject.Core.Interfaces
     {
         Task RequestOtpAsync(User user, string purpose, string destination); // destination: email or phone
         Task<bool> VerifyOtpAsync(User user, string purpose, string code);
-
+        Task SendPaymentInvoiceAsync(Payment payment);
 
     }
 }

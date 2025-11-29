@@ -1,5 +1,4 @@
-﻿using DepiFinalProject.Core.DTOs;
-using DepiFinalProject.Core.Models;
+﻿using DepiFinalProject.Core.Models;
 using static DepiFinalProject.Core.DTOs.OrderDto;
 
 namespace DepiFinalProject.Core.Interfaces
@@ -17,5 +16,7 @@ namespace DepiFinalProject.Core.Interfaces
         Task<IEnumerable<OrderItemResponseDTO>> GetOrderItemsAsync(int orderId);
         Task<OrderItemResponseDTO?> AddOrderItemAsync(int orderId, AddOrderItemDTO dto);
         Task<Order> GetByIdAsync(int orderId);
+        Task<Order>GetByPaymentid(int paymentid);
+        Task UpdateAsync(Order order);
     }
 }
