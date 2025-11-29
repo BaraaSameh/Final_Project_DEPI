@@ -1,9 +1,11 @@
-﻿using DepiFinalProject.Core.Commmon.Pagination;
-using Microsoft.AspNetCore.Mvc;
+﻿using DepiFinalProject.core.DTOs;
+using DepiFinalProject.Core.Commmon.Pagination;
+using DepiFinalProject.Core.DTOs;
 using DepiFinalProject.Core.Interfaces;
 using DepiFinalProject.Core.Models;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using static DepiFinalProject.Core.DTOs.ProductDTO;
 
 namespace DepiFinalProject.Services
@@ -147,7 +149,39 @@ namespace DepiFinalProject.Services
         {
             var products = await _productRepository.GetAllAsync();
             return products.Select(MapToResponseDto);
+
+            return products.Select(p =>
+            {
+                var dto = new ProductResponseDTO
+                {
+                    ProductID = p.ProductID,
+                    ProductName = p.ProductName,
+                    Description = p.Description,
+                    Price = p.Price,
+                  
+                };
+
+                //Check if product is in an active Flash Sale
+                var activeFlashSale = p.FlashSaleProducts?
+                    .FirstOrDefault(fsp =>
+                        fsp.FlashSale != null &&
+                        fsp.FlashSale.IsActive &&
+                        fsp.FlashSale.StartDate <= DateTime.Now &&
+                        fsp.FlashSale.EndDate >= DateTime.Now
+                    );
+
+                if (activeFlashSale != null)
+                {
+                    dto.IsInFlashSale = true;
+                    dto.FlashSalePrice = activeFlashSale.DiscountedPrice;
+                    dto.FlashSaleEndDate = activeFlashSale.FlashSale.EndDate;
+                    dto.FlashSaleID = activeFlashSale.FlashSaleID;
+                }
+
+                return dto;
+            });
         }
+        
 
         public async Task<IEnumerable<ProductResponseDTO>> GetByCategoryAsync(int categoryId)
         {
@@ -295,6 +329,29 @@ namespace DepiFinalProject.Services
                 pagedProducts.TotalRecords
             );
         }
+        public async Task<bool> AddProductToFlashSaleAsync(int productId, AddProductToFlashSaleDto dto)
+        {
+            // Validation: DiscountedPrice less than OriginalPrice
+            if (dto.DiscountedPrice >= dto.OriginalPrice)
+                return false;
+
+            var flashSaleProduct = new FlashSaleProduct
+            {
+                ProductID = productId,
+                FlashSaleID = dto.FlashSaleID,
+                OriginalPrice = dto.OriginalPrice,
+                DiscountedPrice = dto.DiscountedPrice,
+                StockLimit = dto.StockLimit
+            };
+
+            return await _productRepository.AddProductToFlashSaleAsync(productId, flashSaleProduct);
+        }
+
+        public async Task<bool> RemoveProductFromFlashSaleAsync(int productId, int flashSaleId)
+        {
+            return await _productRepository.RemoveProductFromFlashSaleAsync(productId, flashSaleId);
+        }
+
 
     }
 }

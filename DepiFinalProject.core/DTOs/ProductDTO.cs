@@ -5,6 +5,10 @@ namespace DepiFinalProject.Core.DTOs
 {
     public class ProductDTO
     {
+        public int ProductID { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public decimal Price { get; set; }
         public class CreateProductDTO
         {
             [Required]
@@ -44,16 +48,16 @@ namespace DepiFinalProject.Core.DTOs
             public string? ImageUrl { get; set; }
         }
 
-    
+
         public class ProductImageDTO
         {
             public int ImageId { get; set; }
             public string Url { get; set; }
             public string PublicId { get; set; }
         }
-    
 
-    public class ProductResponseDTO
+
+        public class ProductResponseDTO
         {
             public int ProductID { get; set; }
             public int CategoryID { get; set; }
@@ -70,6 +74,11 @@ namespace DepiFinalProject.Core.DTOs
             public bool IsInStock => Stock > 0;
 
             public List<ProductImageDTO> Images { get; set; } = new();
+            //Flash Sale Info
+            public bool IsInFlashSale { get; set; }
+            public decimal? FlashSalePrice { get; set; }
+            public DateTime? FlashSaleEndDate { get; set; }
+            public int? FlashSaleID { get; set; }
         }
 
         public class ProductDetailsDTO
@@ -105,5 +114,13 @@ namespace DepiFinalProject.Core.DTOs
             public int? CategoryID { get; set; }
         }
 
+
+
+
+        // Flash Sale Info
+        public bool IsInFlashSale { get; set; }
+        public decimal? FlashSalePrice { get; set; }
+        public DateTime? FlashSaleEndDate { get; set; }
+        public int? FlashSaleID { get; set; }
     }
 }

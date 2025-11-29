@@ -29,5 +29,19 @@ namespace DepiFinalProject.Core.Models
         public virtual ICollection<Review> Reviews { get; set; }
         public virtual ICollection<Wishlist> Wishlists { get; set; } = new List<Wishlist>();
         public virtual ICollection<FlashSaleProduct> FlashSaleProducts { get; set; } = new List<FlashSaleProduct>();
+
+
+        // Flash Sale Flags
+        [NotMapped]
+        public bool IsInFlashSale { get; set; }
+
+        [NotMapped]
+        public decimal? FlashSalePrice { get; set; }
+
+        [NotMapped]
+        public DateTime? FlashSaleEndDate { get; set; }
+
+        [NotMapped]
+        public int? FlashSaleID { get; set; }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using DepiFinalProject.Core.Commmon.Pagination;
-﻿using DepiFinalProject.Core.Interfaces;
+using DepiFinalProject.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using static DepiFinalProject.Core.DTOs.ProductDTO;
+using DepiFinalProject.Core.DTOs;
+using DepiFinalProject.Services;
 
 namespace DepiFinalProject.Controllers
 {
@@ -196,7 +198,7 @@ public async Task<ActionResult<PagedResult<ProductResponseDTO>>> GetProductsPagi
         /// <response code="400">If an error occurs while fetching products</response>
         /// <response code="401">If the user is not authenticated</response>
         /// <response code="403">If the user doesn't have the required role</response>
-        /// <response code="404">If no products are found in the specified category</respons
+        /// <response code="404">If no products are found in the specified category</response>
         [AllowAnonymous]
         [HttpGet("category/{categoryId:int}")]
       //  [Authorize(Roles = "admin,client,seller")]
@@ -754,6 +756,36 @@ public async Task<ActionResult<PagedResult<ProductResponseDTO>>> GetProductsPagi
                     Details = ex.InnerException?.Message
                 });
             }
+        }
+        //Flash Sale Endpoints are in FlashSales Controller
+        // PUT: api/products/{id}/flashsale
+        [HttpPut("{id}/flashsale")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddToFlashSale(int id, [FromBody] AddProductToFlashSaleDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            // Now uses the correct DTO type from DepiFinalProject.Core.DTOs
+            var result = await _productService.AddProductToFlashSaleAsync(id, dto);
+
+            if (!result)
+                return NotFound(new { message = "Product or flash sale not found." });
+
+            return Ok(new { message = "Product added to flash sale successfully." });
+        }
+
+        // DELETE: api/products/{id}/flashsale/{flashSaleId}
+        [HttpDelete("{id}/flashsale/{flashSaleId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RemoveFromFlashSale(int id, int flashSaleId)
+        {
+            var result = await _productService.RemoveProductFromFlashSaleAsync(id, flashSaleId);
+
+            if (!result)
+                return NotFound(new { message = "Product not found in this flash sale" });
+
+            return Ok(new { message = "Product removed from flash sale successfully" });
         }
     }
 

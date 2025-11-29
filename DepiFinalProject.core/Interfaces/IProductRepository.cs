@@ -22,4 +22,14 @@ public interface IProductRepository
     Task<ProductImage> getimagebyid(int imageid,int productid);
     Task<List<ProductImage>> GetProductImagesAsync(int productId);
 
+    //Flash Sale Related Methods
+    // Add product to flash sale
+    Task<bool> AddProductToFlashSaleAsync(int productId, FlashSaleProduct flashSaleProduct);
+
+    // Remove product from flash sale
+    Task<bool> RemoveProductFromFlashSaleAsync(int productId, int flashSaleId);
+
+    // Get product with flash sale info
+    Task<Product?> GetProductWithFlashSaleAsync(int productId);
+
 }

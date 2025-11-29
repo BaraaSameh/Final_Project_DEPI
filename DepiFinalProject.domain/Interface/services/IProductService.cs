@@ -1,4 +1,5 @@
-﻿using DepiFinalProject.Core.Commmon.Pagination;
+﻿using DepiFinalProject.core.DTOs;
+using DepiFinalProject.Core.Commmon.Pagination;
 ﻿using Microsoft.AspNetCore.Http;
 using static DepiFinalProject.Core.DTOs.ProductDTO;
 
@@ -18,6 +19,12 @@ namespace DepiFinalProject.Core.Interfaces
         Task<bool> DeleteImageAsync(int productId, int imageId);
         Task<bool> AddImagesAsync(int productId, List<IFormFile> images);
         Task<PagedResult<ProductResponseDTO>> GetProductsAsync(ProductFilterParameters parameters);
+
+        // Add product to flash sale
+        Task<bool> AddProductToFlashSaleAsync(int productId, AddProductToFlashSaleDto dto);
+
+        // Remove product from flash sale
+        Task<bool> RemoveProductFromFlashSaleAsync(int productId, int flashSaleId);
 
     }
 }
