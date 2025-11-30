@@ -18,6 +18,7 @@ namespace DepiFinalProject.Core.Interfaces
         /// <param name="paymentid">The PayPal order ID.</param>
         /// <returns>The captured PayPal order details.</returns>
         Task<PaypalServerSdk.Standard.Models.Order> CaptureOrderAsync(string paymentid);
+        Task<Payment?> CancelPayment( string orderId);
 
     }
 }

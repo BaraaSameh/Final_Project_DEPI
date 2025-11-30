@@ -150,7 +150,7 @@ namespace DepiFinalProject.Services
             var customerName = $"{user.UserFirstName} {user.UserLastName}".Trim();
             if (string.IsNullOrEmpty(customerName)) customerName = "عزيزي العميل";
             var token = _tokenService.GenerateToken(payment);
-            var invoiceUrl = $"https://syntactically-unsarcastic-tomas.ngrok-free.dev/invoice.html?token={token}"; 
+            var invoiceUrl = $"https://zenon-ecomm-mega-project.vercel.app/invoice.html?token={token}"; 
 
             var message = $@"
 <div style='font-family: Arial, sans-serif; background:#f8f9fc; padding:50px 0; text-align:center; direction:rtl;'>

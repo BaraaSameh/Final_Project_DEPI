@@ -1,12 +1,7 @@
-﻿
-
-
-
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using DepiFinalProject.Core.DTOs;
 using DepiFinalProject.Core.Interfaces;
 using DepiFinalProject.Core.Models;
-using DepiFinalProject.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -249,7 +244,40 @@ namespace DepiFinalProject.Controllers
                 });
             }
         }
+        /// <summary>
+        /// Captures a PayPal order after the user approves payment.
+        /// </summary>
+        /// <param name="paypalOrderId">PayPal order ID (token returned from PayPal)</param>
+        [HttpGet("cancel")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> OnCancel(string orderId)
+        {
+            if (string.IsNullOrEmpty(orderId))
+                return BadRequest(new { message = "Missing PayPal order ID" });
 
+            try
+            {
+                var result = await _paymentService.CancelPayment(orderId);
+
+                return Ok(new
+                {
+                    message = "Payment Canceld successfully",
+                    status = result.Status.ToString(),
+                    paypalOrderId = orderId
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "Error capturing PayPal order",
+                    details = ex.Message
+                });
+            }
+        }
 
 
         /// <summary>
@@ -289,8 +317,24 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(500, $"Error deleting product.:{ex.Message} \n {ex.InnerException}");
             }
         }
+        /// <summary>
+        /// Retrieves invoice summary data for a specific payment using a secure invoice token.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint is accessible without authentication because the token itself is secure
+        /// and single-use.  
+        /// Used for generating public invoice pages that users can open from email links.
+        /// </remarks>
+        /// <param name="token">A secure, single-use token that identifies a payment.</param>
+        /// <response code="200">Invoice data retrieved successfully.</response>
+        /// <response code="401">Invalid or expired token.</response>
+        /// <response code="500">Internal server error.</response>
         [HttpGet("invoice")]
         [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
         public async Task<IActionResult> GetInvoiceData([FromQuery] string token)
         {
             var payment = _tokenService.ValidateAndConsumeToken(token);

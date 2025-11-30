@@ -74,8 +74,8 @@ namespace PayPalAdvancedIntegration.Services
                     ApplicationContext = new OrderApplicationContext
                     {
                         BrandName = "Zenon Market",
-                        ReturnUrl = "https://syntactically-unsarcastic-tomas.ngrok-free.dev/payment-complete.html",
-                        CancelUrl = "https://syntactically-unsarcastic-tomas.ngrok-free.dev/payment-cancelled.html"
+                        ReturnUrl = "https://zenon-ecomm-mega-project.vercel.app/MyOrder",
+                        CancelUrl = "https://zenon-ecomm-mega-project.vercel.app/checkout"
                     }
                 },
                 PaypalRequestId = createRequestId
@@ -107,13 +107,13 @@ namespace PayPalAdvancedIntegration.Services
             return (paypalOrderId, approveUrl);
         }
 
-        
+
         public async Task<PaypalServerSdk.Standard.Models.Order> CaptureOrderAsync(string paypalOrderId)
         {
             if (string.IsNullOrWhiteSpace(paypalOrderId))
                 throw new ArgumentException("PayPal Order ID is required.", nameof(paypalOrderId));
 
-     
+
             var paypalRequestId = "CAPTURE-" + Guid.NewGuid().ToString("N").ToUpper();
 
             try
@@ -122,8 +122,8 @@ namespace PayPalAdvancedIntegration.Services
                     new CaptureOrderInput
                     {
                         Id = paypalOrderId,
-                        Body = new OrderCaptureRequest(),  
-                        PaypalRequestId = paypalRequestId    
+                        Body = new OrderCaptureRequest(),
+                        PaypalRequestId = paypalRequestId
                     });
 
                 var capturedOrder = result.Data;
@@ -136,7 +136,7 @@ namespace PayPalAdvancedIntegration.Services
                 if (purchaseUnit?.Amount?.MValue != null)
                     decimal.TryParse(purchaseUnit.Amount.MValue, out amount);
 
-                 var payment = await _paymentRepository.GetByPayPalOrderIdAsync(paypalOrderId);
+                var payment = await _paymentRepository.GetByPayPalOrderIdAsync(paypalOrderId);
                 if (payment != null)
                 {
                     payment.Status = status;
@@ -164,15 +164,27 @@ namespace PayPalAdvancedIntegration.Services
             }
             catch (PaypalServerSdk.Standard.Exceptions.ApiException apiEx)
             {
-                 throw new Exception($"PayPal Capture Failed (Request-Id: {paypalRequestId})", apiEx);
+                throw new Exception($"PayPal Capture Failed (Request-Id: {paypalRequestId})", apiEx);
             }
             catch (Exception ex)
             {
                 throw new Exception($"Unexpected error during PayPal capture (Request-Id: {paypalRequestId})", ex);
             }
         }
+        public async Task<Payment?> CancelPayment(string paypalOrderId)
+        {
+            var payment = await _paymentRepository.GetByPayPalOrderIdAsync(paypalOrderId);
 
+            if (payment == null)
+                throw new KeyNotFoundException("Payment not found for the specified order.");
+            payment.Status = "Cancelled";
+            await _orderService.CancelAsync(payment.OrderID.Value);
+         
+            await _paymentRepository.UpdateAsync(payment);
+            return payment;
+
+
+        }
     }
-
 }
 

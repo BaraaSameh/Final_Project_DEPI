@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DepiFinalProject.API", "Dep
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DepiFinalProject.domain", "DepiFinalProject.domain\DepiFinalProject.domain.csproj", "{D7B9EC7B-EC0D-4AA9-A2C7-E9D96463F7D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DepiFinalProject.core", "DepiFinalProject.core\DepiFinalProject.core.csproj", "{DC8C76C6-D386-4327-8B28-34AEA5191AD2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DepiFinalProject.Core", "DepiFinalProject.core\DepiFinalProject.Core.csproj", "{DC8C76C6-D386-4327-8B28-34AEA5191AD2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DepiFinalProject.InfraStructure", "DepiFinalProject.InfraStructure\DepiFinalProject.InfraStructure.csproj", "{66BF64C4-DDC5-4085-8F73-5A0B9648F3E8}"
 EndProject

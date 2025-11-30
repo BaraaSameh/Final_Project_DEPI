@@ -13,14 +13,14 @@ namespace DepiFinalProject.Services
             _repository = repository;
         }
 
-        public async Task<IEnumerable<FlashSaleDto>> GetAllAsync()
+        public async Task<IEnumerable<AddProductToFlashSaleDto>> GetAllAsync()
         {
             var flashSales = await _repository.GetAllAsync();
 
             if (flashSales == null)
                 throw new Exception("Failed to retrieve flash sale.");
 
-            return flashSales.Select(fs => new FlashSaleDto
+            return flashSales.Select(fs => new AddProductToFlashSaleDto
             {
                 FlashSaleID = fs.FlashSaleID,
                 Title = fs.Title,
@@ -33,14 +33,14 @@ namespace DepiFinalProject.Services
             });
         }
 
-        public async Task<FlashSaleDto?> GetByIdAsync(int id)
+        public async Task<AddProductToFlashSaleDto?> GetByIdAsync(int id)
         {
             var flashSale = await _repository.GetByIdAsync(id);
 
             if (flashSale == null)
                 throw new Exception("Failed to retrieve flash sale.");
 
-            return new FlashSaleDto
+            return new AddProductToFlashSaleDto
             {
                 FlashSaleID = flashSale.FlashSaleID,
                 Title = flashSale.Title,
@@ -53,19 +53,23 @@ namespace DepiFinalProject.Services
             };
         }
 
-        public async Task<FlashSaleDto> CreateAsync(CreateFlashSaleDto dto)
+        public async Task<AddProductToFlashSaleDto> CreateAsync(CreateFlashSaleDto dto)
         {
+            
+
             var flashSale = new FlashSale
             {
                 Title = dto.Title,
                 StartDate = dto.StartDate,
                 EndDate = dto.EndDate,
-                MaxUsers = dto.MaxUsers
+                MaxUsers = dto.MaxUsers,
+                UserID = dto.UserID
             };
+
 
             var created = await _repository.CreateAsync(flashSale);
 
-            return new FlashSaleDto
+            return new AddProductToFlashSaleDto
             {
                 FlashSaleID = created.FlashSaleID,
                 Title = created.Title,
@@ -78,7 +82,7 @@ namespace DepiFinalProject.Services
             };
         }
 
-        public async Task<FlashSaleDto?> UpdateAsync(int id, UpdateFlashSaleDto dto)
+        public async Task<AddProductToFlashSaleDto?> UpdateAsync(int id, UpdateFlashSaleDto dto)
         {
             var existing = await _repository.GetByIdAsync(id);
 
@@ -105,7 +109,7 @@ namespace DepiFinalProject.Services
             if (updated == null)
                 return null;
 
-            return new FlashSaleDto
+            return new AddProductToFlashSaleDto
             {
                 FlashSaleID = updated.FlashSaleID,
                 Title = updated.Title,
