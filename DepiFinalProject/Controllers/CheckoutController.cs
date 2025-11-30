@@ -245,10 +245,10 @@ namespace DepiFinalProject.Controllers
             }
         }
         /// <summary>
-        /// Captures a PayPal order after the user approves payment.
+        /// Captures a PayPal order after the user cancle or decline payment.
         /// </summary>
         /// <param name="paypalOrderId">PayPal order ID (token returned from PayPal)</param>
-        [HttpGet("cancel")]
+        [HttpPost("cancel")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
