@@ -15,5 +15,6 @@ namespace DepiFinalProject.Core.DTOs
         public DateTime EndDate { get; set; }
 
         public int? MaxUsers { get; set; }
+        public int UserID { get; set; }
     }
 }

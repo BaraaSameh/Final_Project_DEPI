@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DepiFinalProject.core\DepiFinalProject.core.csproj" />
+    <ProjectReference Include="..\DepiFinalProject.core\DepiFinalProject.Core.csproj" />
     <ProjectReference Include="..\DepiFinalProject.domain\DepiFinalProject.domain.csproj" />
     <ProjectReference Include="..\DepiFinalProject.InfraStructure\DepiFinalProject.InfraStructure.csproj" />
   </ItemGroup>

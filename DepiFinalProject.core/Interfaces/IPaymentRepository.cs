@@ -6,6 +6,7 @@ namespace DepiFinalProject.Core.Interfaces
     {
         Task<Payment> CreateAsync(Payment payment);
         Task<Payment?> GetByIdAsync(string id);
+        Task<Payment?> GetByPaymentIdAsync(int paymentId);
         Task<List<Payment>> GetByUserIdAsync(int userId);
         Task<Payment> UpdateAsync(Payment payment);
         Task<List<Payment>> GetAllAsync();

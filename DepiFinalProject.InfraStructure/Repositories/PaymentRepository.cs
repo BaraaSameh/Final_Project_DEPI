@@ -28,6 +28,13 @@ namespace DepiFinalProject.Infrastructurenamespace.Repositories
                 .Include(p => p.User)
                 .FirstOrDefaultAsync(p => p.PayPalOrderId == id);
         }
+        public async Task<Payment?> GetByPaymentIdAsync(int paymentId)
+        {
+            return await _context.Payments
+                .Include(p => p.Order)
+                .Include(p => p.User)
+                .FirstOrDefaultAsync(p => p.PaymentID == paymentId);
+        }
 
         public async Task<List<Payment>> GetByUserIdAsync(int userId)
         {

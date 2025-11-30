@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>فاتورة الدفع - Zenon Market</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .invoice-container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+            .header h1 {
+                margin: 0;
+                font-size: 28px;
+            }
+
+            .header p {
+                margin: 10px 0 0;
+                opacity: 0.9;
+            }
+
+        .content {
+            padding: 40px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .info-box {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            border-right: 5px solid #667eea;
+        }
+
+            .info-box h3 {
+                margin: 0 0 10px;
+                color: #667eea;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: right;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f8f9ff;
+            color: #667eea;
+        }
+
+        .total {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            text-align: center;
+            padding-top: 20px;
+        }
+
+        .footer {
+            background: #667eea;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        .success-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .invoice-container {
+                box-shadow: none;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="header">
+            <h1>Zenon Market</h1>
+            <p>فاتورة دفع ناجحة</p>
+            <div class="success-badge">تم الدفع بنجاح</div>
+        </div>
+
+        <div class="content">
+            <div class="info-grid">
+                <div class="info-box">
+                    <h3>رقم الفاتورة</h3>
+                    <p id="paymentId">PAY-2025-XXXXX</p>
+                </div>
+                <div class="info-box">
+                    <h3>تاريخ الدفع</h3>
+                    <p id="paidAt">2025-11-29</p>
+                </div>
+                <div class="info-box">
+                    <h3>اسم العميل</h3>
+                    <p id="customerName">محمد أحمد</p>
+                </div>
+                <div class="info-box">
+                    <h3>البريد الإلكتروني</h3>
+                    <p id="customerEmail">customer@example.com</p>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>الوصف</th>
+                        <th>رقم الطلب</th>
+                        <th>طريقة الدفع</th>
+                        <th>المبلغ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>دفع طلبية عبر PayPal</td>
+                        <td id="orderNo">#1001</td>
+                        <td>PayPal</td>
+                        <td id="amount">$0.00</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="total" >
+                المبلغ المدفوع: <span id="totalAmount">$0.00</span>
+            </div>
+
+            <p style="margin-top: 40px; color: #666;">
+                شكراً لثقتك بـ Zenon Market<br>
+                إيصال الدفع مرفق مع طلبك وسيتم شحنه قريباً.
+            </p>
+        </div>
+
+        <div class="footer">
+            Zenon Market © 2025 - جميع الحقوق محفوظة<br>
+            info@zenonmarket.com | +20 100 000 0000
+        </div>
+    </div>
+
+    <script>
+        async function loadInvoice() {
+            const params = new URLSearchParams(window.location.search);
+            const token = params.get("token");
+            if (!token) {
+                document.body.innerHTML = "<h2>رابط غير صالح</h2>";
+                return;
+            }
+            const response = await fetch(`/api/payments/invoice?token=${token}`);
+            if (!response.ok) {
+                document.body.innerHTML = "<h2>الفاتورة منتهية الصلاحية أو غير صالحة</h2>";
+                return;
+            }
+
+            const data = await response.json();
+            document.getElementById("paymentId").textContent = data.paymentId;
+            document.getElementById("paidAt").textContent = new Date(data.paidAt).toLocaleDateString('ar-EG');
+            document.getElementById("customerName").textContent = data.customerName;
+            document.getElementById("customerEmail").textContent = data.customerEmail;
+            document.getElementById("orderNo").textContent = data.orderNo;
+            document.getElementById("amount").textContent = "$" + data.amount;
+            document.getElementById("totalAmount").textContent = "$" + data.amount;
+        }
+        loadInvoice();
+    </script>
+</body>
+</html>

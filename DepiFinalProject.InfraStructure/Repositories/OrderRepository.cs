@@ -71,6 +71,18 @@ namespace DepiFinalProject.Infrastructurenamespace.Repositories
                 .Where(o => o.UserID == userId)
                 .ToListAsync();
         }
+        public async Task<Order?> GetByPaymentid(int paymentid)
+        {
+            if (paymentid <= 0)
+                throw new ArgumentException("Invalid payment ID", nameof(paymentid));
+
+            return await _context.Orders
+                .Include(o => o.User)
+                .Include(o => o.OrderItems)
+                 .ThenInclude(oi => oi.Product)
+                .Include(o => o.Payments)
+                .FirstOrDefaultAsync(o => o.Payments.Any(p => p.PaymentID == paymentid));
+        }
 
         public async Task<Order?> UpdateAsync(Order order)
         {

@@ -1,13 +1,13 @@
 ﻿using DepiFinalProject.Core.DTOs;
-
+using DepiFinalProject.core.DTOs;
 namespace DepiFinalProject.Services
 {
     public interface IFlashSaleService
     {
-        Task<IEnumerable<FlashSaleDto>> GetAllAsync();
-        Task<FlashSaleDto?> GetByIdAsync(int id);
-        Task<FlashSaleDto> CreateAsync(CreateFlashSaleDto dto);
-        Task<FlashSaleDto?> UpdateAsync(int id, UpdateFlashSaleDto dto);
+        Task<IEnumerable<AddProductToFlashSaleDto>> GetAllAsync();
+        Task<AddProductToFlashSaleDto?> GetByIdAsync(int id);
+        Task<AddProductToFlashSaleDto> CreateAsync(CreateFlashSaleDto dto);
+        Task<AddProductToFlashSaleDto?> UpdateAsync(int id, UpdateFlashSaleDto dto);
         Task<bool> DeleteAsync(int id);
     }
 }

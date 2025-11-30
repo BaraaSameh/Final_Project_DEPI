@@ -36,7 +36,10 @@ namespace DepiFinalProject.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { error = ex.Message });
+                return StatusCode(500, new
+                {
+                    error = ex.InnerException?.Message ?? ex.Message
+                });
             }
         }
 
@@ -66,7 +69,10 @@ namespace DepiFinalProject.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { error = ex.Message });
+                return StatusCode(500, new
+                {
+                    error = ex.InnerException?.Message ?? ex.Message
+                });
             }
         }
 
@@ -95,17 +101,22 @@ namespace DepiFinalProject.Controllers
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
-
+                if(dto.StartDate< DateTime.UtcNow)
+                    return BadRequest(new { message = "Start date must be in the future" });
                 if (dto.EndDate <= dto.StartDate)
                     return BadRequest(new { message = "End date must be after start date" });
-
+                var userId = int.Parse(User.FindFirst("userId").Value);
+                dto.UserID = userId;
                 var created = await _service.CreateAsync(dto);
 
                 return CreatedAtAction(nameof(Get), new { id = created.FlashSaleID }, created);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { error = ex.Message });
+                return StatusCode(500, new
+                {
+                    error = ex.InnerException?.Message ?? ex.Message
+                });
             }
         }
 
@@ -137,7 +148,10 @@ namespace DepiFinalProject.Controllers
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
-
+                if(dto.StartDate.HasValue && dto.StartDate < DateTime.UtcNow)
+                    return BadRequest(new { message = "Start date must be in the future" });
+                if(dto.EndDate.HasValue && dto.StartDate.HasValue && dto.EndDate <= dto.StartDate)
+                    return BadRequest(new { message = "End date must be after start date" });
                 var updated = await _service.UpdateAsync(id, dto);
 
                 if (updated == null)
@@ -147,7 +161,10 @@ namespace DepiFinalProject.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { error = ex.Message });
+                return StatusCode(500, new
+                {
+                    error = ex.InnerException?.Message ?? ex.Message
+                });
             }
         }
 
@@ -182,7 +199,10 @@ namespace DepiFinalProject.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { error = ex.Message });
+                return StatusCode(500, new
+                {
+                    error = ex.InnerException?.Message ?? ex.Message
+                });
             }
         }
     }

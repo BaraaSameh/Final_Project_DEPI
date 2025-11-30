@@ -314,7 +314,14 @@ namespace DepiFinalProject.Services
 
             return MapToResponseDto(createdOrder);
         }
-
+        public async Task<Order> GetByPaymentid(int paymentid)
+        {
+            return await _orderRepository.GetByPaymentid(paymentid);
+        }
+        public async Task UpdateAsync(Order order)
+        {
+            await _orderRepository.UpdateAsync(order);
+        }
         private async Task<int> GetCurrentUserIdAsync()
         {
             var userClaim = _httpContextAccessor.HttpContext?.User.FindFirst("userId");

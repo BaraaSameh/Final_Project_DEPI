@@ -39,7 +39,22 @@ namespace DepiFinalProject.Infrastructurenamespace.Repositories
 
             return flashSale;
         }
+        public async Task<List<FlashSaleProduct>> GetAllFlashSaleProductAsync()
+        {
+            return await _context.FlashSaleProducts
+                .Include(fp => fp.Product)       
+                .Include(fp => fp.FlashSale)     
+                .ToListAsync();
+        }
 
+        public async Task<List<FlashSaleProduct>> GetByFlashSaleIdAsync(int flashSaleId)
+        {
+            return await _context.FlashSaleProducts
+                .Where(fp => fp.FlashSaleID == flashSaleId)
+                .Include(fp => fp.Product)
+                .Include(fp => fp.FlashSale)
+                .ToListAsync();
+        }
         public async Task<FlashSale?> UpdateAsync(FlashSale flashSale)
         {
             var existing = await _context.FlashSales.FindAsync(flashSale.FlashSaleID);

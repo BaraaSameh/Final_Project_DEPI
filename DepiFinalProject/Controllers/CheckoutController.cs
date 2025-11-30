@@ -16,14 +16,18 @@ namespace DepiFinalProject.Controllers
         private readonly IPaymentService _paymentService;
         private readonly IOrderService _orderService;
         private readonly Microsoft.Extensions.Configuration.IConfiguration _configuration;
+        private readonly IInvoiceTokenService _tokenService;
+        private readonly IUserService _userService;
         public PaymentsController(IPaymentRepository paymentRepository,
-             IOrderService orderService, 
-             IPaymentService paymentService, Microsoft.Extensions.Configuration.IConfiguration configuration)
+             IOrderService orderService,
+             IPaymentService paymentService, Microsoft.Extensions.Configuration.IConfiguration configuration, IInvoiceTokenService tokenService, IUserService userService)
         {
             _paymentRepository = paymentRepository;
             _paymentService = paymentService;
             _orderService = orderService;
             _configuration = configuration;
+            _tokenService = tokenService;
+            _userService = userService;
         }
 
         /// <summary>
@@ -82,10 +86,12 @@ namespace DepiFinalProject.Controllers
             {
                 // Get the order first to retrieve its amount
                 var order = await _orderService.GetByIdAsync(dto.OrderID);
+                
 
                 if (order == null)
                     return NotFound(new { message = $"Order with ID {dto.OrderID} not found" });
-
+                if(order.OrderStatus.ToLower()== "paid")
+                    return BadRequest("Order is already paid");
                 // Verify order belongs to current user (security check)
                 var userIdClaim = User.FindFirst("userId")?.Value;
                 var isAdmin = User.IsInRole("admin");
@@ -202,6 +208,77 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(500, $"Error deleting product.:{ex.Message} \n {ex.InnerException}");
             }
         }
+        /// <summary>
+        /// Captures a PayPal order after the user approves payment.
+        /// </summary>
+        /// <param name="paypalOrderId">PayPal order ID (token returned from PayPal)</param>
+        [HttpPost("capture")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CapturePayment([FromQuery] string orderId)
+        {
+            if (string.IsNullOrEmpty(orderId))
+                return BadRequest(new { message = "Missing PayPal order ID" });
+
+            try
+            {
+                var result = await _paymentService.CaptureOrderAsync(orderId);
+
+                return Ok(new
+                {
+                    message = "Payment captured successfully",
+                    status = result.Status.ToString(),
+                    paypalOrderId = orderId
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "Error capturing PayPal order",
+                    details = ex.Message
+                });
+            }
+        }
+        /// <summary>
+        /// Captures a PayPal order after the user approves payment.
+        /// </summary>
+        /// <param name="paypalOrderId">PayPal order ID (token returned from PayPal)</param>
+        [HttpGet("cancel")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> OnCancel(string orderId)
+        {
+            if (string.IsNullOrEmpty(orderId))
+                return BadRequest(new { message = "Missing PayPal order ID" });
+
+            try
+            {
+                var result = await _paymentService.CancelPayment(orderId);
+
+                return Ok(new
+                {
+                    message = "Payment Canceld successfully",
+                    status = result.Status.ToString(),
+                    paypalOrderId = orderId
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "Error capturing PayPal order",
+                    details = ex.Message
+                });
+            }
+        }
+
 
         /// <summary>
         /// Retrieves all payments made by a specific user.
@@ -240,7 +317,45 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(500, $"Error deleting product.:{ex.Message} \n {ex.InnerException}");
             }
         }
+        /// <summary>
+        /// Retrieves invoice summary data for a specific payment using a secure invoice token.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint is accessible without authentication because the token itself is secure
+        /// and single-use.  
+        /// Used for generating public invoice pages that users can open from email links.
+        /// </remarks>
+        /// <param name="token">A secure, single-use token that identifies a payment.</param>
+        /// <response code="200">Invoice data retrieved successfully.</response>
+        /// <response code="401">Invalid or expired token.</response>
+        /// <response code="500">Internal server error.</response>
+        [HttpGet("invoice")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
+        public async Task<IActionResult> GetInvoiceData([FromQuery] string token)
+        {
+            var payment = _tokenService.ValidateAndConsumeToken(token);
+            if (payment == null) return Unauthorized();
+
+            var userd = await _userService.GetByIdAsync(payment.UserId);
+            var user = await _userService.GetByEmailAsync(userd.UserEmail);
+            var order = await _orderService.GetByIdAsync(payment.OrderID!.Value);
+
+            var data = new
+            {
+                paymentId = payment.PaymentID,
+                paidAt = payment.PaidAt,
+                customerName = $"{user.UserFirstName} {user.UserLastName}".Trim(),
+                customerEmail = user.UserEmail,
+                orderNo = order.OrderNo,
+                amount = payment.Amount.ToString("F2")
+            };
+
+            return Ok(data);
+        }
         /// <summary>
         /// Updates the status or method of a payment.
         /// </summary>
@@ -334,3 +449,4 @@ namespace DepiFinalProject.Controllers
         }
     }
 }
+

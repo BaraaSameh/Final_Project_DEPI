@@ -1,4 +1,6 @@
-﻿using DepiFinalProject.Core.Models;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using DepiFinalProject.Core.Models;
 
 namespace DepiFinalProject.Core.Interfaces
 {
@@ -21,5 +23,8 @@ namespace DepiFinalProject.Core.Interfaces
 
         // Helper: Check if exists
         Task<bool> ExistsAsync(int id);
+        Task<List<FlashSaleProduct>> GetAllFlashSaleProductAsync();
+        Task<List<FlashSaleProduct>> GetByFlashSaleIdAsync(int flashSaleId);
+
     }
 }

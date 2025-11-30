@@ -15,5 +15,6 @@ namespace DepiFinalProject.Core.Interfaces
         Task<OrderItem> AddOrderItemAsync(OrderItem orderItem);
         Task<bool> RemoveOrderItemAsync(int orderItemId);
         Task<bool> HasuserorderedproductAsync(int userId, int productId);
+        Task<Order?> GetByPaymentid(int paymentid);
     }
 }

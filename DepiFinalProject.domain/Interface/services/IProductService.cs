@@ -1,6 +1,6 @@
-﻿using DepiFinalProject.core.DTOs;
-using DepiFinalProject.Core.Commmon.Pagination;
-﻿using Microsoft.AspNetCore.Http;
+﻿using DepiFinalProject.Core.Commmon.Pagination;
+using DepiFinalProject.Core.DTOs;
+using Microsoft.AspNetCore.Http;
 using static DepiFinalProject.Core.DTOs.ProductDTO;
 
 namespace DepiFinalProject.Core.Interfaces
@@ -25,6 +25,9 @@ namespace DepiFinalProject.Core.Interfaces
 
         // Remove product from flash sale
         Task<bool> RemoveProductFromFlashSaleAsync(int productId, int flashSaleId);
+        Task<AddProductToFlashSaleDto> UpdateFlashSaleItemAsync(int id, AddProductToFlashSaleDto dto);
+        Task<List<AddProductToFlashSaleDto>> GetProductsByFlashSaleIdAsync(int flashSaleId);
+        Task<List<AddProductToFlashSaleDto>> GetAllFlashSaleProductsAsync();
 
     }
 }
