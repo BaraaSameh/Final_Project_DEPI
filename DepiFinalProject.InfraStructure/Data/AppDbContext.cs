@@ -21,8 +21,6 @@ namespace DepiFinalProject.InfraStructure.Data
         public DbSet<Shipping> Shippings { get; set; }
         public DbSet<OrderShipping> OrderShippings { get; set; }
         public DbSet<Wishlist> Wishlists { get; set; }
-        public DbSet<FlashSale> FlashSales { get; set; }
-        public DbSet<FlashSaleProduct> FlashSaleProducts { get; set; }
 
         public DbSet<ReturnSettings> ReturnSettings { get; set; }
 
@@ -78,38 +76,7 @@ namespace DepiFinalProject.InfraStructure.Data
                 .HasIndex(w => new { w.UserID, w.ProductID })
                 .IsUnique();
 
-            // FlashSale Entity Configuration
-            modelBuilder.Entity<FlashSale>(entity =>
-            {
-                entity.HasKey(e => e.FlashSaleID);
-                entity.Property(e => e.Title).HasMaxLength(100);
-                entity.Property(e => e.IsActive).HasDefaultValue(false);
-
-                // Indexes for performance
-                entity.HasIndex(e => e.StartDate);
-                entity.HasIndex(e => e.EndDate);
-                entity.HasIndex(e => e.IsActive);
-            });
-
-            // FlashSaleProduct Entity Configuration
-            modelBuilder.Entity<FlashSaleProduct>(entity =>
-            {
-                entity.HasKey(e => e.FlashSaleProductID);
-
-                entity.HasOne(e => e.FlashSale)
-                      .WithMany(f => f.FlashSaleProducts)
-                      .HasForeignKey(e => e.FlashSaleID)
-                      .OnDelete(DeleteBehavior.Cascade);
-
-                entity.HasOne(e => e.Product)
-                      .WithMany(p => p.FlashSaleProducts)
-                      .HasForeignKey(e => e.ProductID)
-                      .OnDelete(DeleteBehavior.Restrict); // Don't delete product if it's in a flash sale
-
-                // Prevent duplicate product in the same flash sale
-                entity.HasIndex(e => new { e.FlashSaleID, e.ProductID })
-                      .IsUnique();
-            });
+         
 
             // RefreshToken Entity Configuration "Seif"
             modelBuilder.Entity<RefreshToken>(entity =>
@@ -125,13 +92,7 @@ namespace DepiFinalProject.InfraStructure.Data
               .WithMany(u => u.Products)
               .HasForeignKey(p => p.userid)
               .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<FlashSaleProduct>()
-             .Property(f => f.DiscountedPrice)
-             .HasPrecision(18, 2);
-
-            modelBuilder.Entity<FlashSaleProduct>()
-                .Property(f => f.OriginalPrice)
-                .HasPrecision(18, 2);
+           
 
             modelBuilder.Entity<Order>()
                 .Property(o => o.TotalAmount)

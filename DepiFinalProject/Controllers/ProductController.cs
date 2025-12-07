@@ -15,62 +15,60 @@ namespace DepiFinalProject.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
-        private readonly IFlashSaleService _flashSaleService;
-        public ProductController(IProductService productService,IFlashSaleService flashSaleService)
+        public ProductController(IProductService productService)
         {
             _productService = productService;
-            _flashSaleService = flashSaleService;
         }
-        
-/// <summary>
-/// Get paginated products with optional category filter (NEW ENDPOINT)
-/// </summary>
-/// <param name="parameters">Pagination and filter parameters</param>
-/// <remarks>
-/// Returns paginated list of products with metadata.
-/// 
-/// Query Parameters:
-/// - pageNumber: Page number (default: 1, min: 1)
-/// - pageSize: Items per page (default: 10, min: 1, max: 100)
-/// - categoryID: Optional category filter
-/// 
-/// Sample requests:
-/// - GET /api/product/paginated (first page, 10 items)
-/// - GET /api/product/paginated?pageNumber=2&pageSize=20
-/// - GET /api/product/paginated?categoryID=5
-/// - GET /api/product/paginated?pageNumber=1&pageSize=50&categoryID=3
-/// </remarks>
-/// <response code="200">Returns paginated products successfully</response>
-/// <response code="400">If an error occurs</response>
-[AllowAnonymous]
-[HttpGet("paginated")]
-[ProducesResponseType(typeof(SuccessResponse<PagedResult<ProductResponseDTO>>), StatusCodes.Status200OK)]
-[ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-public async Task<ActionResult<PagedResult<ProductResponseDTO>>> GetProductsPaginated(
-    [FromQuery] ProductFilterParameters parameters)
-{
-    try
-    {
-        var result = await _productService.GetProductsAsync(parameters);
 
-        return Ok(new SuccessResponse<PagedResult<ProductResponseDTO>>
+        /// <summary>
+        /// Get paginated products with optional category filter (NEW ENDPOINT)
+        /// </summary>
+        /// <param name="parameters">Pagination and filter parameters</param>
+        /// <remarks>
+        /// Returns paginated list of products with metadata.
+        /// 
+        /// Query Parameters:
+        /// - pageNumber: Page number (default: 1, min: 1)
+        /// - pageSize: Items per page (default: 10, min: 1, max: 100)
+        /// - categoryID: Optional category filter
+        /// 
+        /// Sample requests:
+        /// - GET /api/product/paginated (first page, 10 items)
+        /// - GET /api/product/paginated?pageNumber=2&pageSize=20
+        /// - GET /api/product/paginated?categoryID=5
+        /// - GET /api/product/paginated?pageNumber=1&pageSize=50&categoryID=3
+        /// </remarks>
+        /// <response code="200">Returns paginated products successfully</response>
+        /// <response code="400">If an error occurs</response>
+        [AllowAnonymous]
+        [HttpGet("paginated")]
+        [ProducesResponseType(typeof(SuccessResponse<PagedResult<ProductResponseDTO>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<PagedResult<ProductResponseDTO>>> GetProductsPaginated(
+            [FromQuery] ProductFilterParameters parameters)
         {
-            Success = true,
-            Message = $"Retrieved {result.Data.Count} products from page {result.PageNumber} of {result.TotalPages}",
-            Data = result
-        });
-    }
-    catch (Exception ex)
-    {
-        return BadRequest(new ErrorResponse
-        {
-            Success = false,
-            Message = "An error occurred while fetching paginated products",
-            Error = ex.Message,
-            Details = ex.InnerException?.Message
-        });
-    }
-}
+            try
+            {
+                var result = await _productService.GetProductsAsync(parameters);
+
+                return Ok(new SuccessResponse<PagedResult<ProductResponseDTO>>
+                {
+                    Success = true,
+                    Message = $"Retrieved {result.Data.Count} products from page {result.PageNumber} of {result.TotalPages}",
+                    Data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorResponse
+                {
+                    Success = false,
+                    Message = "An error occurred while fetching paginated products",
+                    Error = ex.Message,
+                    Details = ex.InnerException?.Message
+                });
+            }
+        }
 
 
         /// <summary>
@@ -85,7 +83,7 @@ public async Task<ActionResult<PagedResult<ProductResponseDTO>>> GetProductsPagi
         /// <response code="403">If the user doesn't have the required role</response>
         [AllowAnonymous]
         [HttpGet]
-       // [Authorize(Roles = "admin,client,seller")]
+        // [Authorize(Roles = "admin,client,seller")]
         [ProducesResponseType(typeof(IEnumerable<ProductResponseDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -128,7 +126,7 @@ public async Task<ActionResult<PagedResult<ProductResponseDTO>>> GetProductsPagi
         /// <response code="404">If the product with the specified ID is not found</response>
         [AllowAnonymous]
         [HttpGet("{id:int}")]
-       // [Authorize(Roles = "admin,client,seller")]
+        // [Authorize(Roles = "admin,client,seller")]
         [ProducesResponseType(typeof(SuccessResponse<ProductDetailsDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -202,7 +200,7 @@ public async Task<ActionResult<PagedResult<ProductResponseDTO>>> GetProductsPagi
         /// <response code="404">If no products are found in the specified category</response>
         [AllowAnonymous]
         [HttpGet("category/{categoryId:int}")]
-      //  [Authorize(Roles = "admin,client,seller")]
+        //  [Authorize(Roles = "admin,client,seller")]
         [ProducesResponseType(typeof(SuccessResponse<IEnumerable<ProductResponseDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -442,7 +440,7 @@ public async Task<ActionResult<PagedResult<ProductResponseDTO>>> GetProductsPagi
 
             try
             {
-                 var product = await _productService.CreateAsync(dto);
+                var product = await _productService.CreateAsync(dto);
 
                 return CreatedAtAction(
                     nameof(GetById),
@@ -645,7 +643,7 @@ public async Task<ActionResult<PagedResult<ProductResponseDTO>>> GetProductsPagi
 
             if (images == null || images.Count == 0)
                 return BadRequest(new { message = "No images provided." });
-             bool success = await _productService.AddImagesAsync(productId, images);
+            bool success = await _productService.AddImagesAsync(productId, images);
 
             if (!success)
                 return NotFound(new { message = "Product not found." });
@@ -757,159 +755,6 @@ public async Task<ActionResult<PagedResult<ProductResponseDTO>>> GetProductsPagi
                     Details = ex.InnerException?.Message
                 });
             }
-        }
-        /// <summary>
-        /// Adds a product to a flash sale.
-        /// </summary>
-        /// <remarks>
-        /// Only accessible by Admins.  
-        /// Requires a valid Flash Sale ID inside the request body.
-        /// </remarks>
-        /// <param name="id">The ID of the product to add.</param>
-        /// <param name="dto">DTO containing the Flash Sale ID and discount settings.</param>
-        /// <response code="200">Product added to flash sale successfully.</response>
-        /// <response code="400">Invalid input data.</response>
-        /// <response code="404">Product or flash sale not found.</response>
-        /// <response code="401">Unauthorized access.</response>
-        [HttpPost("{id}/flashsale")]
-        [Authorize(Roles = "admin")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> AddToFlashSale(int id, [FromBody] AddProductToFlashSaleRequest dto)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
-
-                // 1️⃣ Validate product exists
-                var product = await _productService.GetById(id);
-                if (product == null)
-                    return NotFound(new { message = "Product not found" });
-
-                // 2️⃣ Validate flash sale exists
-                var flashSale = await _flashSaleService.GetByIdAsync(dto.FlashSaleID);
-                if (flashSale == null)
-                    return NotFound(new { message = "Flash sale not found" });
-                if( dto.StartDate < flashSale.StartDate || dto.EndDate > flashSale.EndDate)
-                {
-                    return BadRequest(new { message = "Product flash sale dates must be within the flash sale period." });
-                }
-               
-
-                // 3️⃣ Map Request → Internal DTO (Full DTO)
-                var newFlashSaleItem = new AddProductToFlashSaleDto
-                {
-                    ProductID = id,
-                    ProductName = product.ProductName,
-                    OriginalPrice = product.Price,
-                    FlashSaleID = dto.FlashSaleID,
-                    Title = flashSale.Title,
-                    StartDate = dto.StartDate,
-                    EndDate = dto.EndDate,
-                    MaxUsers = dto.MaxUsers,
-                    ProductCount = dto.ProductCount,
-                    DiscountedPrice = dto.DiscountedPrice,
-                    StockLimit = dto.StockLimit,
-                    CreatedAt = DateTime.UtcNow,
-
-                    // Auto-calc IsActive
-                    IsActive = DateTime.UtcNow >= dto.StartDate &&
-                               DateTime.UtcNow <= dto.EndDate &&
-                               (dto.MaxUsers == null || dto.MaxUsers > 0)
-                };
-
-                // 4️⃣ Save using service
-                var added = await _productService.AddProductToFlashSaleAsync(id, newFlashSaleItem);
-
-                if (!added)
-                    return NotFound(new { message = "Could not add product to flash sale." });
-
-                return Ok(new { message = "Product added to flash sale successfully." });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new
-                {
-                    error = ex.InnerException?.Message ?? ex.Message
-                });
-            }
-        }
-
-        /// <summary>
-        /// Retrieves all products currently assigned to flash sales.
-        /// </summary>
-        /// <response code="200">List of all flash sale products.</response>
-        /// <response code="401">Unauthorized.</response>
-        [HttpGet("flashsale")]
-        [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetAllFlashSaleProducts()
-        {
-            var result = await _productService.GetAllFlashSaleProductsAsync();
-            return Ok(result);
-        }
-
-
-        /// <summary>
-        /// Retrieves all products assigned to a specific flash sale.
-        /// </summary>
-        /// <param name="flashSaleId">The ID of the flash sale.</param>
-        /// <response code="200">Products retrieved successfully.</response>
-        /// <response code="404">Flash sale not found or contains no products.</response>
-        /// <response code="401">Unauthorized.</response>
-        [HttpGet("flashsale/{flashSaleId}")]
-        [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetProductsByFlashSaleId(int flashSaleId)
-        {
-            var result = await _productService.GetProductsByFlashSaleIdAsync(flashSaleId);
-
-            if (result == null || result.Count == 0)
-                return NotFound(new { message = "No products found for this flash sale." });
-
-            return Ok(result);
-        }
-         
-        /// <summary>
-        /// Removes a product from a flash sale.
-        /// </summary>
-        /// <remarks>Only Admins can perform this action.</remarks>
-        /// <param name="id">Product ID.</param>
-        /// <param name="flashSaleId">Flash sale ID.</param>
-        /// <response code="200">Product removed successfully.</response>
-        /// <response code="404">Product was not part of this flash sale.</response>
-        /// <response code="401">Unauthorized.</response>
-        [HttpDelete("{id}/flashsale/{flashSaleId}")]
-        [Authorize(Roles = "admin")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> RemoveFromFlashSale(int id, int flashSaleId)
-        {
-            try
-            {
-                if (id <= 0 || flashSaleId <= 0)
-                {
-                    return BadRequest(new { message = "Invalid product ID or flash sale ID" });
-                }
-                var result = await _productService.RemoveProductFromFlashSaleAsync(id, flashSaleId);
-
-                if (!result)
-                    return NotFound(new { message = "Product not found in this flash sale" });
-
-                return Ok(new { message = "Product removed from flash sale successfully" });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-                
         }
     }
 

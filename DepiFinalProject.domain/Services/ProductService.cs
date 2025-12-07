@@ -18,14 +18,13 @@ namespace DepiFinalProject.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ICloudinaryService _cloudinaryService;
         private readonly IUserRepository _userRepository;
-        private readonly IFlashSaleRepository _flashSaleRepository;
-        public ProductService(IProductRepository productRepository, IHttpContextAccessor httpContextAccessor,ICloudinaryService cloudinaryService, IUserRepository userRepository, IFlashSaleRepository flashSaleRepository)
+
+        public ProductService(IProductRepository productRepository, IHttpContextAccessor httpContextAccessor,ICloudinaryService cloudinaryService, IUserRepository userRepository)
         {
             _productRepository = productRepository;
             _httpContextAccessor = httpContextAccessor;
             _cloudinaryService = cloudinaryService;
             _userRepository = userRepository;
-            _flashSaleRepository = flashSaleRepository;
         }
         private int GetCurrentUserId()
         {
@@ -164,23 +163,6 @@ namespace DepiFinalProject.Services
                     Price = p.Price,
                   
                 };
-
-                //Check if product is in an active Flash Sale
-                var activeFlashSale = p.FlashSaleProducts?
-                    .FirstOrDefault(fsp =>
-                        fsp.FlashSale != null &&
-                        fsp.FlashSale.IsActive &&
-                        fsp.FlashSale.StartDate <= DateTime.Now &&
-                        fsp.FlashSale.EndDate >= DateTime.Now
-                    );
-
-                if (activeFlashSale != null)
-                {
-                    dto.IsInFlashSale = true;
-                    dto.FlashSalePrice = activeFlashSale.DiscountedPrice;
-                    dto.FlashSaleEndDate = activeFlashSale.FlashSale.EndDate;
-                    dto.FlashSaleID = activeFlashSale.FlashSaleID;
-                }
 
                 return dto;
             });
@@ -333,113 +315,6 @@ namespace DepiFinalProject.Services
                 pagedProducts.TotalRecords
             );
         }
-        public async Task<bool> AddProductToFlashSaleAsync(int productId, AddProductToFlashSaleDto dto)
-        {
-            // Validation: DiscountedPrice less than OriginalPrice
-            if (dto.DiscountedPrice >= dto.OriginalPrice)
-                return false;
-
-            var flashSaleProduct = new FlashSaleProduct
-            {
-                ProductID = productId,
-                FlashSaleID = dto.FlashSaleID,
-                OriginalPrice = dto.OriginalPrice,
-                DiscountedPrice = dto.DiscountedPrice,
-                StockLimit = dto.StockLimit
-            };
-
-            return await _productRepository.AddProductToFlashSaleAsync(productId, flashSaleProduct);
-        }
-        public async Task<AddProductToFlashSaleDto> UpdateFlashSaleItemAsync(int id, AddProductToFlashSaleDto dto)
-        {
-            var flashSale = await _flashSaleRepository.GetByIdAsync(id);
-
-            if (flashSale == null)
-                throw new KeyNotFoundException($"Flash sale with ID {id} not found.");
-
-            // Basic validation
-            if (!string.IsNullOrWhiteSpace(dto.Title))
-                flashSale.Title = dto.Title;
-
-            if (dto.StartDate != default)
-                flashSale.StartDate = dto.StartDate;
-
-            if (dto.EndDate != default)
-            {
-                if (dto.EndDate <= flashSale.StartDate)
-                    throw new Exception("EndDate must be after StartDate.");
-
-                flashSale.EndDate = dto.EndDate;
-            }
-
-            flashSale.IsActive = dto.IsActive;
-            flashSale.MaxUsers = dto.MaxUsers;
-
-            var updated = await _flashSaleRepository.UpdateAsync(flashSale);
-
-            return new AddProductToFlashSaleDto
-            {
-
-                FlashSaleID = updated.FlashSaleID,
-                Title = updated.Title,
-                StartDate = updated.StartDate,
-                EndDate = updated.EndDate,
-                IsActive = updated.IsActive,
-                MaxUsers = updated.MaxUsers,
-                CreatedAt = updated.CreatedAt,
-                ProductCount = updated.FlashSaleProducts?.Count ?? 0
-            };
-        }
-        public async Task<List<AddProductToFlashSaleDto>> GetProductsByFlashSaleIdAsync(int flashSaleId)
-        {
-            var flashSale = await _flashSaleRepository.GetByFlashSaleIdAsync(flashSaleId);
-
-            if (flashSale == null)
-                throw new KeyNotFoundException($"Flash sale with ID {flashSaleId} not found.");
-
-            return flashSale.Select(fp => new AddProductToFlashSaleDto
-            {
-                StartDate=fp.FlashSale.StartDate,
-                EndDate=fp.FlashSale.EndDate,
-                IsActive = fp.FlashSale.IsActive,
-                CreatedAt=fp.FlashSale.CreatedAt,
-                ProductCount=fp.FlashSale.FlashSaleProducts.Count,
-                ProductID = fp.ProductID,
-                ProductName = fp.Product.ProductName,
-                FlashSaleID = fp.FlashSaleID,
-                OriginalPrice = fp.OriginalPrice,
-                DiscountedPrice = fp.DiscountedPrice,
-                StockLimit = fp.StockLimit,
-            }).ToList();
-        }
-
-        public async Task<List<AddProductToFlashSaleDto>> GetAllFlashSaleProductsAsync()
-        {
-            var items = await _flashSaleRepository.GetAllFlashSaleProductAsync();
-
-          
-          
-            return items.Select(fp => new AddProductToFlashSaleDto
-            {
-                StartDate = fp.FlashSale.StartDate,
-                EndDate = fp.FlashSale.EndDate,
-                IsActive = fp.FlashSale.IsActive,
-                CreatedAt = fp.FlashSale.CreatedAt,
-                ProductCount = fp.FlashSale.FlashSaleProducts.Count,
-                ProductID = fp.ProductID,
-                ProductName = fp.Product.ProductName,
-                FlashSaleID = fp.FlashSaleID,
-                OriginalPrice = fp.OriginalPrice,
-                DiscountedPrice = fp.DiscountedPrice,
-                StockLimit = fp.StockLimit,
-            }).ToList();
-        }
-
-        public async Task<bool> RemoveProductFromFlashSaleAsync(int productId, int flashSaleId)
-        {
-            return await _productRepository.RemoveProductFromFlashSaleAsync(productId, flashSaleId);
-        }
-
-
+       
     }
 }

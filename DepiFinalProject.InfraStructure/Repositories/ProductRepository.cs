@@ -94,8 +94,6 @@ namespace DepiFinalProject.Infrastructurenamespace.Repositories
                 .Include(p => p.Category)
                 .Include(p => p.user)
                 .Include(p => p.Images)
-                .Include(p => p.FlashSaleProducts)
-                   .ThenInclude(fsp => fsp.FlashSale)
                 .ToListAsync();
         }
 
@@ -174,53 +172,6 @@ namespace DepiFinalProject.Infrastructurenamespace.Repositories
                 parameters.PageSize
             );
         }
-        public async Task<bool> AddProductToFlashSaleAsync(int productId, FlashSaleProduct flashSaleProduct)
-        {
-            //check if product exist
-            var productExists = await _context.Products.AnyAsync(p => p.ProductID == productId);
-            if (!productExists)
-                return false;
-
-            //check if flash sale exist
-            var flashSaleExists = await _context.FlashSales.AnyAsync(fs => fs.FlashSaleID == flashSaleProduct.FlashSaleID);
-            if (!flashSaleExists)
-                return false;
-
-            
-            var alreadyExists = await _context.FlashSaleProducts
-                .AnyAsync(fsp => fsp.ProductID == productId && fsp.FlashSaleID == flashSaleProduct.FlashSaleID);
-
-            if (alreadyExists)
-                return false;
-
-            // add to FlashSaleProducts
-            flashSaleProduct.ProductID = productId;
-            await _context.FlashSaleProducts.AddAsync(flashSaleProduct);
-            await _context.SaveChangesAsync();
-
-            return true;
-        }
-
-        public async Task<bool> RemoveProductFromFlashSaleAsync(int productId, int flashSaleId)
-        {
-            var flashSaleProduct = await _context.FlashSaleProducts
-                .FirstOrDefaultAsync(fsp => fsp.ProductID == productId && fsp.FlashSaleID == flashSaleId);
-
-            if (flashSaleProduct == null)
-                return false;
-
-            _context.FlashSaleProducts.Remove(flashSaleProduct);
-            await _context.SaveChangesAsync();
-
-            return true;
-        }
-
-        public async Task<Product?> GetProductWithFlashSaleAsync(int productId)
-        {
-            return await _context.Products
-                .Include(p => p.FlashSaleProducts)
-                    .ThenInclude(fsp => fsp.FlashSale)
-                .FirstOrDefaultAsync(p => p.ProductID == productId);
-        }
+       
     }
 }

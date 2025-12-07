@@ -20,14 +20,6 @@ namespace DepiFinalProject.Core.Interfaces
         Task<bool> AddImagesAsync(int productId, List<IFormFile> images);
         Task<PagedResult<ProductResponseDTO>> GetProductsAsync(ProductFilterParameters parameters);
 
-        // Add product to flash sale
-        Task<bool> AddProductToFlashSaleAsync(int productId, AddProductToFlashSaleDto dto);
-
-        // Remove product from flash sale
-        Task<bool> RemoveProductFromFlashSaleAsync(int productId, int flashSaleId);
-        Task<AddProductToFlashSaleDto> UpdateFlashSaleItemAsync(int id, AddProductToFlashSaleDto dto);
-        Task<List<AddProductToFlashSaleDto>> GetProductsByFlashSaleIdAsync(int flashSaleId);
-        Task<List<AddProductToFlashSaleDto>> GetAllFlashSaleProductsAsync();
 
     }
 }

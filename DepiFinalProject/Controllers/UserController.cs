@@ -36,9 +36,9 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ICollection<User>>> GetAllUsers()
         {
-            if (!User.IsInRole("admin"))
+            if (!User.IsInRole("admin")&&!User.IsInRole("super"))
             {
-                return StatusCode(403, new { Error = "Only Allowed To Admin" });
+                return StatusCode(403, new { Error = "Only Allowed To Admin & Owner" });
             }
 
             try
@@ -60,7 +60,7 @@ namespace DepiFinalProject.Controllers
         /// <response code="404">User not found.</response>
         /// <response code="500">Internal error.</response>
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,client,seller")]
+        [Authorize(Roles = "admin,client,seller,super")]
         [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -83,7 +83,34 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(500, new { message = "An error occurred while retrieving the user", error = ex.Message });
             }
         }
-
+        /// <summary>
+        /// Retrieves a user Own Data.
+        /// </summary>
+        /// <response code="200">User retrieved successfully.</response>
+        /// <response code="404">User not found.</response>
+        /// <response code="500">Internal error.</response>
+        [HttpGet("UserData")]
+        [Authorize(Roles = "admin,client,seller,super")]
+        [ProducesResponseType(typeof(UserResponseDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<UserResponseDTO>> GetUserData()
+        {
+            try {
+                 if (!TryGetUserId(out var userid)) Unauthorized("Only registered Users can upload thier images");
+                    var user =await _userService.GetByIdAsync(userid);
+                if (user == null)
+                {
+                    return NotFound(new { message = $"User not found" });
+                }
+                return Ok(user);
+            } catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while retrieving the user", error = ex.Message });
+            }
+        }
         /// <summary>
         /// Retrieves a user by email.
         /// </summary>
@@ -223,9 +250,9 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<User>> CreateUser([FromBody] CreateUserDTO user)
         {
-            if (!User.IsInRole("admin"))
+            if (!User.IsInRole("admin") && !User.IsInRole("super"))
             {
-                return StatusCode(403, new { Error = "Only Allowed To Admin" });
+                return StatusCode(403, new { Error = "Only Allowed To Admin & Owner" });
             }
 
             try
@@ -267,8 +294,8 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<User>> UpdateUser(int id, [FromBody] UpdateUserDTO user)
         {
-            TryGetUserId(out var userid);
-           if (userid!=id && !User.IsInRole("admin")&&!User.IsInRole("super")) return StatusCode(403, new { Error = "Only Allowed To Admins And Owner" });
+            if (!TryGetUserId(out var userid)) Unauthorized("Only registered Users can upload thier images");
+            if (userid!=id && !User.IsInRole("admin")&&!User.IsInRole("super")) return StatusCode(403, new { Error = "Only Allowed To Admins And Owner" });
             try
             {
                 if (!ModelState.IsValid)
@@ -386,9 +413,9 @@ namespace DepiFinalProject.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> DeleteUser(int id)
         {
-            if (!User.IsInRole("admin"))
+            if (!User.IsInRole("admin") && !User.IsInRole("super"))
             {
-                return StatusCode(403, new { Error = "Only Allowed To Admin" });
+                return StatusCode(403, new { Error = "Only Allowed To Admin & Owner" });
             }
             var userd= await _userService.GetByIdAsync(id);
             var user = await _userService.GetByEmailAsync(userd.UserEmail);

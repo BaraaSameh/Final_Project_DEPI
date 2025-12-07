@@ -51,6 +51,10 @@ namespace DepiFinalProject.Infrastructurenamespace.Repositories
         // delete Category
         public async Task DeleteAsync(Category category)
         {
+            if (category.Products != null && category.Products.Any())
+            {
+                _context.Products.RemoveRange(category.Products);
+            }
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
         }
