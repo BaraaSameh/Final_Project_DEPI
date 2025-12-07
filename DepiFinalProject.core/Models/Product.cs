@@ -28,7 +28,6 @@ namespace DepiFinalProject.Core.Models
         public virtual ICollection<OrderItem> OrderItems { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
         public virtual ICollection<Wishlist> Wishlists { get; set; } = new List<Wishlist>();
-        public virtual ICollection<FlashSaleProduct> FlashSaleProducts { get; set; } = new List<FlashSaleProduct>();
 
 
         // Flash Sale Flags

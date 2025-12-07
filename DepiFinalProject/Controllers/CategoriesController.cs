@@ -237,7 +237,7 @@ namespace DepiFinalProject.Controllers
                 if (!updated)
                     return NotFound(new { message = $"Category with ID {id} not found" });
 
-                return NoContent();
+                return Ok(new { message = $"Category with ID {id} and all its products have been deleted." });
             }
             catch (System.Exception ex)
             {

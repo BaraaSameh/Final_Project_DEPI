@@ -91,11 +91,7 @@ namespace DepiFinalProject
             builder.Services.AddHttpContextAccessor();
             builder.Services.Configure<PayPalSettings>(builder.Configuration.GetSection("PayPalSettings"));
 
-            // FlashSale Repository
-            builder.Services.AddScoped<IFlashSaleRepository, FlashSaleRepository>();
-
-            // FlashSale Service
-            builder.Services.AddScoped<IFlashSaleService, FlashSaleService>();
+     
 
             // Review Service
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();

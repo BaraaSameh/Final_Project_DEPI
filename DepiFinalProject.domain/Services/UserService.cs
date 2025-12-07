@@ -79,6 +79,9 @@ namespace DepiFinalProject.Services
                 UserID = user.UserID,
                 UserEmail = user.UserEmail,
                 UserName = user.UserFirstName + " " + user.UserLastName,
+                userFirstName = user.UserFirstName ?? " ",
+                userlastName = user.UserLastName ?? " ",
+                phone = user.UserPhone ?? " ",
                 UserRole = user.UserRole.ToLower(),
                 AddressNumber = user.Addresses?.Count ?? 0,
                 CartsNumber = user.Carts?.Count ?? 0,
@@ -108,6 +111,9 @@ namespace DepiFinalProject.Services
                 UserID = user.UserID,
                 UserEmail = user.UserEmail,
                 UserName = user.UserFirstName + " " + user.UserLastName,
+                userFirstName = user.UserFirstName ?? " ",
+                userlastName = user.UserLastName ?? " ",
+                phone = user.UserPhone ?? " ",
                 UserRole = user.UserRole.ToLower(),
                 AddressNumber = user.Addresses?.Count ?? 0,
                 CartsNumber = user.Carts?.Count ?? 0,
@@ -124,8 +130,11 @@ namespace DepiFinalProject.Services
             return new UserResponseDTO
             {
                 UserID = user.UserID,
-                UserEmail= user.UserEmail,
-                UserName= user.UserFirstName +" "+ user.UserLastName,
+                UserEmail = user.UserEmail,
+                UserName = user.UserFirstName + " " + user.UserLastName,
+                userFirstName = user.UserFirstName?? " ",
+                userlastName=user.UserLastName ?? " ",
+                phone=user.UserPhone ?? " ",
                 UserRole = user.UserRole.ToLower(),
                 AddressNumber = user.Addresses?.Count ?? 0,
                 CartsNumber = user.Carts?.Count ?? 0,
@@ -133,7 +142,7 @@ namespace DepiFinalProject.Services
                 ReviewsNumber = user.Reviews?.Count ?? 0,
                 WishListNumber = user.Wishlists?.Count ?? 0,
                 imgeurl = user.ImageUrl ?? string.Empty,
-                imageid=user.ImagePublicId??string.Empty,
+                imageid = user.ImagePublicId ?? string.Empty,
             };
         }
 

@@ -129,11 +129,11 @@ namespace DepiFinalProject.Services
                 // القسم غير موجود أصلًا، لا يوجد ما يمكن حذفه
                 return false;
             }
-            if (category.Products != null && category.Products.Any())
-            {
-                // لا يمكن الحذف لأن هناك منتجات مرتبطة.
-                throw new InvalidOperationException("Category cannot be deleted because it has associated products.");
-            }
+            //if (category.Products != null && category.Products.Any())
+            //{
+            //    // لا يمكن الحذف لأن هناك منتجات مرتبطة.
+            //    throw new InvalidOperationException("Category cannot be deleted because it has associated products.");
+            //}
 
             await _categoryRepository.DeleteAsync(category);
             return true;
