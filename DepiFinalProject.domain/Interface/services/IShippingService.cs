@@ -8,7 +8,7 @@ namespace DepiFinalProject.Core.Interfaces
         Task<Shipping?> GetShippingByIdAsync(int shippingId);
         Task<Shipping> CreateShippingAsync(Shipping newShipping);
         Task<Shipping?> UpdateShippingAsync(Shipping updatedShipping);
-        void UpdateShippingStatus(int shippingId, string newStatus);
-        void CalcEstimatedDelivery(int shippingId, DateTime newEstimatedDate);
+        Task UpdateShippingStatus(int shippingId, string newStatus);
+        Task CalcEstimatedDelivery(int shippingId, DateTime newEstimatedDate);
     }
 }

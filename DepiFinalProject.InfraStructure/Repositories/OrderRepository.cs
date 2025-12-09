@@ -44,8 +44,11 @@ namespace DepiFinalProject.Infrastructurenamespace.Repositories
                 .Include(o => o.User)
                 .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.Product)
+                .Include(o => o.OrderShippings)
+                    .ThenInclude(os => os.Shipping)  
                 .ToListAsync();
         }
+
 
         public async Task<Order?> GetByIdAsync(int orderId)
         {
@@ -56,8 +59,11 @@ namespace DepiFinalProject.Infrastructurenamespace.Repositories
                 .Include(o => o.User)
                 .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.Product)
+                .Include(o => o.OrderShippings)
+                    .ThenInclude(os => os.Shipping)  
                 .FirstOrDefaultAsync(o => o.OrderID == orderId);
         }
+
 
         public async Task<IEnumerable<Order>> GetByUserAsync(int userId)
         {

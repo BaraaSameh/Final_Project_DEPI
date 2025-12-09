@@ -40,8 +40,16 @@ namespace DepiFinalProject.Core.DTOs
             public DateTime OrderDate { get; set; }
             public decimal TotalAmount { get; set; }
             public string OrderStatus { get; set; }
-        }
+            public List<ShippingInfoDTO> Shipments { get; set; }
 
+        }
+        public class ShippingInfoDTO
+        {
+            public int ShippingID { get; set; }
+            public string CompanyName { get; set; }
+            public string TrackingNumber { get; set; }
+            public string ShippingStatus { get; set; }
+        }
         public class OrderDetailsDTO : OrderResponseDTO
         {
             [Required]
@@ -57,6 +65,7 @@ namespace DepiFinalProject.Core.DTOs
             public int Quantity { get; set; }
             public decimal UnitPrice { get; set; }
             public decimal TotalPrice { get; set; }
+
         }
         //orderItemDtos
         public class OrderItemResponseDTO
@@ -68,6 +77,7 @@ namespace DepiFinalProject.Core.DTOs
             public int Quantity { get; set; }
             public decimal Price { get; set; }
             public decimal TotalPrice { get; set; }
+
         }
 
         public class AddOrderItemDTO

@@ -11,5 +11,8 @@ namespace DepiFinalProject.Core.Interfaces
         Task<bool> AddAsync(int userId, int productId);
         Task<bool> RemoveAsync(int userId, int productId);
         Task<bool> ClearAsync(int userId);
+        Task<bool> MoveAllToCartAsync(int userId);
+        Task<bool> MoveItemToCartAsync(int userId, int productId);
+
     }
 }

@@ -204,9 +204,21 @@ namespace DepiFinalProject.Services
                 OrderNo = order.OrderNo,
                 OrderDate = order.OrderDate,
                 TotalAmount = order.TotalAmount,
-                OrderStatus = order.OrderStatus
+                OrderStatus = order.OrderStatus,
+
+                Shipments = order.OrderShippings?
+                    .Select(os => new ShippingInfoDTO
+                    {
+                        ShippingID = os.ShippingID,
+                        CompanyName = os.Shipping.CompanyName,
+                        TrackingNumber = os.Shipping.TrackingNumber,
+                        ShippingStatus = os.Shipping.ShippingStatus
+                    }).ToList()
+                    ?? new List<ShippingInfoDTO>()
             };
         }
+
+
 
 
 
@@ -221,17 +233,29 @@ namespace DepiFinalProject.Services
                 OrderDate = order.OrderDate,
                 TotalAmount = order.TotalAmount,
                 OrderStatus = order.OrderStatus,
+
                 OrderItems = order.OrderItems?.Select(oi => new OrderItemDetailsDTO
                 {
                     OrderItemID = oi.OrderItemID,
                     ProductID = oi.ProductID,
-                    ProductName = oi.Product?.ProductName ?? "Unknown",
+                    ProductName = oi.Product?.ProductName ?? oi.ProductName,
                     Quantity = oi.Quantity,
                     UnitPrice = oi.Price,
                     TotalPrice = oi.Quantity * oi.Price
-                }).ToList() ?? new List<OrderItemDetailsDTO>()
+                }).ToList() ?? new List<OrderItemDetailsDTO>(),
+
+                Shipments = order.OrderShippings?
+                    .Select(os => new ShippingInfoDTO
+                    {
+                        ShippingID = os.ShippingID,
+                        CompanyName = os.Shipping.CompanyName,
+                        TrackingNumber = os.Shipping.TrackingNumber,
+                        ShippingStatus = os.Shipping.ShippingStatus
+                    }).ToList()
+                    ?? new List<ShippingInfoDTO>()
             };
         }
+
         private OrderItemResponseDTO MapToOrderItemResponseDto(OrderItem orderItem)
         {
             if (orderItem == null)

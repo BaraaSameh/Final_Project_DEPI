@@ -26,7 +26,7 @@ namespace DepiFinalProject.Infrastructure.Repositories
         {
             return await _context.Shippings
                 .Include(s => s.OrderShippings)
-                    .ThenInclude(os => os.Order)
+                .ThenInclude(os => os.Order)
                 .FirstOrDefaultAsync(s => s.ShippingID == shippingId);
         }
 
@@ -40,14 +40,31 @@ namespace DepiFinalProject.Infrastructure.Repositories
         public async Task<Shipping?> UpdateShippingAsync(Shipping updatedShipping)
         {
             var existingShipping = await _context.Shippings
-                .FindAsync(updatedShipping.ShippingID);
+                .Include(s => s.OrderShippings)
+                    .ThenInclude(os => os.Order)
+                .FirstOrDefaultAsync(s => s.ShippingID == updatedShipping.ShippingID);
 
             if (existingShipping == null)
                 return null;
 
-            _context.Entry(existingShipping).CurrentValues.SetValues(updatedShipping);
+            existingShipping.ShippingStatus = updatedShipping.ShippingStatus;
+            existingShipping.EstimatedDelivery = updatedShipping.EstimatedDelivery;
+
             await _context.SaveChangesAsync();
+
             return existingShipping;
+        }
+
+
+        public async Task<OrderShipping> AddOrderShippingAsync(OrderShipping orderShipping)
+        {
+            if (orderShipping == null)
+                throw new ArgumentNullException(nameof(orderShipping));
+
+            await _context.OrderShippings.AddAsync(orderShipping);
+            await _context.SaveChangesAsync();
+
+            return orderShipping;
         }
 
         public async Task<bool> DeleteShippingByIdAsync(int shippingId)
