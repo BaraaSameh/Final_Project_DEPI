@@ -1,5 +1,6 @@
 ﻿using DepiFinalProject.Core.Interfaces;
 using DepiFinalProject.Core.Models;
+using DepiFinalProject.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Http;
 using PaypalServerSdk.Standard;
 using PaypalServerSdk.Standard.Authentication;
@@ -16,7 +17,7 @@ namespace PayPalAdvancedIntegration.Services
         private readonly IUserRepository _userRepository;
         private readonly IOrderService _orderService;
         private readonly IOtpService _otpService;
-
+        private readonly IShippingRepository _shippingRepository;
 
         public PayPalService(
             Microsoft.Extensions.Configuration.IConfiguration config,
@@ -24,7 +25,8 @@ namespace PayPalAdvancedIntegration.Services
             IPaymentRepository paymentRepository,
             IUserRepository userRepository,
             IOrderService orderService,
-            IOtpService otpService)
+            IOtpService otpService,
+            IShippingRepository shippingRepository)
         {
             _httpContextAccessor = httpContextAccessor;
             _paymentRepository = paymentRepository;
@@ -43,6 +45,7 @@ namespace PayPalAdvancedIntegration.Services
 
             _ordersController = client.OrdersController;
             _otpService = otpService;
+            _shippingRepository = shippingRepository;
         }
 
 
@@ -157,6 +160,25 @@ namespace PayPalAdvancedIntegration.Services
                         {
                             OrderStatus = "Paid"
                         });
+                        var newShipping = new Shipping
+                        {
+                            CompanyName = "Zenon Express",
+                            TrackingNumber = Guid.NewGuid().ToString().Substring(0, 10).ToUpper(),
+                            EstimatedDelivery = DateTime.UtcNow.AddDays(3),
+                            ShippingStatus = "Processing",
+                            OrderShippings = new List<OrderShipping>()  
+                        };
+                        newShipping = await _shippingRepository.CreateShippingAsync(newShipping);
+
+                        var orderShipping = new OrderShipping
+                        {
+                            OrderID = payment.OrderID.Value,
+                            ShippingID = newShipping.ShippingID
+                        };
+
+                        await _shippingRepository.AddOrderShippingAsync(orderShipping);
+
+
                     }
                 }
 

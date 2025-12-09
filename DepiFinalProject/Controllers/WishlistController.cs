@@ -215,5 +215,68 @@ namespace DepiFinalProject.Controllers
                 return StatusCode(500, new { Error = "An unexpected error occurred. Please try again later." });
             }
         }
+        /// <summary>
+        /// Move all wishlist items to cart.
+        /// </summary>
+        [Authorize]
+        [HttpPost("move-all-to-cart")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(403)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> MoveAllToCart()
+        {
+            if (!User.IsInRole("admin") && !User.IsInRole("client"))
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
+
+            try
+            {
+                if (!TryGetUserId(out var userId))
+                    return Unauthorized();
+
+                var moved = await _wishlistService.MoveAllToCartAsync(userId);
+
+                return moved
+                    ? Ok(new { Message = "All wishlist items moved to cart." })
+                    : BadRequest(new { Message = "Wishlist is empty." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error moving all wishlist items to cart for user {UserId}", User.FindFirstValue(ClaimTypes.NameIdentifier));
+                return StatusCode(500, new { Error = "An unexpected error occurred." });
+            }
+        }
+        /// <summary>
+        /// Move specific item from wishlist to cart.
+        /// </summary>
+        [Authorize]
+        [HttpPost("{productId:int}/move-to-cart")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(403)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> MoveItemToCart(int productId)
+        {
+            if (!User.IsInRole("admin") && !User.IsInRole("client"))
+                return StatusCode(403, new { Error = "Only Allowed To Admin And Client" });
+
+            try
+            {
+                if (!TryGetUserId(out var userId))
+                    return Unauthorized();
+
+                var moved = await _wishlistService.MoveItemToCartAsync(userId, productId);
+
+                return moved
+                    ? Ok(new { Message = $"Product {productId} moved to cart." })
+                    : NotFound(new { Message = $"Product {productId} not found in wishlist." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error moving wishlist item {ProductId} to cart for user {UserId}", productId, User.FindFirstValue(ClaimTypes.NameIdentifier));
+                return StatusCode(500, new { Error = "An unexpected error occurred." });
+            }
+        }
+
     }
 }

@@ -91,7 +91,7 @@ namespace DepiFinalProject.Services
             }
         }
 
-        public async void UpdateShippingStatus(int shippingId, string newStatus)
+        public async Task UpdateShippingStatus(int shippingId, string newStatus)
         {
             try
             {
@@ -107,7 +107,19 @@ namespace DepiFinalProject.Services
                     throw new KeyNotFoundException($"Shipping with ID {shippingId} not found");
 
                 shipping.ShippingStatus = newStatus;
-                await _shippingRepository.UpdateShippingAsync(shipping);
+                if ( newStatus == "Delivered")
+                {
+                    foreach (var orderShipping in shipping.OrderShippings)
+                    {
+                        var order = orderShipping.Order;
+
+                        if (order != null)
+                        {
+                            order.OrderStatus = newStatus; 
+                        }
+                    }
+                }
+                    await _shippingRepository.UpdateShippingAsync(shipping);
             }
             catch (Exception ex)
             {
@@ -115,7 +127,7 @@ namespace DepiFinalProject.Services
             }
         }
 
-        public async void CalcEstimatedDelivery(int shippingId, DateTime newEstimatedDate)
+        public async Task CalcEstimatedDelivery(int shippingId, DateTime newEstimatedDate)
         {
             try
             {

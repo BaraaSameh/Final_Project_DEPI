@@ -355,7 +355,7 @@ namespace DepiFinalProject.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                _shippingService.UpdateShippingStatus(id, statusDto.ShippingStatus);
+               await _shippingService.UpdateShippingStatus(id, statusDto.ShippingStatus);
 
                 return NoContent();
             }

@@ -9,6 +9,8 @@ namespace DepiFinalProject.Core.Interfaces
         Task<Shipping> CreateShippingAsync(Shipping newShipping);
         Task<Shipping?> UpdateShippingAsync(Shipping updatedShipping);
         Task<bool> DeleteShippingByIdAsync(int shippingId);
+        Task<OrderShipping> AddOrderShippingAsync(OrderShipping orderShipping);
+
 
     }
 }
