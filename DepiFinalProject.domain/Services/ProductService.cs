@@ -38,6 +38,8 @@ namespace DepiFinalProject.Services
         public async Task<bool> AddImagesAsync(int productId, List<IFormFile> images)
         {
             var product = await _productRepository.GetByIdAsync(productId);
+            var userRole = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Role)?.Value;//added
+
 
             if (product == null)
                 throw new Exception("Product not found.");
