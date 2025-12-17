@@ -74,6 +74,8 @@ namespace DepiFinalProject.Infrastructurenamespace.Repositories
                 .Include(o => o.User)
                 .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.Product)
+                .Include(o => o.OrderShippings)
+                    .ThenInclude(os => os.Shipping)
                 .Where(o => o.UserID == userId)
                 .ToListAsync();
         }

@@ -110,6 +110,7 @@ namespace DepiFinalProject.Services
             var userId = await GetCurrentUserIdAsync();
             var orders = await _orderRepository.GetByUserAsync(userId);
             return orders.Select(MapToResponseDto);
+
         }
 
         public async Task<OrderResponseDTO?> UpdateStatusAsync(int orderId, UpdateOrderStatusDTO dto)
